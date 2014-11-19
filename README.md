@@ -1,3 +1,9 @@
+I have this directory managed as a git repository for version control of the
+circuit schematics and Arduino code.  Will have more time to really look at
+this in December, but might get to chip away at it sooner.
+
+Some notes from Aaron on the code:
+
 Attached are two sets of Arduino code. The "ADPL_labsetup" is the more complete
 file. This was made using the level sensor as a digital output, only sending a
 signal when the minimum or maximum levels were exceeded. The "Pump_analog" was

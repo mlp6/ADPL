@@ -1,8 +1,6 @@
 #Part List
 
-'will replace w/ component labels and specific parts #s'
-
-* relays (3)
-* fklyback diodes (3)
-* BJTs (3)
-* base-current limiting resistors (3)
+* relays (3) [MB]
+* fklyback diodes (3) [MB]
+* BJTs (3) [MB]
+* base-current-limiting resistors (3) [MB]

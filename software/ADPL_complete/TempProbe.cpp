@@ -25,7 +25,7 @@
 */
 
 #include "Arduino.h"
-#include "readProbeTemp.h"
+#include "TempProbe.h"
 
 TempProbe::TempProbe(int probePin) {
 

@@ -21,17 +21,17 @@
 #define PROBE4 A3
 #define PROBE5 A4
 #define LEVEL A5
+#define VALVE_PIN 4     // digital output pin #4
+#define PUMP_PIN 7      // digital output pin #7
+#define IGNITOR_PIN 2   // digital output pin #2
 
 const unsigned long Delay = 1000; // define total delay in ms (1 sec)
 
 //File dataFile;  //SD card file name
 
 //variables for relays
-int pump = 7;               // Pump relay signal is digital input pin #7
 boolean PumpOn = true;      // Variable for if pump is on/off
-int valve = 4;              // Valve relay signal is digital input pin #4
 boolean ValveOn = false;    // Variable for if valve is on/off
-int ignitor = 2;            // Ignitor relay signal is digital input pin #4
 boolean IgnitorOn = true;   // Variable for if ignitor is on/off
 int z=0;                    // timer for ignitor
 unsigned long spark_delay = 900000; //in ms (15min)
@@ -54,9 +54,9 @@ void setup() {
     pinMode(PROBE4, INPUT);
     pinMode(PROBE5, INPUT);
     pinMode(LEVEL, INPUT);
-    pinMode(pump, OUTPUT);
-    pinMode(valve, OUTPUT);
-    pinMode(ignitor, OUTPUT);
+    pinMode(PUMP_PIN, OUTPUT);
+    pinMode(VALVE_PIN, OUTPUT);
+    pinMode(IGNITOR_PIN, OUTPUT);
   
     //  dataFile = SD.open("datalog.txt", FILE_WRITE);
 }
@@ -86,7 +86,7 @@ void loop() {
     Serial.print(", ");
     Serial.println(PumpOn);
  
-    /* Valve / Ignitor Activation
+    /* ==== Valve / Ignitor Activation ====
     The goal here is to have the gas valve open (high) when the temperature is
     <68 and closed when the temperature >72.  When the temperature drops below
     72, valve will not open until below 68.  While the valve is open, we want
@@ -94,19 +94,19 @@ void loop() {
     */
 
     if (TempProbe[2] <= 25) {       
-        digitalWrite(valve,HIGH);
+        digitalWrite(VALVE_PIN, HIGH);
         ValveOn = true;
         delay(10);
-        digitalWrite(ignitor,HIGH);
+        digitalWrite(IGNITOR_PIN, HIGH);
         IgnitorOn = true;
         delay(5000);
-        digitalWrite(ignitor,LOW);
+        digitalWrite(IGNITOR_PIN, LOW);
         IgnitorOn = false;
    }
 
    if (TempProbe[2] >= 28) {
         ValveOn = false;
-        digitalWrite(valve, LOW);
+        digitalWrite(VALVE_PIN, LOW);
    }
  
     //This code is an attempt to have the ignitor spark for 5 seconds
@@ -118,21 +118,23 @@ void loop() {
     ////spark_delay=900000 (15min), Delay=60000 (1min), NUMSAMPLES=100; spark=1500 (1.5sec)
     if (z>=spark) {
         if(ValveOn == true){        //This time should only run when the valve is on
-            digitalWrite(ignitor, HIGH);
+            digitalWrite(IGNITOR_PIN, HIGH);
             z = 0;
             delay(5000);    // time in ms the ignitor is on, 5sec
-            digitalWrite(ignitor,LOW);
+            digitalWrite(IGNITOR_PIN,LOW);
         }
     }
  
- //This code needs to be updated. This is controlling pump on/off
- //The goal is to have the pump off when the level is <2",
- //Remain on when >24". When the level is 2"<x<24", the pump should
- //be on for 5 minutes, off 55 minutes.
- //My challenge is keeping this timing from delaying the rest 
- //of the loop
- //Values for comparison need to be updated for conversion to inches
-   if(depth >= 400)    //level is above the minimum
+    /* ==== Pump Activation ====
+    The goal is to have the pump off when the level is <2", Remain on when
+    >24". When the level is 2"<x<24", the pump should be on for 5 minutes, off
+    55 minutes.  
+    
+    TO DO: 
+        * FIX: Keep timing from delaying the rest of the loop. 
+        * Values for comparison need to be updated for conversion to inches
+    */
+    if(depth >= 400)    //level is above the minimum
    {delay(5);
      if(depth >= 400)
      {delay(5);
@@ -141,7 +143,7 @@ void loop() {
        if(b<bmax)    //if the time is less than max time on
         {
           b++;
-          digitalWrite(pump,HIGH);  //turn pump on
+          digitalWrite(PUMP_PIN, HIGH);  //turn pump on
           PumpOn = true;
         }
         else        //if max time on has been reached, turn off
@@ -149,7 +151,7 @@ void loop() {
           if(a<amax)
           {
             a++;
-            digitalWrite(pump,LOW);
+            digitalWrite(PUMP_PIN, LOW);
             PumpOn = false;
           }
           else    //reset timer
@@ -164,14 +166,14 @@ void loop() {
           delay(5);
           if(depth <= 1200)
           {
-            digitalWrite(pump,HIGH);  //turn the pump on
+            digitalWrite(PUMP_PIN, HIGH);  //turn the pump on
           }
         }
      }
    }
    else    //level is below minimum
       {
-        digitalWrite(pump,LOW);  //turn pump off and remain off
+        digitalWrite(PUMP_PIN, LOW);  //turn pump off and remain off
       }
    
   

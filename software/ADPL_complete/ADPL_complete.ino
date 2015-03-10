@@ -161,22 +161,19 @@ float readProbeTemp(int ProbePin) {
     const int SAMPLE_DELAY = 1;                 // ms
 
     float TempProbe;
-    float average = 0;
+    float averageTemp = 0;
     int samples[NUMSAMPLES];
 
     for (int i=0; i < NUMSAMPLES; i++) {
-        samples[i] = analogRead(ProbePin);
+        averageTemp += (float) analogRead(ProbePin);
         delay(SAMPLE_DELAY);
     }
 
-    for (int i=0; i< NUMSAMPLES; i++) {
-        average += samples[i];
-    } 
-    average/=NUMSAMPLES;
-    average = 1023 / average - 1;
-    average = SERIESRESISTOR / average;
+    averageTemp /= (float) NUMSAMPLES;
+    averageTemp = 1023. / averageTemp - 1;
+    averageTemp = SERIESRESISTOR / averageTemp;
 
-    TempProbe = average / THERMISTORNOMINAL;            // (R/Ro)
+    TempProbe = averageTemp / THERMISTORNOMINAL;        // (R/Ro)
     TempProbe = log(TempProbe);                         // ln(R/Ro);
     TempProbe /= BCOEFFICIENT;                          // 1/B * ln(R/Ro)
     TempProbe += 1.0 / (TEMPERATURENOMINAL + 273.15);   // +1/To

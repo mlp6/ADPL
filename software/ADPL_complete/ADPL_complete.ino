@@ -13,41 +13,40 @@
 //#define WAIT_TO_START 0      //start readings immediately
 
 
-// variables for analog inputs - temp and level
-// probes 1-5 are thermistors plugged into analog inputs 0-4
+// temperature (thermistor) variables
 #define PROBE1 A0 
 #define PROBE2 A1 
 #define PROBE3 A2
 #define PROBE4 A3
 #define PROBE5 A4
-#define LEVEL A5
-#define VALVE_PIN 4     // digital output pin #4
-#define PUMP_PIN 7      // digital output pin #7
-#define IGNITOR_PIN 2   // digital output pin #2
-#define INCINERATE_LOW_TEMP 25
-#define INCINERATE_HIGH_TEMP 28
-
-const unsigned long Delay = 1000; // define total delay in ms (1 sec)
-
-//File dataFile;  //SD card file name
-
-//variables for relays
-boolean PumpOn = true;      // Variable for if pump is on/off
-boolean ValveOn = false;    // Variable for if valve is on/off
-unsigned int a = 0;         // pump off counter 
-unsigned int b = 0;         // pump on counter
-const unsigned int amax = 55; // pump off time in ms (55 min)
-                              // (pass of original program is 1 minute, add 1 each time to 55)
-const unsigned int bmax = 5;  //pump on time in ms (5 min)
-
 const int numTempProbes = 5;
 float TempProbe[numTempProbes];
 
+// ignitor / valve variables
+#define IGNITOR_PIN 2   // digital output pin #2
+#define VALVE_PIN 4     // digital output pin #4
+#define INCINERATE_LOW_TEMP 25
+#define INCINERATE_HIGH_TEMP 28
 const unsigned long ignite_delay = 900000;  // ms (15min); time between ignitor fires 
                                             // when valve is open
 unsigned long last_ignite_time;             // time (ms) that will be returned from millis()
                                             // when ignitor last fired
+boolean ValveOn = false;                    // Variable for if valve is on/off
+
+// water level variables
+#define LEVEL_PIN A5
+#define PUMP_PIN 7      // digital output pin #7
+#define LEVEL_MIN 400
+#define LEVEL_MAX 1200
+#define KEEP_PUMP_ON_TIME 30000     // ms; keep pump on for 5 min for intermediate level
+#define KEEP_PUMP_OFF_TIME 330000   // ms; keep pump off for 55 min after 5 min on time
+unsigned long pumpTurnOffTime = 0;  // initialize to start the pump in the OFF state
+unsigned long pumpTurnOnTime;
+boolean PumpOn = false;             // Variable for if pump is on/off
+
 unsigned long current_time;
+//
+//File dataFile;  //SD card file name
 
 void setup() {
     Serial.begin(9600);
@@ -56,7 +55,7 @@ void setup() {
     pinMode(PROBE3, INPUT);
     pinMode(PROBE4, INPUT);
     pinMode(PROBE5, INPUT);
-    pinMode(LEVEL, INPUT);
+    pinMode(LEVEL_PIN, INPUT);
     pinMode(PUMP_PIN, OUTPUT);
     pinMode(VALVE_PIN, OUTPUT);
     pinMode(IGNITOR_PIN, OUTPUT);
@@ -72,22 +71,15 @@ void setup() {
 void loop() { 
    
     // read probe temperatures
-
     for (int probeNum = 0; probeNum < numTempProbes; probeNum++) {
         TempProbe[probeNum] = readProbeTemp(probeNum);
     }
 
-    //Level sensor code
-    float depth;
-    depth = analogRead(LEVEL);
-    //Insert conversion of Arduino reading to level in inches
-    //Sensor output is 4mA at bottom (4") and 20mA at top (24"). Resistor is 237 Ohm
- 
     for (int probeNum = 0; probeNum < numTempProbes; probeNum++) {
         Serial.print(TempProbe[probeNum]);
         Serial.print(", ");
     }
-    Serial.println(depth);
+
     Serial.print(ValveOn);
     Serial.print(", ");
     // Serial.print(IgnitorOn);
@@ -125,62 +117,36 @@ void loop() {
     Pump off when the level is <2", Remain on when >24". When the level is
     2"<x<24", the pump should be on for 5 minutes, off 55 minutes.  
     
-    TO DO: 
-        * FIX: Keep timing from delaying the rest of the loop. 
-        * Values for comparison need to be updated for conversion to inches
+    Sensor output is 4 mA at bottom (4") and 20 mA at top (24").
+    Resistor is 237 Ohm
+
+    TO DO: Values for comparison need to be updated for conversion to inches
     */
-    if(depth >= 400)    //level is above the minimum
-   {delay(5);
-     if(depth >= 400)
-     {delay(5);
-     if(depth <= 1200)  //level is above min and below max
-     {
-       if(b<bmax)    //if the time is less than max time on
-        {
-          b++;
-          digitalWrite(PUMP_PIN, HIGH);  //turn pump on
-          PumpOn = true;
+    float waterLevel = analogRead(LEVEL_PIN);
+    Serial.println(waterLevel);
+
+    if (waterLevel > LEVEL_MAX && !PumpOn) {
+        turnPumpOn();
+    }
+    else if(waterLevel > LEVEL_MIN && waterLevel <= LEVEL_MAX) {
+
+        current_time = millis();
+
+        if (!PumpOn && (current_time - pumpTurnOffTime) > KEEP_PUMP_OFF_TIME) {
+            turnPumpOn();
+            pumpTurnOnTime = millis();
         }
-        else        //if max time on has been reached, turn off
-        {
-          if(a<amax)
-          {
-            a++;
-            digitalWrite(PUMP_PIN, LOW);
-            PumpOn = false;
-          }
-          else    //reset timer
-          {
-            a=0;
-            b=0;
-          }
+        else if (PumpOn) {
+            if ((current_time - pumpTurnOnTime) > KEEP_PUMP_ON_TIME) {
+                turnPumpOff();
+                pumpTurnOffTime = millis();
+            }
         }
-     }
-       else      //level is above min AND above max
-        {
-          delay(5);
-          if(depth <= 1200)
-          {
-            digitalWrite(PUMP_PIN, HIGH);  //turn the pump on
-          }
-        }
-     }
-   }
-   else    //level is below minimum
-      {
-        digitalWrite(PUMP_PIN, LOW);  //turn pump off and remain off
-      }
-   
-  
-    //begin SD card
-    /* Serial.print(TempProbe[0]);
-      Serial.print(", ");
-     dataFile.print(TempProbe[0]);
-      dataFile.print(", ");
-    */
-     //end SD card data
+    }   
  
-}
+    // writeSDcard(TempProbe[0]);
+
+} // end loop()
 
 
 // read temperature from probe (thermistor)
@@ -236,3 +202,22 @@ void fireIgnitor() {
     delay(IGNITOR_ON_TIME);
     digitalWrite(IGNITOR_PIN, LOW);
 }
+
+void turnPumpOn() {
+    digitalWrite(PUMP_PIN, HIGH); 
+    PumpOn = true;
+}
+
+void turnPumpOff() {
+    digitalWrite(PUMP_PIN, LOW);
+    PumpOn = false;
+}
+
+/*
+void writeSDcard(float TempProbe) {
+    Serial.print(TempProbe);
+    Serial.print(", ");
+    dataFile.print(TempProbe);
+    dataFile.print(", ");
+}
+*/

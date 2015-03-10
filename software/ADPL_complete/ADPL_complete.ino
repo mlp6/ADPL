@@ -27,17 +27,18 @@ const unsigned long Delay = 1000; // define total delay in ms (1 sec)
 //File dataFile;  //SD card file name
 
 //variables for relays
-int pump = 7;       //Pump relay signal is digital input pin #7
+int pump = 7;               // Pump relay signal is digital input pin #7
 boolean PumpOn = true;      // Variable for if pump is on/off
-int valve = 4;      //Valve relay signal is digital input pin #4
-int ValveOn = 0;    //Variable for if valve is on/off
-int ignitor = 2;    //Ignitor relay signal is digital input pin #4
+int valve = 4;              // Valve relay signal is digital input pin #4
+boolean ValveOn = false;    // Variable for if valve is on/off
+int ignitor = 2;            // Ignitor relay signal is digital input pin #4
 boolean IgnitorOn = true;   // Variable for if ignitor is on/off
-int z=0;            //timer for ignitor
+int z=0;                    // timer for ignitor
 unsigned long spark_delay = 900000; //in ms (15min)
-unsigned int a = 0;   // pump off counter //"unsigned int" means positive integer
-unsigned int b = 0;   // pump on counter
-const unsigned int amax = 55; //pump off time in ms (55 min)(pass of original program is 1 minute, add 1 each time to 55)
+unsigned int a = 0;         // pump off counter 
+unsigned int b = 0;         // pump on counter
+const unsigned int amax = 55; // pump off time in ms (55 min)
+                              // (pass of original program is 1 minute, add 1 each time to 55)
 const unsigned int bmax = 5;  //pump on time in ms (5 min)
 
 const int numTempProbes = 5;
@@ -85,45 +86,44 @@ void loop() {
     Serial.print(", ");
     Serial.println(PumpOn);
  
- //commands for valve/ignitor
- //The goal here is to have the gas valve open (high) when the 
- //temperature is <68 and closed when the temperature >72.
- //When the temperature drops below 72, valve will not open until below 68.
- //While the valve is open, we want the ignitor to spark for 5 seconds
- //every 15 minutes.
-    if(TempProbe[2] <= 25)      //temp is less than 25 for lab check
-   { 
-     
-    digitalWrite(valve,HIGH);    // turn on heater (open valve, ignite)
-    ValveOn = 1;
-    delay (10);
-   digitalWrite(ignitor,HIGH);
-   IgnitorOn = true;
-   delay (5000);
-   digitalWrite(ignitor,LOW);
-   IgnitorOn = false;
+    /* Valve / Ignitor Activation
+    The goal here is to have the gas valve open (high) when the temperature is
+    <68 and closed when the temperature >72.  When the temperature drops below
+    72, valve will not open until below 68.  While the valve is open, we want
+    the ignitor to spark for 5 seconds every 15 minutes.
+    */
+
+    if (TempProbe[2] <= 25) {       
+        digitalWrite(valve,HIGH);
+        ValveOn = true;
+        delay(10);
+        digitalWrite(ignitor,HIGH);
+        IgnitorOn = true;
+        delay(5000);
+        digitalWrite(ignitor,LOW);
+        IgnitorOn = false;
    }
-   if (TempProbe[2] >= 28)     //temp is greater than 28
-   {
-    ValveOn = 0;
-     digitalWrite(valve,LOW);                        //turn off heater (close valve)
+
+   if (TempProbe[2] >= 28) {
+        ValveOn = false;
+        digitalWrite(valve, LOW);
    }
  
- //This code is an attempt to have the ignitor spark for 5 seconds
-//every 15 minutes when the valve is open. 
- z++; //timer for ignitor
+    //This code is an attempt to have the ignitor spark for 5 seconds
+    //every 15 minutes when the valve is open. 
+    z++; //timer for ignitor
     // MARK COMMENTED OUT THE LINE BELOW; ONE BELOW THAT FOR TESTING
     //unsigned long spark = spark_delay/Delay*NUMSAMPLES;  
     unsigned long spark = spark_delay;  
     ////spark_delay=900000 (15min), Delay=60000 (1min), NUMSAMPLES=100; spark=1500 (1.5sec)
-if (z>=spark)
-{
-  if(ValveOn == 1){        //This time should only run when the valve is on
-  digitalWrite(ignitor, HIGH);
-  z = 0;
-  delay(5000); //time in ms the ignitor is on, 5sec
-  digitalWrite(ignitor,LOW);
-}}
+    if (z>=spark) {
+        if(ValveOn == true){        //This time should only run when the valve is on
+            digitalWrite(ignitor, HIGH);
+            z = 0;
+            delay(5000);    // time in ms the ignitor is on, 5sec
+            digitalWrite(ignitor,LOW);
+        }
+    }
  
  //This code needs to be updated. This is controlling pump on/off
  //The goal is to have the pump off when the level is <2",

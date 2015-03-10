@@ -35,7 +35,7 @@ int samples5[NUMSAMPLES];
 
 //variables for relays
 int pump = 7;       //Pump relay signal is digital input pin #7
-int PumpOn = 0;     //Variable for if pump is on/off
+boolean PumpOn = true;     //Variable for if pump is on/off
 int valve = 4;      //Valve relay signal is digital input pin #4
 int ValveOn = 0;    //Variable for if valve is on/off
 int ignitor = 2;    //Ignitor relay signal is digital input pin #4
@@ -250,7 +250,7 @@ if (z>=spark)
         {
           b++;
           digitalWrite(pump,HIGH);  //turn pump on
-          PumpOn = 1;
+          PumpOn = true;
         }
         else        //if max time on has been reached, turn off
         {
@@ -258,7 +258,7 @@ if (z>=spark)
           {
             a++;
             digitalWrite(pump,LOW);
-            PumpOn = 0;
+            PumpOn = false;
           }
           else    //reset timer
           {

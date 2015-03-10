@@ -22,7 +22,6 @@
 #define PROBE5 A4
 #define LEVEL A5
 
-
 const unsigned long Delay = 1000; // define total delay in ms (1 sec)
 
 //File dataFile;  //SD card file name
@@ -40,6 +39,8 @@ unsigned int a = 0;   // pump off counter //"unsigned int" means positive intege
 unsigned int b = 0;   // pump on counter
 const unsigned int amax = 55; //pump off time in ms (55 min)(pass of original program is 1 minute, add 1 each time to 55)
 const unsigned int bmax = 5;  //pump on time in ms (5 min)
+const int numTempProbes = 5;
+float TempProbe[numTempProbes];
 
 const int numTempProbes = 5;
 float TempProbe[numTempProbes];

@@ -39,8 +39,6 @@ unsigned int a = 0;   // pump off counter //"unsigned int" means positive intege
 unsigned int b = 0;   // pump on counter
 const unsigned int amax = 55; //pump off time in ms (55 min)(pass of original program is 1 minute, add 1 each time to 55)
 const unsigned int bmax = 5;  //pump on time in ms (5 min)
-const int numTempProbes = 5;
-float TempProbe[numTempProbes];
 
 const int numTempProbes = 5;
 float TempProbe[numTempProbes];
@@ -76,7 +74,7 @@ void loop() {
     //Insert conversion of Arduino reading to level in inches
     //Sensor output is 4mA at bottom (4") and 20mA at top (24"). Resistor is 237 Ohm
  
-    for (probeNum = 0; probeNum < numTempProbes; probeNum++) {
+    for (int probeNum = 0; probeNum < numTempProbes; probeNum++) {
         Serial.print(TempProbe[probeNum]);
         Serial.print(", ");
     }
@@ -114,7 +112,10 @@ void loop() {
  //This code is an attempt to have the ignitor spark for 5 seconds
 //every 15 minutes when the valve is open. 
  z++; //timer for ignitor
-unsigned long spark = spark_delay/Delay*NUMSAMPLES;  //spark_delay=900000 (15min), Delay=60000 (1min), NUMSAMPLES=100; spark=1500 (1.5sec)
+    // MARK COMMENTED OUT THE LINE BELOW; ONE BELOW THAT FOR TESTING
+    //unsigned long spark = spark_delay/Delay*NUMSAMPLES;  
+    unsigned long spark = spark_delay;  
+    ////spark_delay=900000 (15min), Delay=60000 (1min), NUMSAMPLES=100; spark=1500 (1.5sec)
 if (z>=spark)
 {
   if(ValveOn == 1){        //This time should only run when the valve is on
@@ -205,7 +206,7 @@ float readProbeTemp(int ProbePin) {
         delay(SAMPLE_DELAY);
     }
 
-    for (i=0; i< NUMSAMPLES; i++) {
+    for (int i=0; i< NUMSAMPLES; i++) {
         average += samples[i];
     } 
     average/=NUMSAMPLES;

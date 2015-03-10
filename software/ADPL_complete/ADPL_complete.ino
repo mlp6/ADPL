@@ -34,7 +34,6 @@ const unsigned long Delay = 1000; // define total delay in ms (1 sec)
 //variables for relays
 boolean PumpOn = true;      // Variable for if pump is on/off
 boolean ValveOn = false;    // Variable for if valve is on/off
-int z=0;                    // timer for ignitor
 unsigned int a = 0;         // pump off counter 
 unsigned int b = 0;         // pump on counter
 const unsigned int amax = 55; // pump off time in ms (55 min)
@@ -95,11 +94,11 @@ void loop() {
     // Serial.print(", ");
     Serial.println(PumpOn);
  
-    /* ==== Valve / Ignitor Activation ====
+    /* ==== Valve / Ignitor ====
     Gas valve open when the temperature is < 68 (INCINERATE_LOW_TEMP) and
     closed when the temperature > 72 (INCINERATE_HIGH_TEMP).  When the
-    temperature drops below 72, valve will not open until below 68.  While the
-    valve is open, we want the ignitor to spark for 5 seconds every 15 minutes.
+    temperature drops below 72, valve will not open until below 68.  The
+    ignitor will spark for 5 seconds every 15 minutes while the valve is open.
     */
 
     if (TempProbe[2] <= INCINERATE_LOW_TEMP) {       
@@ -122,7 +121,7 @@ void loop() {
         }
     }    
  
-    /* ==== Pump Activation ====
+    /* ==== Water Level Pump ====
     Pump off when the level is <2", Remain on when >24". When the level is
     2"<x<24", the pump should be on for 5 minutes, off 55 minutes.  
     

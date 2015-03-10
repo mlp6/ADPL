@@ -24,6 +24,8 @@
 #define VALVE_PIN 4     // digital output pin #4
 #define PUMP_PIN 7      // digital output pin #7
 #define IGNITOR_PIN 2   // digital output pin #2
+#define INCINERATE_LOW_TEMP 25
+#define INCINERATE_HIGH_TEMP 28
 
 const unsigned long Delay = 1000; // define total delay in ms (1 sec)
 
@@ -33,7 +35,6 @@ const unsigned long Delay = 1000; // define total delay in ms (1 sec)
 boolean PumpOn = true;      // Variable for if pump is on/off
 boolean ValveOn = false;    // Variable for if valve is on/off
 int z=0;                    // timer for ignitor
-unsigned long spark_delay = 900000; //in ms (15min)
 unsigned int a = 0;         // pump off counter 
 unsigned int b = 0;         // pump on counter
 const unsigned int amax = 55; // pump off time in ms (55 min)
@@ -42,6 +43,12 @@ const unsigned int bmax = 5;  //pump on time in ms (5 min)
 
 const int numTempProbes = 5;
 float TempProbe[numTempProbes];
+
+const unsigned long ignite_delay = 900000;  // ms (15min); time between ignitor fires 
+                                            // when valve is open
+unsigned long last_ignite_time;             // time (ms) that will be returned from millis()
+                                            // when ignitor last fired
+unsigned long currentTime;
 
 void setup() {
     Serial.begin(9600);
@@ -89,32 +96,35 @@ void loop() {
     Serial.println(PumpOn);
  
     /* ==== Valve / Ignitor Activation ====
-    The goal here is to have the gas valve open (high) when the temperature is
-    <68 and closed when the temperature >72.  When the temperature drops below
-    72, valve will not open until below 68.  While the valve is open, we want
-    the ignitor to spark for 5 seconds every 15 minutes.
+    Gas valve open when the temperature is < 68 (INCINERATE_LOW_TEMP) and
+    closed when the temperature > 72 (INCINERATE_HIGH_TEMP).  When the
+    temperature drops below 72, valve will not open until below 68.  While the
+    valve is open, we want the ignitor to spark for 5 seconds every 15 minutes.
     */
 
-    if (TempProbe[2] <= 25) {       
+    if (TempProbe[2] <= INCINERATE_LOW_TEMP) {       
         openValve();
         delay(10);
         fireIgnitor()
     }
 
-    if (TempProbe[2] >= 28) {
-        closeValve();
-    }
- 
-    //This code is an attempt to have the ignitor spark for 5 seconds
-    //every 15 minutes when the valve is open. 
     if(ValveOn == true) {
-        fireIgnitor();
-    }
+
+        current_time = millis();
+
+        if (TempProbe[2] >= INCINERATE_HIGH_TEMP) {
+            closeValve();
+        }
+        // if 15 min have elapsed since last ignitor fire, then fire again
+        else if(current_time > (last_ignite_time + ignite_delay)) {     
+            fireIgnitor();
+            last_ignite_time = millis();
+        }
+    }    
  
     /* ==== Pump Activation ====
-    The goal is to have the pump off when the level is <2", Remain on when
-    >24". When the level is 2"<x<24", the pump should be on for 5 minutes, off
-    55 minutes.  
+    Pump off when the level is <2", Remain on when >24". When the level is
+    2"<x<24", the pump should be on for 5 minutes, off 55 minutes.  
     
     TO DO: 
         * FIX: Keep timing from delaying the rest of the loop. 

@@ -32,7 +32,6 @@ const unsigned long Delay = 1000; // define total delay in ms (1 sec)
 //variables for relays
 boolean PumpOn = true;      // Variable for if pump is on/off
 boolean ValveOn = false;    // Variable for if valve is on/off
-boolean IgnitorOn = true;   // Variable for if ignitor is on/off
 int z=0;                    // timer for ignitor
 unsigned long spark_delay = 900000; //in ms (15min)
 unsigned int a = 0;         // pump off counter 
@@ -45,9 +44,7 @@ const int numTempProbes = 5;
 float TempProbe[numTempProbes];
 
 void setup() {
-    Serial.begin(9600); //serial transmission to computer in 9600 bits/sec
-    analogReference(EXTERNAL);            //for thermistor
-    //  pinMode(10, OUTPUT); //SD card pin
+    Serial.begin(9600);
     pinMode(PROBE1, INPUT);
     pinMode(PROBE2, INPUT);
     pinMode(PROBE3, INPUT);
@@ -57,8 +54,13 @@ void setup() {
     pinMode(PUMP_PIN, OUTPUT);
     pinMode(VALVE_PIN, OUTPUT);
     pinMode(IGNITOR_PIN, OUTPUT);
-  
-    //  dataFile = SD.open("datalog.txt", FILE_WRITE);
+    // pinMode(10, OUTPUT); //SD card pin
+    // dataFile = SD.open("datalog.txt", FILE_WRITE);
+
+    // need to define the reference for the analog input pins (3.3 V), which is more 
+    // stable than the default 5 V since we're not using any Wheatstone bridges
+    // for each thermistor
+    analogReference(EXTERNAL); 
 }
 
 void loop() { 
@@ -82,8 +84,8 @@ void loop() {
     Serial.println(depth);
     Serial.print(ValveOn);
     Serial.print(", ");
-    Serial.print(IgnitorOn);
-    Serial.print(", ");
+    // Serial.print(IgnitorOn);
+    // Serial.print(", ");
     Serial.println(PumpOn);
  
     /* ==== Valve / Ignitor Activation ====
@@ -94,35 +96,19 @@ void loop() {
     */
 
     if (TempProbe[2] <= 25) {       
-        digitalWrite(VALVE_PIN, HIGH);
-        ValveOn = true;
+        openValve();
         delay(10);
-        digitalWrite(IGNITOR_PIN, HIGH);
-        IgnitorOn = true;
-        delay(5000);
-        digitalWrite(IGNITOR_PIN, LOW);
-        IgnitorOn = false;
-   }
+        fireIgnitor()
+    }
 
-   if (TempProbe[2] >= 28) {
-        ValveOn = false;
-        digitalWrite(VALVE_PIN, LOW);
-   }
+    if (TempProbe[2] >= 28) {
+        closeValve();
+    }
  
     //This code is an attempt to have the ignitor spark for 5 seconds
     //every 15 minutes when the valve is open. 
-    z++; //timer for ignitor
-    // MARK COMMENTED OUT THE LINE BELOW; ONE BELOW THAT FOR TESTING
-    //unsigned long spark = spark_delay/Delay*NUMSAMPLES;  
-    unsigned long spark = spark_delay;  
-    ////spark_delay=900000 (15min), Delay=60000 (1min), NUMSAMPLES=100; spark=1500 (1.5sec)
-    if (z>=spark) {
-        if(ValveOn == true){        //This time should only run when the valve is on
-            digitalWrite(IGNITOR_PIN, HIGH);
-            z = 0;
-            delay(5000);    // time in ms the ignitor is on, 5sec
-            digitalWrite(IGNITOR_PIN,LOW);
-        }
+    if(ValveOn == true) {
+        fireIgnitor();
     }
  
     /* ==== Pump Activation ====
@@ -223,4 +209,21 @@ float readProbeTemp(int ProbePin) {
     TempProbe -= 273.15;                                // convert to C
 
     return TempProbe;
+}
+
+
+void openValve() {
+    digitalWrite(VALVE_PIN, HIGH);
+    ValveOn = true;
+}
+
+void closeValve() {
+    digitalWrite(VALVE_PIN, LOW);
+    ValveOn = false;
+}
+void fireIgnitor() {
+    const int IGNITOR_ON_TIME = 5000;   // ms
+    digitalWrite(IGNITOR_PIN, HIGH);
+    delay(IGNITOR_ON_TIME)
+    digitalWrite(IGNITOR_PIN, LOW);
 }

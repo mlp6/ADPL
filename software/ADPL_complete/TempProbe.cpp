@@ -29,36 +29,29 @@
 
 TempProbe::TempProbe(int probePin) {
 
-float readProbeTemp(int ProbePin) {
+    pinMode(probePin, INPUT);
+    _probePin = probePin;
 
-    const float THERMISTORNOMINAL  = 10000.0;   // resistance (Ohm) @ 25 degrees C
-    const float TEMPERATURENOMINAL = 25.0;      // temp. (C) for nominal resistance
-    const float SERIESRESISTOR  = 10000.0;      // value of 'other' resistor (Ohm)
-    const float BCOEFFICIENT = 3950.0;          // beta coefficient of the thermistor 
-                                                // (usually 3000-4000)
     const int NUMSAMPLES = 100;                 // number of samples to take and average
     const int SAMPLE_DELAY = 1;                 // ms
 
     float TempProbe;
-    float average = 0;
+    float averageTemp = 0;
     int samples[NUMSAMPLES];
 
     for (int i=0; i < NUMSAMPLES; i++) {
-        samples[i] = analogRead(ProbePin);
+        averageTemp += (float) analogRead(ProbePin);
         delay(SAMPLE_DELAY);
     }
 
-    for (int i=0; i< NUMSAMPLES; i++) {
-        average += samples[i];
-    } 
-    average/=NUMSAMPLES;
-    average = 1023 / average - 1;
-    average = SERIESRESISTOR / average;
+    averageTemp /= (float) NUMSAMPLES;
+    averageTemp = 1023. / averageTemp - 1;
+    averageTemp = _SERIESRESISTOR / averageTemp;
 
-    TempProbe = average / THERMISTORNOMINAL;            // (R/Ro)
+    TempProbe = averageTemp / _THERMISTORNOMINAL;       // (R/Ro)
     TempProbe = log(TempProbe);                         // ln(R/Ro);
-    TempProbe /= BCOEFFICIENT;                          // 1/B * ln(R/Ro)
-    TempProbe += 1.0 / (TEMPERATURENOMINAL + 273.15);   // +1/To
+    TempProbe /= _BCOEFFICIENT;                         // 1/B * ln(R/Ro)
+    TempProbe += 1.0 / (_TEMPERATURENOMINAL + 273.15);  // +1/To
     TempProbe = 1.0/TempProbe;                          // invert
     TempProbe -= 273.15;                                // convert to C
 

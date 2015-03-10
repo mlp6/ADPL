@@ -73,11 +73,13 @@ void loop()
  uint8_t w;
  uint8_t x;
  uint8_t y;
- float average;
- float average2;
- float average3;
- float average4;
- float average5;
+
+ float average = 0;
+ float average2 = 0;
+ float average3 = 0;
+ float average4 = 0;
+ float average5 = 0;
+
  for (i=0; i< NUMSAMPLES; i++) {
    samples[i] = analogRead(PROBE1);
  delay(Delay/NUMSAMPLES);
@@ -94,11 +96,7 @@ void loop()
  for (y=0; y<NUMSAMPLES;y++){
    samples5[y] = analogRead(PROBE5);
  }
- average = 0;  
- average2 = 0;
- average3 = 0;
- average4 = 0;
- average5 = 0;
+
  for (i=0; i< NUMSAMPLES; i++) {
  average += samples[i];
  }

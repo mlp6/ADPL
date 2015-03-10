@@ -28,11 +28,11 @@ const unsigned long Delay = 1000; // define total delay in ms (1 sec)
 
 //variables for relays
 int pump = 7;       //Pump relay signal is digital input pin #7
-boolean PumpOn = true;     //Variable for if pump is on/off
+boolean PumpOn = true;      // Variable for if pump is on/off
 int valve = 4;      //Valve relay signal is digital input pin #4
 int ValveOn = 0;    //Variable for if valve is on/off
 int ignitor = 2;    //Ignitor relay signal is digital input pin #4
-int IgnitorOn = 0;  //Variable for if ignitor is on/off
+boolean IgnitorOn = true;   // Variable for if ignitor is on/off
 int z=0;            //timer for ignitor
 unsigned long spark_delay = 900000; //in ms (15min)
 unsigned int a = 0;   // pump off counter //"unsigned int" means positive integer
@@ -98,10 +98,10 @@ void loop() {
     ValveOn = 1;
     delay (10);
    digitalWrite(ignitor,HIGH);
-   IgnitorOn = 1;
+   IgnitorOn = true;
    delay (5000);
    digitalWrite(ignitor,LOW);
-   IgnitorOn=0;
+   IgnitorOn = false;
    }
    if (TempProbe[2] >= 28)     //temp is greater than 28
    {

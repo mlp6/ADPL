@@ -19,18 +19,8 @@
 #define PROBE4 A3
 #define PROBE5 A4
 #define LEVEL A5
-#define THERMISTORNOMINAL 10000 //resistance @ 25 degrees C
-#define TEMPERATURENOMINAL 25  //temp. for nominal resistance
-#define NUMSAMPLES 100  //number of samples to take and average
-#define BCOEFFICIENT 3950 //the beta coefficient of the thermistor (usually 3000-4000)
-#define SERIESRESISTOR 10000 //value of 'other' resistor
 const unsigned long Delay = 1000; // define total delay in ms (1 sec)
 
-int samples[NUMSAMPLES];
-int samples2[NUMSAMPLES];
-int samples3[NUMSAMPLES];
-int samples4[NUMSAMPLES];
-int samples5[NUMSAMPLES];
 //File dataFile;  //SD card file name
 
 //variables for relays
@@ -46,6 +36,8 @@ unsigned int a = 0;   // pump off counter //"unsigned int" means positive intege
 unsigned int b = 0;   // pump on counter
 const unsigned int amax = 55; //pump off time in ms (55 min)(pass of original program is 1 minute, add 1 each time to 55)
 const unsigned int bmax = 5;  //pump on time in ms (5 min)
+const int numTempProbes = 5;
+float TempProbe[numTempProbes];
 
 void setup()
 {
@@ -65,112 +57,14 @@ void setup()
 //  dataFile = SD.open("datalog.txt", FILE_WRITE);
 }
 
-void loop()
-{ 
-  //Temperature probe codes
- uint8_t i;
- uint8_t v;
- uint8_t w;
- uint8_t x;
- uint8_t y;
+void loop() { 
+   
+    // read probe temperatures
 
- float average = 0;
- float average2 = 0;
- float average3 = 0;
- float average4 = 0;
- float average5 = 0;
+    for (int probeNum = 1; probeNum <= 5; probeNum++) {
+        TempProbe[probeNum] = readProbeTemp(probeNum);
+    }
 
- for (i=0; i< NUMSAMPLES; i++) {
-   samples[i] = analogRead(PROBE1);
- delay(Delay/NUMSAMPLES);
- }
- for (v=0; v<NUMSAMPLES;v++){
-   samples2[v] = analogRead(PROBE2);
- }
- for (w=0; w<NUMSAMPLES;w++){
-   samples3[w] = analogRead(PROBE3);
- }
- for (x=0; x<NUMSAMPLES;x++){
-   samples4[x] = analogRead(PROBE4);
- }
- for (y=0; y<NUMSAMPLES;y++){
-   samples5[y] = analogRead(PROBE5);
- }
-
- for (i=0; i< NUMSAMPLES; i++) {
- average += samples[i];
- }
- for (v=0; v< NUMSAMPLES; v++) {
- average2 += samples2[v];
- }
- for (w=0; w< NUMSAMPLES; w++) {
- average3 += samples3[w];
- }
- for (x=0; x< NUMSAMPLES; x++) {
- average4 += samples4[x];
- }
- for (y=0; y< NUMSAMPLES; y++) {
- average5 += samples5[y];
- }
- average/=NUMSAMPLES;
- average2/=NUMSAMPLES;
- average3/=NUMSAMPLES;
- average4/=NUMSAMPLES;
- average5/=NUMSAMPLES;
- 
- average = 1023 / average - 1;
- average2 = 1023 / average2 - 1;
- average3 = 1023 / average3 - 1;
- average4 = 1023 / average4 - 1;
- average5 = 1023 / average5 - 1;
- average = SERIESRESISTOR / average;
- average2 = SERIESRESISTOR/average2;
- average3 = SERIESRESISTOR/average3;
- average4 = SERIESRESISTOR/average4;
- average5 = SERIESRESISTOR/average5;
- 
- float TempProbe1;
- TempProbe1 = average / THERMISTORNOMINAL; //(R/Ro)
- TempProbe1 = log(TempProbe1); // ln(R/Ro);
- TempProbe1 /= BCOEFFICIENT;  // 1/B * ln(R/Ro)
- TempProbe1 += 1.0 / (TEMPERATURENOMINAL + 273.15);  // +1/To
- TempProbe1 = 1.0/TempProbe1;  //invert
- TempProbe1 -= 273.15;   //convert to C
- 
- float TempProbe2;
- TempProbe2 = average2 / THERMISTORNOMINAL; //(R/Ro)
- TempProbe2 = log(TempProbe2); // ln(R/Ro);
- TempProbe2 /= BCOEFFICIENT;  // 1/B * ln(R/Ro)
- TempProbe2 += 1.0 / (TEMPERATURENOMINAL + 273.15);  // +1/To
- TempProbe2 = 1.0/TempProbe2;  //invert
- TempProbe2 -= 273.15;   //
- 
- float TempProbe3;
- TempProbe3 = average3 / THERMISTORNOMINAL; //(R/Ro)
- TempProbe3 = log(TempProbe3); // ln(R/Ro);
- TempProbe3 /= BCOEFFICIENT;  // 1/B * ln(R/Ro)
- TempProbe3 += 1.0 / (TEMPERATURENOMINAL + 273.15);  // +1/To
- TempProbe3 = 1.0/TempProbe3;  //invert
- TempProbe3 -= 273.15;   //
- 
- float TempProbe4;
- TempProbe4 = average4 / THERMISTORNOMINAL; //(R/Ro)
- TempProbe4 = log(TempProbe4); // ln(R/Ro);
- TempProbe4 /= BCOEFFICIENT;  // 1/B * ln(R/Ro)
- TempProbe4 += 1.0 / (TEMPERATURENOMINAL + 273.15);  // +1/To
- TempProbe4 = 1.0/TempProbe4;  //invert
- TempProbe4 -= 273.15;   //
- 
- float TempProbe5;
- TempProbe5 = average5 / THERMISTORNOMINAL; //(R/Ro)
- TempProbe5 = log(TempProbe5); // ln(R/Ro);
- TempProbe5 /= BCOEFFICIENT;  // 1/B * ln(R/Ro)
- TempProbe5 += 1.0 / (TEMPERATURENOMINAL + 273.15);  // +1/To
- TempProbe5 = 1.0/TempProbe5;  //invert
- TempProbe5 -= 273.15;   // 
- 
- //end temperature probe codes
- 
  //Level sensor code
  float depth;
   depth=analogRead(LEVEL);
@@ -291,3 +185,41 @@ if (z>=spark)
  
 }
   
+
+// read temperature from probe (thermistor)
+float readProbeTemp(int ProbePin) {
+
+    const float THERMISTORNOMINAL  = 10000.0;   // resistance (Ohm) @ 25 degrees C
+    const float TEMPERATURENOMINAL = 25.0;      // temp. (C) for nominal resistance
+    const float SERIESRESISTOR  = 10000.0;      // value of 'other' resistor (Ohm)
+    const float BCOEFFICIENT = 3950.0;          // beta coefficient of the thermistor 
+                                                // (usually 3000-4000)
+    const int NUMSAMPLES = 100;                 // number of samples to take and average
+    const int SAMPLE_DELAY = 1;                 // ms
+
+    float TempProbe;
+    float average = 0;
+    int samples[NUMSAMPLES];
+
+    for (int i=0; i < NUMSAMPLES; i++) {
+        samples[i] = analogRead(ProbePin);
+        delay(SAMPLE_DELAY);
+    }
+
+    for (i=0; i< NUMSAMPLES; i++) {
+        average += samples[i];
+    } 
+    average/=NUMSAMPLES;
+    average = 1023 / average - 1;
+    average = SERIESRESISTOR / average;
+
+    TempProbe = average / THERMISTORNOMINAL;            // (R/Ro)
+    TempProbe = log(TempProbe);                         // ln(R/Ro);
+    TempProbe /= BCOEFFICIENT;                          // 1/B * ln(R/Ro)
+    TempProbe += 1.0 / (TEMPERATURENOMINAL + 273.15);   // +1/To
+    TempProbe = 1.0/TempProbe1;                         // invert
+    TempProbe -= 273.15;                                // convert to C
+
+
+    return TempProbe
+}

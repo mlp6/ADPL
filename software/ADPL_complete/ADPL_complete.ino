@@ -47,7 +47,7 @@ const unsigned long ignite_delay = 900000;  // ms (15min); time between ignitor 
                                             // when valve is open
 unsigned long last_ignite_time;             // time (ms) that will be returned from millis()
                                             // when ignitor last fired
-unsigned long currentTime;
+unsigned long current_time;
 
 void setup() {
     Serial.begin(9600);
@@ -104,7 +104,7 @@ void loop() {
     if (TempProbe[2] <= INCINERATE_LOW_TEMP) {       
         openValve();
         delay(10);
-        fireIgnitor()
+        fireIgnitor();
     }
 
     if(ValveOn == true) {
@@ -233,6 +233,6 @@ void closeValve() {
 void fireIgnitor() {
     const int IGNITOR_ON_TIME = 5000;   // ms
     digitalWrite(IGNITOR_PIN, HIGH);
-    delay(IGNITOR_ON_TIME)
+    delay(IGNITOR_ON_TIME);
     digitalWrite(IGNITOR_PIN, LOW);
 }

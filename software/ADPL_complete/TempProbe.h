@@ -12,7 +12,7 @@ class TempProbe {
     private:
         int _pin;
         static const int _NUMSAMPLES = 100;    // number of samples to read and average
-        static const int _SAMPLE_DELAY = 1;    // ms
+        static const int _SAMPLE_DELAY = 10;   // ms
         int _sumSamples;
         float _sampleMean;
         static const float _THERMISTORNOMINAL = 10000.0;   // resistance (Ohm) @ 25 deg C

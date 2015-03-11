@@ -23,7 +23,7 @@ void TempProbe::read() {
     timeRead = millis();
     
     // take the mean of the samples
-    _sampleMean = (float) (_sumSamples / _NUMSAMPLES);
+    _sampleMean = (float) _sumSamples / (float) _NUMSAMPLES;
     _sampleMean = 1023. / _sampleMean - 1.;
     _sampleMean = _SERIESRESISTOR / _sampleMean;
 

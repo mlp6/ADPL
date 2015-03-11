@@ -36,14 +36,12 @@ TempProbe tempProbe5(A4);
 //const int chipSelect = 10;   //pin 10 for SD card
 //#define WAIT_TO_START 0      //start readings immediately
 
-// ignitor variables
-#define IGNITOR_PIN 2   // digital output pin #2
+#include "Ignitor.h"
+// instantiate ignitor object on digital pin #2
+Ignitor ignitor(2);
 #define INCINERATE_LOW_TEMP 25
 #define INCINERATE_HIGH_TEMP 28
-const unsigned long ignite_delay = 900000;  // ms (15min); time between ignitor fires 
-                                            // when valve is open
-unsigned long last_ignite_time;             // time (ms) that will be returned from millis()
-                                            // when ignitor last fired
+#define IGNITE_DELAY 900000 // ms (15min); time between ignitor fires with open valve
 
 // water level variables
 #define LEVEL_PIN A5
@@ -52,18 +50,17 @@ unsigned long last_ignite_time;             // time (ms) that will be returned f
 #define KEEP_PUMP_ON_TIME 30000     // ms; keep pump on for 5 min for intermediate level
 #define KEEP_PUMP_OFF_TIME 330000   // ms; keep pump off for 55 min after 5 min on time
 
-unsigned long current_time;
-//
+unsigned long currentTime = 0;
+
 //File dataFile;  //SD card file name
 
 void setup() {
     Serial.begin(9600);
     pinMode(LEVEL_PIN, INPUT);
-    pinMode(IGNITOR_PIN, OUTPUT);
     // pinMode(10, OUTPUT); //SD card pin
     // dataFile = SD.open("datalog.txt", FILE_WRITE);
 
-    // need to define the reference for the analog input pins (3.3 V), which is more 
+    // define the reference for the analog input pins (3.3 V), which is more
     // stable than the default 5 V since we're not using any Wheatstone bridges
     // for each thermistor
     analogReference(EXTERNAL); 
@@ -96,29 +93,30 @@ void loop() {
     Serial.println(pump.pumping);
  
     /* ==== Valve / Ignitor ====
-    Gas valve open when the temperature is < 68 (INCINERATE_LOW_TEMP) and
-    closed when the temperature > 72 (INCINERATE_HIGH_TEMP).  When the
-    temperature drops below 72, valve will not open until below 68.  The
-    ignitor will spark for 5 seconds every 15 minutes while the valve is open.
+     * Gas valve:
+     *  open if temperature < 68 (INCINERATE_LOW_TEMP) 
+     *  closed if temperature > 72 (INCINERATE_HIGH_TEMP)
+     * When the temperature drops below 72, valve will not open until below 68.  
+     * The ignitor will spark for 5 seconds every 15 minutes (IGNITE_DELAY) while the
+     * gas is on.
     */
 
     if (tempProbe3.temp <= INCINERATE_LOW_TEMP) {       
         valve.open();
-        delay(10);
-        fireIgnitor();
+        delay(100);
+        ignitor.fire();
     }
 
     if(valve.gasOn == true) {
 
-        current_time = millis();
+        currentTime = millis();
 
         if (tempProbe3.temp >= INCINERATE_HIGH_TEMP) {
             valve.close();
         }
         // if 15 min have elapsed since last ignitor fire, then fire again
-        else if(current_time > (last_ignite_time + ignite_delay)) {     
-            fireIgnitor();
-            last_ignite_time = millis();
+        else if(currentTime > (ignitor.timeLastFired + IGNITE_DELAY)) {     
+            ignitor.fire();
         }
     }    
  
@@ -139,13 +137,13 @@ void loop() {
     }
     else if(waterLevel > LEVEL_MIN && waterLevel <= LEVEL_MAX) {
 
-        current_time = millis();
+        currentTime = millis();
 
-        if (!pump.pumping && (current_time - pump.offTime) > KEEP_PUMP_OFF_TIME) {
+        if (!pump.pumping && (currentTime - pump.offTime) > KEEP_PUMP_OFF_TIME) {
             pump.turnOn();
         }
         else if (pump.pumping) {
-            if ((current_time - pump.onTime) > KEEP_PUMP_ON_TIME) {
+            if ((currentTime - pump.onTime) > KEEP_PUMP_ON_TIME) {
                 pump.turnOff();
             }
         }
@@ -156,13 +154,6 @@ void loop() {
 
 } // end loop()
 
-
-void fireIgnitor() {
-    const int IGNITOR_ON_TIME = 5000;   // ms
-    digitalWrite(IGNITOR_PIN, HIGH);
-    delay(IGNITOR_ON_TIME);
-    digitalWrite(IGNITOR_PIN, LOW);
-}
 
 /*
 void writeSDcard(float TempProbe) {

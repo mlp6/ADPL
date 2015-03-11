@@ -43,8 +43,9 @@ Ignitor ignitor(2);
 #define INCINERATE_HIGH_TEMP 28
 #define IGNITE_DELAY 900000 // ms (15min); time between ignitor fires with open valve
 
-// water level variables
-#define LEVEL_PIN A5
+#include "LevelSensor.h"
+// instantiate level sensor object on analog pin A5
+LevelSensor levelSensor(A5);
 #define LEVEL_MIN 400
 #define LEVEL_MAX 1200
 #define KEEP_PUMP_ON_TIME 30000     // ms; keep pump on for 5 min for intermediate level
@@ -56,7 +57,6 @@ unsigned long currentTime = 0;
 
 void setup() {
     Serial.begin(9600);
-    pinMode(LEVEL_PIN, INPUT);
     // pinMode(10, OUTPUT); //SD card pin
     // dataFile = SD.open("datalog.txt", FILE_WRITE);
 
@@ -75,22 +75,6 @@ void loop() {
     tempProbe4.read(); 
     tempProbe5.read(); 
 
-    // temporary debugging serial print statements
-    Serial.print(tempProbe1.temp);
-    Serial.print(", ");
-    Serial.print(tempProbe2.temp);
-    Serial.print(", ");
-    Serial.print(tempProbe3.temp);
-    Serial.print(", ");
-    Serial.print(tempProbe4.temp);
-    Serial.print(", ");
-    Serial.print(tempProbe5.temp);
-    Serial.print(", ");
-    Serial.print(valve.gasOn);
-    Serial.print(", ");
-    // Serial.print(IgnitorOn);
-    // Serial.print(", ");
-    Serial.println(pump.pumping);
  
     /* ==== Valve / Ignitor ====
      * Gas valve:
@@ -129,13 +113,15 @@ void loop() {
 
     TO DO: Values for comparison need to be updated for conversion to inches
     */
-    float waterLevel = analogRead(LEVEL_PIN);
-    Serial.println(waterLevel);
+    levelSensor.read();
 
-    if (waterLevel > LEVEL_MAX && !pump.pumping) {
+    if (levelSensor.level < LEVEL_MIN && pump.pumping) {
+        pump.turnOff();
+    }
+    else if (levelSensor.level > LEVEL_MAX && !pump.pumping) {
         pump.turnOn();
     }
-    else if(waterLevel > LEVEL_MIN && waterLevel <= LEVEL_MAX) {
+    else if(levelSensor.level > LEVEL_MIN && levelSensor.level <= LEVEL_MAX) {
 
         currentTime = millis();
 
@@ -151,6 +137,22 @@ void loop() {
  
     // SD card data collection commented out b/c connected to damaged Arduino
     // writeSDcard(TempProbe[0]);
+
+    // temporary debugging serial print statements
+    Serial.print(tempProbe1.temp);
+    Serial.print(", ");
+    Serial.print(tempProbe2.temp);
+    Serial.print(", ");
+    Serial.print(tempProbe3.temp);
+    Serial.print(", ");
+    Serial.print(tempProbe4.temp);
+    Serial.print(", ");
+    Serial.print(tempProbe5.temp);
+    Serial.print(", ");
+    Serial.print(valve.gasOn);
+    Serial.print(", ");
+    Serial.println(pump.pumping);
+    Serial.println(levelSensor.level);
 
 } // end loop()
 

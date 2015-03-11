@@ -21,13 +21,18 @@ void TempProbe::read() {
         delay(_SAMPLE_DELAY);
     }
 
+    Serial.print(_sumSamples);
+
     // record what time the measurement was made
     timeRead = millis();
     
     // take the mean of the samples
     _sampleMean = (float) _sumSamples / (float) _NUMSAMPLES;
+    Serial.print(_sampleMean);
     _sampleMean = 1023. / _sampleMean - 1.;
+    Serial.print(_sampleMean);
     _sampleMean = _SERIESRESISTOR / _sampleMean;
+    Serial.print(_sampleMean);
 
     // convert to deg C
     temp = _sampleMean / _THERMISTORNOMINAL;        // (R/Ro)

@@ -18,11 +18,10 @@ void TempProbe::read() {
     // read in and sum all of the samples
     for (i=0; i < _NUMSAMPLES; i++) {
         _samples[i] += analogRead(_pin);
+        Serial.println(_samples[i]);
         delay(_SAMPLE_DELAY);
     }
 
-    Serial.println(_samples);
-     
     // record what time the measurement was made
     timeRead = millis();
     

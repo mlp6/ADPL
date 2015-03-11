@@ -21,6 +21,8 @@ void TempProbe::read() {
         delay(_SAMPLE_DELAY);
     }
 
+    Serial.println(_samples);
+     
     // record what time the measurement was made
     timeRead = millis();
     
@@ -29,11 +31,18 @@ void TempProbe::read() {
     for (i=0; i < _NUMSAMPLES; i++) {
         temp += _samples[i];
     }
+    
+    Serial.println(temp);
+
     temp /= _NUMSAMPLES;
 
+    Serial.println(temp);
+    //
     // convert to resistance
     temp = (1023 / temp) - 1;
     temp = _SERIESRESISTOR / temp;
+
+    Serial.println(temp);
 
     // convert to deg C
     temp = temp / _THERMISTORNOMINAL;               // (R/Ro)

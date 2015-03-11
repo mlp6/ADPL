@@ -37,7 +37,7 @@ void TempProbe::read() {
     temp = (1023 / temp) - 1;
     temp = _SERIESRESISTOR / temp;
 
-    Serial.print("Thermistor resistance (Ohm):"
+    Serial.print("Thermistor resistance (Ohm):");
     Serial.println(temp);
 
     // convert to deg C

@@ -11,7 +11,8 @@
  */
 
 #include "Valve.h"
-Valve valve(4);     // instantiate valve object on digital pin #4
+// instantiate valve object on digital pin #4
+Valve valve(4); 
 
 //Code for SD card
 //#include <SPI.h>

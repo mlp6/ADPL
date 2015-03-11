@@ -1,32 +1,11 @@
 /* ADPL_complete.ino
+ * This code includes all componenets - temp probes, level sensor, and relays
+ * General overview of goals: Run pump based on tank level, operate burner based
+ * on temp3 
+ */
 
-This code includes all componenets - temp probes, level sensor, and relays
-General overview of goals: Run pump based on tank level, operate burner based
-on temp3 
-
-The MIT License (MIT)
-
-Copyright (c) 2015 Aaron Forbis-Stokes and Mark Palmeri
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-
+#include "Valve.h"
+Valve valve(4);     // instantiate valve object on digital pin #4
 
 //Code for SD card
 //#include <SPI.h>
@@ -47,16 +26,14 @@ SOFTWARE.
 const int numTempProbes = 5;
 float TempProbe[numTempProbes];
 
-// ignitor / valve variables
+// ignitor variables
 #define IGNITOR_PIN 2   // digital output pin #2
-#define VALVE_PIN 4     // digital output pin #4
 #define INCINERATE_LOW_TEMP 25
 #define INCINERATE_HIGH_TEMP 28
 const unsigned long ignite_delay = 900000;  // ms (15min); time between ignitor fires 
                                             // when valve is open
 unsigned long last_ignite_time;             // time (ms) that will be returned from millis()
                                             // when ignitor last fired
-boolean ValveOn = false;                    // Variable for if valve is on/off
 
 // water level variables
 #define LEVEL_PIN A5
@@ -82,7 +59,6 @@ void setup() {
     pinMode(PROBE5, INPUT);
     pinMode(LEVEL_PIN, INPUT);
     pinMode(PUMP_PIN, OUTPUT);
-    pinMode(VALVE_PIN, OUTPUT);
     pinMode(IGNITOR_PIN, OUTPUT);
     // pinMode(10, OUTPUT); //SD card pin
     // dataFile = SD.open("datalog.txt", FILE_WRITE);
@@ -105,7 +81,7 @@ void loop() {
         Serial.print(", ");
     }
 
-    Serial.print(ValveOn);
+    Serial.print(valve.gasOn);
     Serial.print(", ");
     // Serial.print(IgnitorOn);
     // Serial.print(", ");
@@ -119,17 +95,17 @@ void loop() {
     */
 
     if (TempProbe[2] <= INCINERATE_LOW_TEMP) {       
-        openValve();
+        valve.open();
         delay(10);
         fireIgnitor();
     }
 
-    if(ValveOn == true) {
+    if(valve.gasOn == true) {
 
         current_time = millis();
 
         if (TempProbe[2] >= INCINERATE_HIGH_TEMP) {
-            closeValve();
+            valve.close();
         }
         // if 15 min have elapsed since last ignitor fire, then fire again
         else if(current_time > (last_ignite_time + ignite_delay)) {     
@@ -210,15 +186,6 @@ float readProbeTemp(int ProbePin) {
 }
 
 
-void openValve() {
-    digitalWrite(VALVE_PIN, HIGH);
-    ValveOn = true;
-}
-
-void closeValve() {
-    digitalWrite(VALVE_PIN, LOW);
-    ValveOn = false;
-}
 void fireIgnitor() {
     const int IGNITOR_ON_TIME = 5000;   // ms
     digitalWrite(IGNITOR_PIN, HIGH);

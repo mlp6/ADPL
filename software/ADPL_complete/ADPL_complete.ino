@@ -14,6 +14,10 @@
 // instantiate valve object on digital pin #4
 Valve valve(4); 
 
+#include "Pump.h"
+// instatiate pump object on digital pin #7
+Pump pump(7);
+
 //Code for SD card
 //#include <SPI.h>
 //#include "SD.h"
@@ -44,14 +48,10 @@ unsigned long last_ignite_time;             // time (ms) that will be returned f
 
 // water level variables
 #define LEVEL_PIN A5
-#define PUMP_PIN 7      // digital output pin #7
 #define LEVEL_MIN 400
 #define LEVEL_MAX 1200
 #define KEEP_PUMP_ON_TIME 30000     // ms; keep pump on for 5 min for intermediate level
 #define KEEP_PUMP_OFF_TIME 330000   // ms; keep pump off for 55 min after 5 min on time
-unsigned long pumpTurnOffTime = 0;  // initialize to start the pump in the OFF state
-unsigned long pumpTurnOnTime;
-boolean PumpOn = false;             // Variable for if pump is on/off
 
 unsigned long current_time;
 //
@@ -65,7 +65,6 @@ void setup() {
     pinMode(PROBE4, INPUT);
     pinMode(PROBE5, INPUT);
     pinMode(LEVEL_PIN, INPUT);
-    pinMode(PUMP_PIN, OUTPUT);
     pinMode(IGNITOR_PIN, OUTPUT);
     // pinMode(10, OUTPUT); //SD card pin
     // dataFile = SD.open("datalog.txt", FILE_WRITE);
@@ -92,7 +91,7 @@ void loop() {
     Serial.print(", ");
     // Serial.print(IgnitorOn);
     // Serial.print(", ");
-    Serial.println(PumpOn);
+    Serial.println(pump.pumping);
  
     /* ==== Valve / Ignitor ====
     Gas valve open when the temperature is < 68 (INCINERATE_LOW_TEMP) and
@@ -133,21 +132,19 @@ void loop() {
     float waterLevel = analogRead(LEVEL_PIN);
     Serial.println(waterLevel);
 
-    if (waterLevel > LEVEL_MAX && !PumpOn) {
-        turnPumpOn();
+    if (waterLevel > LEVEL_MAX && !pump.pumping) {
+        pump.turnOn();
     }
     else if(waterLevel > LEVEL_MIN && waterLevel <= LEVEL_MAX) {
 
         current_time = millis();
 
-        if (!PumpOn && (current_time - pumpTurnOffTime) > KEEP_PUMP_OFF_TIME) {
-            turnPumpOn();
-            pumpTurnOnTime = millis();
+        if (!pump.pumping && (current_time - pump.offTime) > KEEP_PUMP_OFF_TIME) {
+            pump.turnOn();
         }
-        else if (PumpOn) {
-            if ((current_time - pumpTurnOnTime) > KEEP_PUMP_ON_TIME) {
-                turnPumpOff();
-                pumpTurnOffTime = millis();
+        else if (pump.pumping) {
+            if ((current_time - pump.onTime) > KEEP_PUMP_ON_TIME) {
+                pump.turnOff();
             }
         }
     }   
@@ -198,16 +195,6 @@ void fireIgnitor() {
     digitalWrite(IGNITOR_PIN, HIGH);
     delay(IGNITOR_ON_TIME);
     digitalWrite(IGNITOR_PIN, LOW);
-}
-
-void turnPumpOn() {
-    digitalWrite(PUMP_PIN, HIGH); 
-    PumpOn = true;
-}
-
-void turnPumpOff() {
-    digitalWrite(PUMP_PIN, LOW);
-    PumpOn = false;
 }
 
 /*

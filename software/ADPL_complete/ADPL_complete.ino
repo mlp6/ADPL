@@ -1,7 +1,13 @@
 /* ADPL_complete.ino
- * This code includes all componenets - temp probes, level sensor, and relays
+ *
+ * This code includes all components - temp probes, level sensor, and relays
  * General overview of goals: Run pump based on tank level, operate burner based
  * on temp3 
+ *
+ * LICENSE: MIT (see LICENSE file)
+ * 
+ * Copyright (c) Aaron Forbis-Stokes and Mark Palmeri
+ *
  */
 
 #include "Valve.h"

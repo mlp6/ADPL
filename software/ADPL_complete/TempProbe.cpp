@@ -8,11 +8,13 @@
 TempProbe::TempProbe(int pin) {
     pinMode(pin, INPUT);
     _pin = pin;
-    int _sumSamples = 0;
-    float _sampleMean = 0.;
 }
 
 void TempProbe::read() {
+    
+    int _sumSamples = 0; 
+    float _sampleMean = 0.;
+    
     // read in and sum all of the samples
     for (int i=0; i < _NUMSAMPLES; i++) {
         _sumSamples += analogRead(_pin);

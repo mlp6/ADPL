@@ -8,6 +8,8 @@
 TempProbe::TempProbe(int pin) {
     pinMode(pin, INPUT);
     _pin = pin;
+    int _sumSamples = 0;
+    float _sampleMean = 0.;
 }
 
 void TempProbe::read() {

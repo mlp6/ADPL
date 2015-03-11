@@ -7,10 +7,10 @@ class Ignitor {
     public:
         Ignitor(int pin);
         void fire();
-        unsigned long timeLastFired = 0;
+        unsigned long timeLastFired;
     private:
         int _pin;
-        const int _ignitor_on_time = 5000;   // ms; keep on for 5 s
+        static const int _ignitor_on_time = 5000;   // ms; keep on for 5 s
 
 };
 

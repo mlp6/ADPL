@@ -9,7 +9,7 @@ class Pump {
         void turnOn();
         unsigned long onTime;
         void turnOff();
-        unsigned long offTime = 0;
+        unsigned long offTime;
         boolean pumping;
     private:
         int _pin;

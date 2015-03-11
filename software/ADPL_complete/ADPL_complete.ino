@@ -18,6 +18,14 @@ Valve valve(4);
 // instatiate pump object on digital pin #7
 Pump pump(7);
 
+#include "TempProbe.h"
+// instantiate temperature probe objects on analog pins A0-A4
+TempProbe tempProbe1(A0);
+TempProbe tempProbe2(A1);
+TempProbe tempProbe3(A2); // might want to rename this object to tie it to ignitor func
+TempProbe tempProbe4(A3);
+TempProbe tempProbe5(A4);
+
 //Code for SD card
 //#include <SPI.h>
 //#include "SD.h"
@@ -27,15 +35,6 @@ Pump pump(7);
 ////for SD card
 //const int chipSelect = 10;   //pin 10 for SD card
 //#define WAIT_TO_START 0      //start readings immediately
-
-// temperature (thermistor) variables
-#define PROBE1 A0 
-#define PROBE2 A1 
-#define PROBE3 A2
-#define PROBE4 A3
-#define PROBE5 A4
-const int numTempProbes = 5;
-float TempProbe[numTempProbes];
 
 // ignitor variables
 #define IGNITOR_PIN 2   // digital output pin #2
@@ -59,11 +58,6 @@ unsigned long current_time;
 
 void setup() {
     Serial.begin(9600);
-    pinMode(PROBE1, INPUT);
-    pinMode(PROBE2, INPUT);
-    pinMode(PROBE3, INPUT);
-    pinMode(PROBE4, INPUT);
-    pinMode(PROBE5, INPUT);
     pinMode(LEVEL_PIN, INPUT);
     pinMode(IGNITOR_PIN, OUTPUT);
     // pinMode(10, OUTPUT); //SD card pin
@@ -78,15 +72,23 @@ void setup() {
 void loop() { 
    
     // read probe temperatures
-    for (int probeNum = 0; probeNum < numTempProbes; probeNum++) {
-        TempProbe[probeNum] = readProbeTemp(probeNum);
-    }
+    tempProbe1.read();
+    tempProbe2.read(); 
+    tempProbe3.read(); 
+    tempProbe4.read(); 
+    tempProbe5.read(); 
 
-    for (int probeNum = 0; probeNum < numTempProbes; probeNum++) {
-        Serial.print(TempProbe[probeNum]);
-        Serial.print(", ");
-    }
-
+    // temporary debugging serial print statements
+    Serial.print(tempProbe1.temp);
+    Serial.print(", ");
+    Serial.print(tempProbe2.temp);
+    Serial.print(", ");
+    Serial.print(tempProbe3.temp);
+    Serial.print(", ");
+    Serial.print(tempProbe4.temp);
+    Serial.print(", ");
+    Serial.print(tempProbe5.temp);
+    Serial.print(", ");
     Serial.print(valve.gasOn);
     Serial.print(", ");
     // Serial.print(IgnitorOn);
@@ -100,7 +102,7 @@ void loop() {
     ignitor will spark for 5 seconds every 15 minutes while the valve is open.
     */
 
-    if (TempProbe[2] <= INCINERATE_LOW_TEMP) {       
+    if (tempProbe3.temp <= INCINERATE_LOW_TEMP) {       
         valve.open();
         delay(10);
         fireIgnitor();
@@ -110,7 +112,7 @@ void loop() {
 
         current_time = millis();
 
-        if (TempProbe[2] >= INCINERATE_HIGH_TEMP) {
+        if (tempProbe3.temp >= INCINERATE_HIGH_TEMP) {
             valve.close();
         }
         // if 15 min have elapsed since last ignitor fire, then fire again
@@ -153,41 +155,6 @@ void loop() {
     // writeSDcard(TempProbe[0]);
 
 } // end loop()
-
-
-// read temperature from probe (thermistor)
-float readProbeTemp(int ProbePin) {
-
-    const float THERMISTORNOMINAL  = 10000.0;   // resistance (Ohm) @ 25 degrees C
-    const float TEMPERATURENOMINAL = 25.0;      // temp. (C) for nominal resistance
-    const float SERIESRESISTOR  = 10000.0;      // value of 'other' resistor (Ohm)
-    const float BCOEFFICIENT = 3950.0;          // beta coefficient of the thermistor 
-                                                // (usually 3000-4000)
-    const int NUMSAMPLES = 100;                 // number of samples to take and average
-    const int SAMPLE_DELAY = 1;                 // ms
-
-    float TempProbe;
-    float averageTemp = 0;
-    int samples[NUMSAMPLES];
-
-    for (int i=0; i < NUMSAMPLES; i++) {
-        averageTemp += (float) analogRead(ProbePin);
-        delay(SAMPLE_DELAY);
-    }
-
-    averageTemp /= (float) NUMSAMPLES;
-    averageTemp = 1023. / averageTemp - 1;
-    averageTemp = SERIESRESISTOR / averageTemp;
-
-    TempProbe = averageTemp / THERMISTORNOMINAL;        // (R/Ro)
-    TempProbe = log(TempProbe);                         // ln(R/Ro);
-    TempProbe /= BCOEFFICIENT;                          // 1/B * ln(R/Ro)
-    TempProbe += 1.0 / (TEMPERATURENOMINAL + 273.15);   // +1/To
-    TempProbe = 1.0/TempProbe;                          // invert
-    TempProbe -= 273.15;                                // convert to C
-
-    return TempProbe;
-}
 
 
 void fireIgnitor() {

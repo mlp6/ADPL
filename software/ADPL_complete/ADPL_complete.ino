@@ -1,5 +1,4 @@
 /* ADPL_complete.ino
- *
  * This code includes all components - temp probes, level sensor, and relays
  * General overview of goals: Run pump based on tank level, operate burner based
  * on temp3 
@@ -7,7 +6,6 @@
  * LICENSE: MIT (see LICENSE file)
  * 
  * Copyright (c) Aaron Forbis-Stokes and Mark Palmeri
- *
  */
 
 #include "Valve.h"
@@ -26,22 +24,12 @@ TempProbe tempProbe3(A2); // might want to rename this object to tie it to ignit
 TempProbe tempProbe4(A3);
 TempProbe tempProbe5(A4);
 
-//Code for SD card
-//#include <SPI.h>
-//#include "SD.h"
-//#include <Wire.h>
-//#include <OneWire.h>
-//
-////for SD card
-//const int chipSelect = 10;   //pin 10 for SD card
-//#define WAIT_TO_START 0      //start readings immediately
-
 #include "Ignitor.h"
 // instantiate ignitor object on digital pin #2
 Ignitor ignitor(2);
-#define INCINERATE_LOW_TEMP 25
-#define INCINERATE_HIGH_TEMP 28
-#define IGNITE_DELAY 900000 // ms (15min); time between ignitor fires with open valve
+#define INCINERATE_LOW_TEMP 25  // will be 68 in field
+#define INCINERATE_HIGH_TEMP 28 // will be 72 in field
+#define IGNITE_DELAY 900000     // ms (15min); time between ignitor fires with open valve
 
 #include "LevelSensor.h"
 // instantiate level sensor object on analog pin A5
@@ -53,6 +41,15 @@ LevelSensor levelSensor(A5);
 
 unsigned long currentTime = 0;
 
+//Code for SD card
+//#include <SPI.h>
+//#include "SD.h"
+//#include <Wire.h>
+//#include <OneWire.h>
+//
+////for SD card
+//const int chipSelect = 10;   //pin 10 for SD card
+//#define WAIT_TO_START 0      //start readings immediately
 //File dataFile;  //SD card file name
 
 void setup() {
@@ -67,22 +64,19 @@ void setup() {
 }
 
 void loop() { 
-   
     // read probe temperatures
     tempProbe1.read();
     tempProbe2.read(); 
     tempProbe3.read(); 
     tempProbe4.read(); 
     tempProbe5.read(); 
-
  
     /* ==== Valve / Ignitor ====
      * Gas valve:
-     *  open if temperature < 68 (INCINERATE_LOW_TEMP) 
-     *  closed if temperature > 72 (INCINERATE_HIGH_TEMP)
+     *      open if temperature < 68 (INCINERATE_LOW_TEMP) 
+     *      closed if temperature > 72 (INCINERATE_HIGH_TEMP)
      * When the temperature drops below 72, valve will not open until below 68.  
-     * The ignitor will spark for 5 seconds every 15 minutes (IGNITE_DELAY) while the
-     * gas is on.
+     * The ignitor will spark for 5 s every 15 minutes (IGNITE_DELAY) while * gas is on.
     */
 
     if (tempProbe3.temp <= INCINERATE_LOW_TEMP) {       

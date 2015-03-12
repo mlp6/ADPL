@@ -18,7 +18,6 @@ void TempProbe::read() {
     // read in and sum all of the samples
     for (i=0; i < _NUMSAMPLES; i++) {
         _samples[i] = analogRead(_pin);
-        Serial.println(_samples[i]);
         delay(_SAMPLE_DELAY);
     }
 
@@ -38,19 +37,12 @@ void TempProbe::read() {
     temp = _SERIESRESISTOR / temp;
 
     Serial.print("Thermistor resistance (Ohm):");
-    Serial.println(temp);
 
     // convert to deg C
     temp /= _THERMISTORNOMINAL;                     // (R/Ro)
-    Serial.println(temp);
     temp = log(temp);                               // ln(R/Ro);
-    Serial.println(temp);
     temp /= _BCOEFFICIENT;                          // 1/B * ln(R/Ro)
-    Serial.println(temp);
     temp += 1.0 / (_TEMPERATURENOMINAL + 273.15);   // +1/To
-    Serial.println(temp);
     temp = 1.0/temp;                                // invert
-    Serial.println(temp);
     temp -= 273.15;                                 // convert to C
-    Serial.println(temp);
 }

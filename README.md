@@ -1,5 +1,6 @@
 #Anaerobic Digestion Pasteurization Latrine (ADPL) 
 
+##Functional Specifications
 ##Collection Tank
 * When the level in a collection tank is between a minimum and maximum level,
   the pump should be on for 5 minutes every hour. 
@@ -18,6 +19,11 @@
   remain open, and the ignitor should spark for 5 seconds, turn off for 15
   minutes, and spark again for 5 seconds. Once the temperature is 72 C, the
   valve should shut and ignitor remain off.
+
+##Repository Layout
+* ```software/ADPL_complete/```: Arduino code and libraries
+* ```hardware/```: DipTrace circuit schematic and PCB layout
+* ```docs/```: spec sheets for components
 
 ##Licenses
 * All software is covered my the MIT License.  See

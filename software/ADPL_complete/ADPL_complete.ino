@@ -79,7 +79,7 @@ void loop() {
      * The ignitor will spark for 5 s every 15 minutes (IGNITE_DELAY) while * gas is on.
     */
 
-    if (tempProbe3.temp <= INCINERATE_LOW_TEMP) {       
+    if (tempProbe3.temp <= INCINERATE_LOW_TEMP && valve.gasOn == false) {       
         valve.open();
         delay(100);
         ignitor.fire();

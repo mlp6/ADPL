@@ -8,6 +8,8 @@
 Valve::Valve(int pin) {
     pinMode(pin, OUTPUT);
     _pin = pin;
+    // make sure gas valve is OFF to start with
+    close();
 }
 
 void Valve::open() {

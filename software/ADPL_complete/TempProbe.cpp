@@ -23,6 +23,8 @@ void TempProbe::read() {
 
     // record what time the measurement was made
     timeRead = millis();
+    Serial.print("Thermistor Read Temperature at:");
+    Serial.println(timeRead);
     
     // take the mean of the samples
     float temp = 0;

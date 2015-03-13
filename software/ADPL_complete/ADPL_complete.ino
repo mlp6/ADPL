@@ -68,6 +68,8 @@ void loop() {
     tempProbe1.read();
     Serial.print("Thermistor Temp in loop: ");
     Serial.println(tempProbe1.temp, 2);
+    Serial.print("Thermistor Read Temperature at: ");
+    Serial.println(tempProbe1.timeRead);
     tempProbe2.read(); 
     tempProbe3.read(); 
     tempProbe4.read(); 

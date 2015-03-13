@@ -14,6 +14,7 @@ void TempProbe::read() {
     // Code adapted from: https://learn.adafruit.com/thermistor/using-a-thermistor
     
     uint8_t i;
+    temp = 0;
 
     // read in and sum all of the samples
     for (i=0; i < _NUMSAMPLES; i++) {
@@ -23,11 +24,8 @@ void TempProbe::read() {
 
     // record what time the measurement was made
     timeRead = millis();
-    Serial.print("Thermistor Read Temperature at:");
-    Serial.println(timeRead);
     
     // take the mean of the samples
-    float temp = 0;
     for (i=0; i < _NUMSAMPLES; i++) {
         temp += _samples[i];
     }

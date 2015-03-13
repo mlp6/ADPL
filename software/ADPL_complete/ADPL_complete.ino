@@ -83,7 +83,7 @@ void loop() {
         valve.open();
         delay(100);
         ignitor.fire();
-        Serial.print("Ignitor last fired: ");
+        Serial.print("TOO LOW - Ignitor last fired: ");
         Serial.println(ignitor.timeLastFired);
     }
 
@@ -96,7 +96,7 @@ void loop() {
         }
         // if 15 min have elapsed since last ignitor fire, then fire again
         else if(currentTime > (ignitor.timeLastFired + IGNITE_DELAY)) {     
-            Serial.print("Ignitor last fired: ");
+            Serial.print("OPEN AND FIRING - Ignitor last fired: ");
             Serial.println(ignitor.timeLastFired);
             ignitor.fire();
         }

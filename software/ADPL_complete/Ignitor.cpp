@@ -8,7 +8,7 @@
 Ignitor::Ignitor(int pin) {
     pinMode(pin, OUTPUT);
     _pin = pin;
-    unsigned long timeLastFired = 0;
+    timeLastFired = 0;
 }
 
 void Ignitor::fire() {

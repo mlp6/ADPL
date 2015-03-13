@@ -66,6 +66,8 @@ void setup() {
 void loop() { 
     // read probe temperatures
     tempProbe1.read();
+    Serial.print("Thermistor Temp in loop: ");
+    Serial.println(tempProbe1.temp, 2);
     tempProbe2.read(); 
     tempProbe3.read(); 
     tempProbe4.read(); 
@@ -133,6 +135,7 @@ void loop() {
     // writeSDcard(TempProbe[0]);
 
     // temporary debugging serial print statements
+    /*
     Serial.print(tempProbe1.temp);
     Serial.print(", ");
     Serial.print(tempProbe2.temp);
@@ -147,6 +150,7 @@ void loop() {
     Serial.print(", ");
     Serial.println(pump.pumping);
     Serial.println(levelSensor.level);
+    */
 
 } // end loop()
 

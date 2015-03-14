@@ -8,6 +8,9 @@
  * Copyright (c) Aaron Forbis-Stokes and Mark Palmeri
  */
 
+// AREF voltage (V) used for analog input reference (instead of default 5 V)
+#define AREF 3.3 
+
 #include "Valve.h"
 // instantiate valve object on digital pin #4
 Valve valve(4); 
@@ -33,9 +36,10 @@ Ignitor ignitor(2);
 
 #include "LevelSensor.h"
 // instantiate level sensor object on analog pin A5
-LevelSensor levelSensor(A5);
-#define LEVEL_MIN 400
-#define LEVEL_MAX 1200
+LevelSensor levelSensor(A5, AREF);
+//define the current thresholds (mA) for the level sensor
+#define LEVEL_MIN_MA 6
+#define LEVEL_MAX_MA 18
 #define KEEP_PUMP_ON_TIME 30000     // ms; keep pump on for 5 min for intermediate level
 #define KEEP_PUMP_OFF_TIME 330000   // ms; keep pump off for 55 min after 5 min on time
 
@@ -113,13 +117,13 @@ void loop() {
     */
     levelSensor.read();
 
-    if (levelSensor.level < LEVEL_MIN && pump.pumping) {
+    if (levelSensor.levelCurrentmA < LEVEL_MIN_MA && pump.pumping) {
         pump.turnOff();
     }
-    else if (levelSensor.level > LEVEL_MAX && !pump.pumping) {
+    else if (levelSensor.levelCurrentmA > LEVEL_MAX_MA && !pump.pumping) {
         pump.turnOn();
     }
-    else if(levelSensor.level > LEVEL_MIN && levelSensor.level <= LEVEL_MAX) {
+    else if(levelSensor.levelCurrentmA > LEVEL_MIN_MA && levelSensor.levelCurrentmA <= LEVEL_MAX_MA) {
 
         currentTime = millis();
 
@@ -151,7 +155,7 @@ void loop() {
     Serial.print(valve.gasOn);
     Serial.print(", ");
     Serial.println(pump.pumping);
-    Serial.println(levelSensor.level);
+    Serial.println(levelSensor.levelCurrentmA);
     */
 
 } // end loop()

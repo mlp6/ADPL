@@ -5,13 +5,16 @@
 #include "Arduino.h"
 #include "LevelSensor.h"
 
-LevelSensor::LevelSensor(int pin) {
+LevelSensor::LevelSensor(int pin, float analogRef) {
     pinMode(pin, INPUT);
     _pin = pin;
+    _AREF = analogRef;
 }
 
 void LevelSensor::read() {
     _rawRead = analogRead(_pin);
-    level = (float) _rawRead;
-    // TODO: NEED TO CONVERT TO USEFUL UNIT (INCHES)
+    _readVoltage = _rawRead * _AREF / 1023;
+    // current will range from 4 - 20 mA, which should correspond to 2 - 12"
+    // the actual level will be calibrated in the Medcal software
+    levelCurrentmA = _readVoltage * 1000 / _currentVoltRes;
 }

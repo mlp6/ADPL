@@ -17,6 +17,4 @@ void Ignitor::fire() {
     delay(_ignitor_on_time);
     digitalWrite(_pin, LOW);
     timeLastFired = millis();
-    Serial.print("in class time: ");
-    Serial.println(timeLastFired);
 }

@@ -167,7 +167,6 @@ void loop() {
     dataFile.print(", ");
     dataFile.println(levelSensor.levelCurrentmA);
     
-
 } // end loop()
 
 

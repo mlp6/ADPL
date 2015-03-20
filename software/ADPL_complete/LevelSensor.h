@@ -10,7 +10,6 @@ class LevelSensor {
         float levelCurrentmA;
     private:
         int _pin;
-        int _rawRead;
         float _readVoltage;
         // analog input reference voltage
         float _AREF;

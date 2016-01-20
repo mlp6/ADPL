@@ -1,9 +1,9 @@
-#Anaerobic Digestion Pasteurization Latrine (ADPL) 
+#Anaerobic Digestion and Pasteurization Latrine (ADPL) 
 
 ##Functional Specifications
 ##Collection Tank
 * When the level in a collection tank is between a minimum and maximum level,
-  the pump should be on for 5 minutes every hour. 
+  the pump should be on for 5 min every hour. 
   
 * When the level is below minimum, pump should be off. 
   
@@ -12,12 +12,12 @@
   depth.
 
 ##Temperature Regulation
-* Record temperatures at 5 points.
+* Record temperatures across 5 thermocouples.
 
 * If temperature 3 is below 68 C, a gas valve should open and an ignitor should
-  spark for 5 seconds. Until the temperature reaches 72C, the valve should
+  spark for 5 s. Until the temperature reaches 72 C, the valve should
   remain open, and the ignitor should spark for 5 seconds, turn off for 15
-  minutes, and spark again for 5 seconds. Once the temperature is 72 C, the
+  min, and spark again for 5 s. Once the temperature is 72 C, the
   valve should shut and ignitor remain off.
 
 ##Repository Layout
@@ -26,7 +26,7 @@
 * ```docs/```: spec sheets for components
 
 ##Licenses
-* All software is covered my the MIT License.  See
+* All software is covered by the MIT License.  See
   [software/ADPL_complete/LICENSE](software/ADPL_complete/LICENSE).
 
 * All circuit schematics and PCB layouts are covered by a Creative Commons

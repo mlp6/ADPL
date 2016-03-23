@@ -45,19 +45,8 @@ LevelSensor levelSensor(A5, AREF);
 
 unsigned long currentTime = 0;
 
-//Code for SD card
-#include <SPI.h>
-#include "SD.h"
-//#include <Wire.h> //Not necessary, I believe
-//#include <OneWire.h> //Themrmocoupe
-const int chipSelect = 10;   //pin 10 for SD card
-#define WAIT_TO_START 0      //start readings immediately
-File dataFile;  //SD card file name
-
 void setup() {
     Serial.begin(9600);
-    pinMode(10, OUTPUT); //SD card pin
-    dataFile = SD.open("datalog.txt", FILE_WRITE);
 
     // define the reference for the analog input pins (3.3 V), which is more
     // stable than the default 5 V since we're not using any Wheatstone bridges
@@ -131,9 +120,6 @@ void loop() {
         }
     }   
  
-    // SD card data collection commented out b/c connected to damaged Arduino
-    // writeSDcard(TempProbe[0]);
-
     // temporary debugging serial print statements
     
     Serial.print(tempProbe1.temp);
@@ -151,30 +137,5 @@ void loop() {
 //    Serial.print(pump.pumping);
 //    Serial.print(", ");
     Serial.println(levelSensor.levelCurrentmA);
-    dataFile.print(tempProbe1.temp);
-    dataFile.print(", ");
-    dataFile.print(tempProbe2.temp);
-    dataFile.print(", ");
-    dataFile.print(tempProbe3.temp);
-    dataFile.print(", ");
-    dataFile.print(tempProbe4.temp);
-    dataFile.print(", ");
-    dataFile.print(tempProbe5.temp);
-    dataFile.print(", ");
-    dataFile.print(valve.gasOn);
-    dataFile.print(", ");
-    dataFile.print(pump.pumping);
-    dataFile.print(", ");
-    dataFile.println(levelSensor.levelCurrentmA);
-    
+
 } // end loop()
-
-
-/*
-void writeSDcard(float TempProbe) {
-    Serial.print(TempProbe);
-    Serial.print(", ");
-    dataFile.print(TempProbe);
-    dataFile.print(", ");
-}
-*/

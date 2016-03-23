@@ -5,7 +5,7 @@
  *
  * LICENSE: MIT (see LICENSE file)
  * 
- * Copyright (c) Aaron Forbis-Stokes and Mark Palmeri
+ * Copyright (c) 2015-2016 Aaron Forbis-Stokes and Mark Palmeri (Duke University)
  */
 
 // AREF voltage (V) used for analog input reference (instead of default 5 V)

@@ -1,9 +1,10 @@
-/* 
+/*
  * TempProbe.cpp - temperature probe (thermistor) class
  */
 
 #include "application.h"
 #include "TempProbe.h"
+#include "math.h"
 
 TempProbe::TempProbe(int pin) {
     pinMode(pin, INPUT);
@@ -12,7 +13,7 @@ TempProbe::TempProbe(int pin) {
 
 void TempProbe::read() {
     // Code adapted from: https://learn.adafruit.com/thermistor/using-a-thermistor
-    
+
     uint8_t i;
     temp = 0;
 
@@ -24,12 +25,12 @@ void TempProbe::read() {
 
     // record what time the measurement was made
     timeRead = millis();
-    
+
     // take the mean of the samples
     for (i=0; i < _NUMSAMPLES; i++) {
         temp += _samples[i];
     }
-    
+
     temp /= _NUMSAMPLES;
 
     // convert to resistance

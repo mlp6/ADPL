@@ -34,7 +34,7 @@ void TempProbe::read() {
     temp /= _NUMSAMPLES;
 
     // convert to resistance
-    temp = (1023 / temp) - 1;
+    temp = (4095 / temp) - 1;
     temp = _SERIESRESISTOR / temp;
 
     // convert to deg C

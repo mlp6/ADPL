@@ -8,9 +8,6 @@
  * Copyright (c) 2015-2016 Aaron Forbis-Stokes and Mark Palmeri (Duke University)
  */
 
-// AREF voltage (V) used for analog input reference (instead of default 5 V)
-#define AREF 3.3
-
 #include "Valve.h"
 // instantiate valve object on digital pin #4
 Valve valve(4);
@@ -36,7 +33,7 @@ Ignitor ignitor(2);
 
 #include "LevelSensor.h"
 // instantiate level sensor object on analog pin A5
-LevelSensor levelSensor(A5, AREF);
+LevelSensor levelSensor(A5);
 //define the current thresholds (mA) for the level sensor
 #define LEVEL_MIN_MA 6
 #define LEVEL_MAX_MA 18

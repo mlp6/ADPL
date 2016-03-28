@@ -23,8 +23,8 @@ TempProbe tempProbe2(A1);
 TempProbe tempProbe3(A2); // might want to rename this object to tie it to ignitor func
 TempProbe tempProbe4(A3);
 TempProbe tempProbe5(A4);
+TempProbe tempProbe5(A5); // need to confirm this pin is available
 TempProbe tempProbe5(A6); // need to confirm this pin is available
-TempProbe tempProbe5(A7); // need to confirm this pin is available
 
 #include "Ignitor.h"
 // instantiate ignitor object on digital pin #2
@@ -34,8 +34,8 @@ Ignitor ignitor(2);
 #define IGNITE_DELAY 900000     // ms (15min); time between ignitor fires with open valve
 
 #include "LevelSensor.h"
-// instantiate level sensor object on analog pin A5
-LevelSensor levelSensor(A5);
+// instantiate level sensor object on analog pin B5
+LevelSensor levelSensor(B5);
 //define the current thresholds (mA) for the level sensor
 #define LEVEL_MIN_MA 6
 #define LEVEL_MAX_MA 18

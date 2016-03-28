@@ -1,19 +1,19 @@
 /* ADPL_complete.ino
  * This code includes all components - temp probes, level sensor, and relays
  * General overview of goals: Run pump based on tank level, operate burner based
- * on temp3 
+ * on temp3
  *
  * LICENSE: MIT (see LICENSE file)
- * 
+ *
  * Copyright (c) 2015-2016 Aaron Forbis-Stokes and Mark Palmeri (Duke University)
  */
 
 // AREF voltage (V) used for analog input reference (instead of default 5 V)
-#define AREF 3.3 
+#define AREF 3.3
 
 #include "Valve.h"
 // instantiate valve object on digital pin #4
-Valve valve(4); 
+Valve valve(4);
 
 #include "Pump.h"
 // instatiate pump object on digital pin #7
@@ -47,30 +47,25 @@ unsigned long currentTime = 0;
 
 void setup() {
     Serial.begin(9600);
-
-    // define the reference for the analog input pins (3.3 V), which is more
-    // stable than the default 5 V since we're not using any Wheatstone bridges
-    // for each thermistor
-    analogReference(EXTERNAL); 
 }
 
-void loop() { 
+void loop() {
     // read probe temperatures
     tempProbe1.read();
-    tempProbe2.read(); 
-    tempProbe3.read(); 
-    tempProbe4.read(); 
-    tempProbe5.read(); 
- 
+    tempProbe2.read();
+    tempProbe3.read();
+    tempProbe4.read();
+    tempProbe5.read();
+
     /* ==== Valve / Ignitor ====
      * Gas valve:
-     *      open if temperature < 68 (INCINERATE_LOW_TEMP) 
+     *      open if temperature < 68 (INCINERATE_LOW_TEMP)
      *      closed if temperature > 72 (INCINERATE_HIGH_TEMP)
-     * When the temperature drops below 72, valve will not open until below 68.  
+     * When the temperature drops below 72, valve will not open until below 68.
      * The ignitor will spark for 5 s every 15 minutes (IGNITE_DELAY) while * gas is on.
     */
 
-    if (tempProbe3.temp <= INCINERATE_LOW_TEMP && valve.gasOn == false) {       
+    if (tempProbe3.temp <= INCINERATE_LOW_TEMP && valve.gasOn == false) {
         valve.open();
         delay(100);
         ignitor.fire();
@@ -84,15 +79,15 @@ void loop() {
             valve.close();
         }
         // if 15 min have elapsed since last ignitor fire, then fire again
-        else if(currentTime > (ignitor.timeLastFired + IGNITE_DELAY)) {     
+        else if(currentTime > (ignitor.timeLastFired + IGNITE_DELAY)) {
             ignitor.fire();
         }
-    }    
- 
+    }
+
     /* ==== Water Level Pump ====
     Pump off when the level is <2", Remain on when >24". When the level is
-    2"<x<24", the pump should be on for 5 minutes, off 55 minutes.  
-    
+    2"<x<24", the pump should be on for 5 minutes, off 55 minutes.
+
     Sensor output is 4 mA at bottom (4") and 20 mA at top (24").
     Resistor is 237 Ohm
 
@@ -118,10 +113,10 @@ void loop() {
                 pump.turnOff();
             }
         }
-    }   
- 
+    }
+
     // temporary debugging serial print statements
-    
+
     Serial.print(tempProbe1.temp);
     Serial.print(", ");
     Serial.print(tempProbe2.temp);

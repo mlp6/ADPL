@@ -1,7 +1,7 @@
 #ifndef Ignitor_h
 #define Ignitor_h
 
-#include "Arduino.h"
+#include "application.h"
 
 class Ignitor {
     public:

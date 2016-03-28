@@ -1,7 +1,7 @@
 #ifndef LevelSensor_h
 #define LevelSensor_h
 
-#include "Arduino.h"
+#include "application.h"
 
 class LevelSensor {
     public:

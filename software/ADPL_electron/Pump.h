@@ -1,7 +1,7 @@
 #ifndef Pump_h
 #define Pump_h
 
-#include "Arduino.h"
+#include "application.h"
 
 class Pump {
     public:

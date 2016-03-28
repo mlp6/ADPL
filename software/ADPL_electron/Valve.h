@@ -1,7 +1,7 @@
 #ifndef Valve_h
 #define Valve_h
 
-#include "Arduino.h"
+#include "application.h"
 
 class Valve {
     public:

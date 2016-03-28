@@ -1,7 +1,7 @@
 #ifndef TempProbe_h
 #define TempProbe_h
 
-#include "Arduino.h"
+#include "application.h"
 
 class TempProbe {
     public:

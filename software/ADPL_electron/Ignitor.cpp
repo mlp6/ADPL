@@ -2,7 +2,7 @@
  * Ignitor.cpp - pump control
  */
 
-#include "Arduino.h"
+#include "application.h"
 #include "Ignitor.h"
 
 Ignitor::Ignitor(int pin) {

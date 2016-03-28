@@ -2,7 +2,7 @@
  * LevelSensor.cpp - water level sensor class
  */
 
-#include "Arduino.h"
+#include "application.h"
 #include "LevelSensor.h"
 
 LevelSensor::LevelSensor(int pin, float analogRef) {

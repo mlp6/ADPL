@@ -2,7 +2,7 @@
  * Valve.cpp - gas valve control
  */
 
-#include "Arduino.h"
+#include "application.h"
 #include "Valve.h"
 
 Valve::Valve(int pin) {

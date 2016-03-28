@@ -2,7 +2,7 @@
  * TempProbe.cpp - temperature probe (thermistor) class
  */
 
-#include "Arduino.h"
+#include "application.h"
 #include "TempProbe.h"
 
 TempProbe::TempProbe(int pin) {

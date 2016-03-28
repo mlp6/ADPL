@@ -2,7 +2,7 @@
  * Pump.cpp - pump control
  */
 
-#include "Arduino.h"
+#include "application.h"
 #include "Pump.h"
 
 Pump::Pump(int pin) {

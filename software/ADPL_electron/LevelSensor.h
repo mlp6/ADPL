@@ -14,7 +14,7 @@ class LevelSensor {
         // analog input reference voltage
         float _AREF;
         // define resistor to convert current to voltage (Ohm)
-        static const float _currentVoltRes = 237;
+        static constexpr float _currentVoltRes = 237;
 };
 
 #endif

@@ -42,6 +42,12 @@ LevelSensor levelSensor(B5);
 #define KEEP_PUMP_ON_TIME 30000     // ms; keep pump on for 5 min for intermediate level
 #define KEEP_PUMP_OFF_TIME 330000   // ms; keep pump off for 55 min after 5 min on time
 
+#include "Bucket.h"
+// instantiate bucket tipping sensor
+Bucket bucket(D1);
+#define BUCKET_TIP_COUNT_DELAY 60000  // ms; do not count a new bucket tip for
+                                      // 1 min after initial count
+
 unsigned long currentTime = 0;
 
 void setup() {
@@ -112,6 +118,12 @@ void loop() {
                 pump.turnOff();
             }
         }
+    }
+
+    // count bucket tip
+    currentTime = millis();
+    if (currentTime > (bucket.tip_time + BUCKET_TIP_COUNT_DELAY) {
+        bucket.read()
     }
 
     // temporary debugging serial print statements

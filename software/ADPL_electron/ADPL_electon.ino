@@ -55,14 +55,21 @@ void setup() {
 }
 
 void loop() {
-    // read probe temperatures
+    // read and publish probe temperatures
     tempProbe1.read();
+    tempProbe1.publish();
     tempProbe2.read();
+    tempProbe2.publish();
     tempProbe3.read();
+    tempProbe3.publish();
     tempProbe4.read();
+    tempProbe4.publish();
     tempProbe5.read();
+    tempProbe5.publish();
     tempProbe6.read();
+    tempProbe6.publish();
     tempProbe7.read();
+    tempProbe7.publish();
 
     /* ==== Valve / Ignitor ====
      * Gas valve:

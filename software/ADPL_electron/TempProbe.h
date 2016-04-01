@@ -9,6 +9,7 @@ class TempProbe {
         void read();
         float temp;
         unsigned long timeRead;
+        void publish();
     private:
         int _pin;
         static constexpr int _NUMSAMPLES = 100;    // number of samples to read and average

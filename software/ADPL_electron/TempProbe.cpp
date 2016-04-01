@@ -45,3 +45,7 @@ void TempProbe::read() {
     temp = 1.0/temp;                                // invert
     temp -= 273.15;                                 // convert to C
 }
+
+void TempProbe::publish() {
+    Particle.publish("temp_probe", String(_pin) + ": " + String(temp));
+}

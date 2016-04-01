@@ -8,14 +8,14 @@
 Bucket::Bucket(int pin) {
     pinMode(pin, OUTPUT);
     _pin = pin;
-    unsigned Long tip_time
-    unsigned int tip_count = 0
+    unsigned long tip_time;
+    unsigned int tip_count = 0;
 }
 
-void Pump::read() {
+void Bucket::read() {
     // turn pump on and record time when that occurs
     if (digitalRead(_pin) == 1) {
         tip_time = millis();
-        tip_count++
+        tip_count++;
     }
 }

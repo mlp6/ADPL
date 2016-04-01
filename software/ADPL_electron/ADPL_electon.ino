@@ -124,8 +124,8 @@ void loop() {
 
     // count bucket tip
     currentTime = millis();
-    if (currentTime > (bucket.tip_time + BUCKET_TIP_COUNT_DELAY) {
-        bucket.read()
+    if (currentTime > (bucket.tip_time + BUCKET_TIP_COUNT_DELAY)) {
+        bucket.read();
     }
 
     // temporary debugging serial print statements

@@ -7,8 +7,8 @@ class Bucket {
     public:
         Bucket(int pin);
         void read();
-        unsigned Long tip_time
-        unsigned int tip_count
+        unsigned long tip_time;
+        unsigned int tip_count;
     private:
         int _pin;
 };

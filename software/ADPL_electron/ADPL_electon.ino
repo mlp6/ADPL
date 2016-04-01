@@ -23,8 +23,8 @@ TempProbe tempProbe2(A1);
 TempProbe tempProbe3(A2); // might want to rename this object to tie it to ignitor func
 TempProbe tempProbe4(A3);
 TempProbe tempProbe5(A4);
-TempProbe tempProbe5(A5); // need to confirm this pin is available
-TempProbe tempProbe5(A6); // need to confirm this pin is available
+TempProbe tempProbe6(A5); // need to confirm this pin is available
+TempProbe tempProbe7(A6); // need to confirm this pin is available
 
 #include "Ignitor.h"
 // instantiate ignitor object on digital pin #2
@@ -61,6 +61,8 @@ void loop() {
     tempProbe3.read();
     tempProbe4.read();
     tempProbe5.read();
+    tempProbe6.read();
+    tempProbe7.read();
 
     /* ==== Valve / Ignitor ====
      * Gas valve:

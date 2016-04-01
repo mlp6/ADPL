@@ -9,6 +9,8 @@ class Bucket {
         void read();
         unsigned long tip_time;
         unsigned int tip_count;
+        boolean tipped;
+        void publish();
     private:
         int _pin;
 };

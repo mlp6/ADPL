@@ -126,9 +126,10 @@ void loop() {
     currentTime = millis();
     if (currentTime > (bucket.tip_time + BUCKET_TIP_COUNT_DELAY)) {
         bucket.read();
+        if (bucket.tipped) {
+            bucket.publish();
+        }
     }
-
-    // temporary debugging serial print statements
 
     Serial.print(tempProbe1.temp);
     Serial.print(", ");

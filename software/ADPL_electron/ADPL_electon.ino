@@ -25,7 +25,7 @@ TempProbe tempProbe4(A3);
 TempProbe tempProbe5(A4);
 TempProbe tempProbe6(A5); // need to confirm this pin is available
 TempProbe tempProbe7(A6); // need to confirm this pin is available
-#define TEMP_PUBLISH_DELAY 300000  // ms (5 min); time between temp publishing
+#define TEMP_PUBLISH_DELAY 150000  // ms (2.5 min); time between temp publishing
 
 #include "Ignitor.h"
 // instantiate ignitor object on digital pin #2

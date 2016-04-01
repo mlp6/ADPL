@@ -25,6 +25,7 @@ TempProbe tempProbe4(A3);
 TempProbe tempProbe5(A4);
 TempProbe tempProbe6(A5); // need to confirm this pin is available
 TempProbe tempProbe7(A6); // need to confirm this pin is available
+#define TEMP_PUBLISH_DELAY 300000  // ms (5 min); time between temp publishing
 
 #include "Ignitor.h"
 // instantiate ignitor object on digital pin #2
@@ -48,7 +49,9 @@ Bucket bucket(D1);
 #define BUCKET_TIP_COUNT_DELAY 60000  // ms; do not count a new bucket tip for
                                       // 1 min after initial count
 
+// initialize some time counters
 unsigned long currentTime = 0;
+unsigned long last_temp_publish = 0;
 
 void setup() {
     Serial.begin(9600);
@@ -57,19 +60,23 @@ void setup() {
 void loop() {
     // read and publish probe temperatures
     tempProbe1.read();
-    tempProbe1.publish();
     tempProbe2.read();
-    tempProbe2.publish();
     tempProbe3.read();
-    tempProbe3.publish();
     tempProbe4.read();
-    tempProbe4.publish();
     tempProbe5.read();
-    tempProbe5.publish();
     tempProbe6.read();
-    tempProbe6.publish();
     tempProbe7.read();
-    tempProbe7.publish();
+
+    currentTime = millis();
+    if (currentTime > (last_temp_publish + TEMP_PUBLISH_DELAY)) {
+        tempProbe1.publish();
+        tempProbe2.publish();
+        tempProbe3.publish();
+        tempProbe4.publish();
+        tempProbe5.publish();
+        tempProbe6.publish();
+        tempProbe7.publish();
+    }
 
     /* ==== Valve / Ignitor ====
      * Gas valve:

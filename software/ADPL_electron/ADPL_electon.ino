@@ -76,6 +76,7 @@ void loop() {
         tempProbe5.publish();
         tempProbe6.publish();
         tempProbe7.publish();
+        last_temp_publish = currentTime;
     }
 
     /* ==== Valve / Ignitor ====

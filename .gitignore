@@ -1,3 +1,4 @@
 .dropbox
 .DS_Store
 ~*
+software/logging/node_modules

@@ -1,0 +1,19 @@
+{
+  "name": "logging-adpl",
+  "version": "1.0.0",
+  "description": "Autologs and displays data from the adpl project in kenya",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Suyash Kumar",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "eventsource": "^0.2.1",
+    "express": "^4.13.4",
+    "mongoose": "^4.4.12",
+    "morgan": "^1.7.0",
+    "socketio": "^1.0.0"
+  }
+}

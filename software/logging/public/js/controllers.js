@@ -3,7 +3,7 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 .controller('ADPLCtrl',  ['$scope','$http', function($scope, $http) {
 	console.log('start');
 	$scope.locations = ["kenya-1", "india-1"];
-	$scope.channels = ["10","11","12","13","15"];
+	$scope.channels = ["10","11","12","13","14"];
 	$scope.currLoc= "";
 	$scope.plotHide=true;	
 	$scope.currChannel=""

@@ -9,6 +9,7 @@
 TempProbe::TempProbe(int pin) {
     pinMode(pin, INPUT);
     _pin = pin;
+	Particle.variable("temp"+String(pin), double(temp));
 }
 
 void TempProbe::read() {

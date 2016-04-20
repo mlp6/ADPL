@@ -14,8 +14,9 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 	$scope.changeLoc = function(){
 		if ($scope.currChannel != ""){
 		$scope.plotHide=false;
-		}
 		$scope.updateView();
+
+		}
 		console.log($scope.currLoc);
 	};
 	$scope.updateView = function(){

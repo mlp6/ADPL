@@ -77,7 +77,14 @@ chart.xScale(d3.time.scale.utc());
 //d3.select('#graph svg').datum(data).transition().duration(500).call(chart)
 	
   //Update the chart when window resizes.
-  nv.utils.windowResize( chart.update() );
+  nv.utils.windowResize(function(){ 
+	chart.width(getInnerWidth('graph')-offset);
+	d3.select('#graph svg')    //Select the <svg> element you want to render the chart in.   
+      .datum(data)         //Populate the <svg> element with chart data...  
+	  .style({ 'width': getInnerWidth('graph'), 'height': 500, 'margin-left':50 }) 
+  	chart.update(); 
+	});
+
   return chart;
 });
 }

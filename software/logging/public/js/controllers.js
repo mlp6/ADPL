@@ -26,6 +26,9 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 					if (!(data[i].probeid in plotData)){
 						plotData[data[i].probeid] = [];	
 					} 
+					if (data[i].temp < 0){
+						continue;
+					}
 					plotData[data[i].probeid].push({x:new Date(data[i].time), y:data[i].temp});
 				}
 				console.log(plotData);

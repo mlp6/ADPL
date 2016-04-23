@@ -43,7 +43,8 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 				}
 				console.log(plotArray);
 				updateGraph(plotArray);
-				$scope.plotTitle = "Temp vs. Time ("+$scope.currLoc+")";
+				$scope.plotTitle = "Temperature Data ("+$scope.currLoc+")";
+				$scope.plotData = plotData;
 			}); 
 	}
 	$scope.updateViewSingle = function(){
@@ -58,9 +59,69 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 				$scope.plotTitle = "Temp vs. Time (Channel " + $scope.currChannel+")";
 			}); 
 	}
+	$scope.saveSVG = function(){
+		var html = d3.select("svg")
+        .attr("title", "test2")
+        .attr("version", 1.1)
+        .attr("xmlns", "http://www.w3.org/2000/svg")
+        .node().parentNode.innerHTML;
+
+    var blob = new Blob([html], {type: "image/svg+xml"});
+    saveAs(blob, "myProfile.svg");
+
+
+
+	}
+	$scope.saveCSV = function(data){
+		var csvStr = "Probe ID: ,";
+		var keys = Object.keys(data); // holds the probe ids 
+		csvStr = writeHeader(csvStr, data);
+		csvStr = writeData(csvStr, data);
+		// Save CSV String using blob
+		var blob = new Blob([csvStr], {type:"text/csv;charset=utf-8"});
+		saveAs(blob, "data.csv");
+
+	}
 
 
 }]);
+function getLongestLength(data){
+	var longLen = 0;
+	for (var pID in data){
+			// keep track of longest set of data
+			if (data[pID].length >longLen){
+				longLen =data[pID].length
+			}
+		} 
+	return longLen;
+
+}
+function writeHeader(csvStr, data){
+	for (var pID in data){
+		// Write header
+		csvStr = csvStr + pID +", ,";
+	}
+	csvStr=csvStr+"\n"; // New line for actual data start
+	return csvStr;
+
+}
+function writeData(csvStr, data){
+	var longLen = getLongestLength(data);
+	for (i=0;i<longLen;i++){ // Each row in csv
+		csvStr=csvStr + " , "; // Skip column for the probe id label
+		for (var pID in data){
+			if (i<data[pID].length){ // in case num data points different for each probe ID's dataset 
+				csvStr=csvStr + data[pID][i]["x"].toString() + "," + data[pID][i]["y"].toString()+","; 
+			}
+			else{
+				csvStr=csvStr + " , ";
+			}
+		}
+		csvStr=csvStr+"\n" 
+	}
+	return csvStr;
+		
+}
 function getInnerWidth(elem) {
     return parseFloat(window.getComputedStyle(document.getElementById(elem)).width);
 }

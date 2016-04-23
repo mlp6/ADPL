@@ -71,7 +71,7 @@ var updateGraph = function(data){
   var chart = nv.models.lineWithFocusChart()
   .width(getInnerWidth('graph')-offset)
   .height(500);
-
+	chart.useInteractiveGuideline(true)
   chart.xAxis     //Chart x-axis settings 
       .axisLabel('Time and Date') 
 		.tickFormat(function(d) { return d3.time.format('%x %X')(new Date(d)); }) ;

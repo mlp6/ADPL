@@ -11,16 +11,40 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 	/*
 	 * Called when location selection is changed
 	 */
-	$scope.changeLoc = function(){
-		if ($scope.currChannel != ""){
+	$scope.changeLoc = function(){ 
 		$scope.plotHide=false;
-		$scope.updateView();
+		$scope.updateViewAll(); 
 
-		}
-		console.log($scope.currLoc);
 	};
-	$scope.updateView = function(){
-		$http.get('/api/list/'+$scope.currLoc+"/"+$scope.currChannel).success(
+	$scope.updateViewAll = function(){
+		$http.get('/api/list/'+$scope.currLoc).success(
+			function(data) {
+
+				var plotData = {}; // key is probeid, value is array of {x: , y: } objects
+
+				for (i=0;i<data.length;i++){
+					if (!(data[i].probeid in plotData)){
+						plotData[data[i].probeid] = [];	
+					} 
+					plotData[data[i].probeid].push({x:new Date(data[i].time), y:data[i].temp});
+				}
+				console.log(plotData);
+				// build plot array
+				var plotArray = []; 
+				for (var key in plotData){
+					if (plotData.hasOwnProperty(key)){
+						var currSeries = {"key":key, "values":plotData[key]};
+						plotArray.push(currSeries); 
+						console.log("h");
+					}
+				}
+				console.log(plotArray);
+				updateGraph(plotArray);
+				$scope.plotTitle = "Temp vs. Time ("+$scope.currLoc+")";
+			}); 
+	}
+	$scope.updateViewSingle = function(){
+		$http.get('/api/list/'+$scope.currLoc+"/"+$cope.currChannel).success(
 			function(data) {
 				console.log(data[1])
 				var plotData = [];
@@ -31,6 +55,7 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 				$scope.plotTitle = "Temp vs. Time (Channel " + $scope.currChannel+")";
 			}); 
 	}
+
 
 }]);
 function getInnerWidth(elem) {

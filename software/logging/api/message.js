@@ -6,11 +6,13 @@ module.exports = {
 	onText: function(req,res){
 		if(req.body.Body == 'temp'){
 			// Get latest data for probe 10 and send text back to number 
+			/*
 			Site.events.find().sort('-time').find({probeid:10}, function(err, records){ 
 				sendText(records[1], req);
 				res.send("OK");
 			});
-			
+			*/
+			res.send("OK");
 		}
 
 	}

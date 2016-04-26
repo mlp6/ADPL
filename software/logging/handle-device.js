@@ -1,5 +1,5 @@
-var EventSource = require('eventsource'); // Pull in event source
-var LogEvent = require('./models/LogEvent.js');
+var EventSource = require('eventsource'); // Pull in event source 
+var Site = require('./models/Site.js');
 var locMap = {
 	"1b0048000c51343334363138": "kenya-1",
 	"530031000a51343334363138": "durham-1"
@@ -24,10 +24,11 @@ function addRecord(data, io){
 		probeid:	data.data.split(":")[0],
 		temp:		data.data.split(":")[1]
 	}
-	console.log(toAdd);
-	var newRecord = new LogEvent(toAdd);  
-	newRecord.save(function(err,event){
-		if(err) console.log("error in saving to database"+err);
-	})
-	io.emit('new',newRecord);
+	Site.findOne({coreid: data.coreid}, function(err, currSite){
+		currSite.events.push(toAdd);
+		currSite.save(function (err){
+			if(err) console.log(err);
+		});
+	}); 
+	io.emit('new',toAdd);
 }

@@ -1,17 +1,17 @@
-var LogEvent = require('../models/LogEvent.js');
-
+var LogEvent = require('../models/LogEvent.js').model;
+var Site = require('../models/Site.js');
 module.exports = {
 
 	list: function(req,res){
-		LogEvent.find({}, function(err, records){
+		Site.find({}, function(err, records){
 			if(err) res.send(err);
 			res.json(records); 
 		});
 	},
 	listLoc: function(req,res){
-		LogEvent.find({loc:req.params.loc}, function(err,records){
+		Site.findOne({locStr:req.params.loc}, function(err,site){
 			if(err) res.send(err);
-			res.json(records);
+			res.json(site.events);
 		});	
 
 	},

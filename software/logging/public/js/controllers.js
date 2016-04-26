@@ -2,12 +2,20 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 
 .controller('ADPLCtrl',  ['$scope','$http', function($scope, $http) {
 	console.log('start');
-	$scope.locations = ["kenya-1", "india-1"];
-	$scope.channels = ["10","11","12","13","14"];
+	updateLocations(); 
 	$scope.currLoc= "";
 	$scope.plotHide=true;	
 	$scope.currChannel=""
 	
+	function updateLocations(){
+		$http.get('/api/sites').success(
+			function(data){
+				$scope.locations=[];
+				for (i=0;i<data.length;i++){
+					$scope.locations.push(data[i].locStr);
+				}
+			});
+	}
 	/*
 	 * Called when location selection is changed
 	 */

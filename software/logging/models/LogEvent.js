@@ -10,4 +10,4 @@ var LogEvent  = new Schema({
 	probeid:	{type: Number, required: true}, // the pin the probe is on
 	temp:		{type: Number, required: true} // in degrees C
 });
-module.exports = {model:mongoose.model('LogEvent', LogEvent), schema:LogEvent};
+module.exports = mongoose.model('LogEvent', LogEvent);

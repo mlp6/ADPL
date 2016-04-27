@@ -2,20 +2,12 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 
 .controller('ADPLCtrl',  ['$scope','$http', function($scope, $http) {
 	console.log('start');
-	updateLocations(); 
+	$scope.locations = ["kenya-1", "india-1"];
+	$scope.channels = ["10","11","12","13","14"];
 	$scope.currLoc= "";
 	$scope.plotHide=true;	
 	$scope.currChannel=""
 	
-	function updateLocations(){
-		$http.get('/api/sites').success(
-			function(data){
-				$scope.locations=[];
-				for (i=0;i<data.length;i++){
-					$scope.locations.push(data[i].locStr);
-				}
-			});
-	}
 	/*
 	 * Called when location selection is changed
 	 */
@@ -68,15 +60,6 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 			}); 
 	}
 	$scope.saveSVG = function(){
-		var html = d3.select("svg")
-        .attr("title", "test2")
-        .attr("version", 1.1)
-        .attr("xmlns", "http://www.w3.org/2000/svg")
-        .node().parentNode.innerHTML;
-
-    var blob = new Blob([html], {type: "image/svg+xml"});
-    saveAs(blob, "myProfile.svg");
-
 
 
 	}

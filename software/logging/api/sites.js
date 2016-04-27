@@ -13,11 +13,16 @@ module.exports = {
 		}); 
 	},
 	listSites: function(req,res){
-		Site.find({},function(err, sites){
-			if (err) console.log(err);
-			var toReturn = sites.map(function(a) { return {"locStr":a.locStr, "coreid":a.coreid}});
-			res.json(toReturn); 
-		});
+		var siteMap = require('../config/device-map.js').locMap;
+		var sites = []
+		for (var key in siteMap) {
+		    if (Object.prototype.hasOwnProperty.call(siteMap, key)) {
+			        sites.push(siteMap[key]);
+					
+					}
+			}
+			res.json(sites);
+
 	}
 
 

@@ -1,8 +1,7 @@
 var EventSource = require('eventsource'); // Pull in event source 
 var Site = require('./models/Site.js');
 var locMap = {
-	"1b0048000c51343334363138": "kenya-1",
-	"530031000a51343334363138": "durham-1"
+	"1b0048000c51343334363138": "kenya-1"
 }; // Maps coreids to a location identifier 
 
 module.exports = function(deviceUrl, io){

@@ -9,6 +9,7 @@ var sites = require('../api/sites.js');
 module.exports = function(app) { 
 	app.get('/api/list', logs.list);
 	app.get('/api/list/:loc', logs.listLoc); 
+	app.get('/api/list-all/:loc',logs.listLocAll);
 	app.get('/api/list/:loc/:pin', logs.listPin);
 	app.get('/api/sites',sites.listSites);
 	app.post('/api/message', message.onText);

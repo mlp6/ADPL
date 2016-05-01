@@ -11,6 +11,7 @@ Bucket::Bucket(int pin) {
     unsigned long tip_time;
     unsigned int tip_count = 0;
     boolean tipped = false;
+    Particle.variable("bucket", (int) tip_count);
 }
 
 void Bucket::read() {

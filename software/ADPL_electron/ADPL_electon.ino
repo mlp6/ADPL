@@ -8,6 +8,8 @@
  * Copyright (c) 2015-2016 Aaron Forbis-Stokes and Mark Palmeri (Duke University)
  */
 
+#define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
+
 #include "Valve.h"
 // instantiate valve object on digital pin #4
 Valve valve(4);
@@ -25,7 +27,6 @@ TempProbe tempProbe4(A3);
 TempProbe tempProbe5(A4);
 TempProbe tempProbe6(A5); // need to confirm this pin is available
 TempProbe tempProbe7(A6); // need to confirm this pin is available
-#define TEMP_PUBLISH_DELAY 150000  // ms (2.5 min); time between temp publishing
 
 #include "Ignitor.h"
 // instantiate ignitor object on digital pin #2
@@ -45,13 +46,13 @@ LevelSensor levelSensor(B5);
 
 #include "Bucket.h"
 // instantiate bucket tipping sensor
-Bucket bucket(D1);
-#define BUCKET_TIP_COUNT_DELAY 60000  // ms; do not count a new bucket tip for
+Bucket bucket(C0);
+#define BUCKET_TIP_COUNT_DELAY 1000  // ms; do not count a new bucket tip for
                                       // 1 min after initial count
 
 // initialize some time counters
 unsigned long currentTime = 0;
-unsigned long last_temp_publish = 0;
+unsigned long last_publish_time = 0;
 
 void setup() {
     Serial.begin(9600);
@@ -68,7 +69,7 @@ void loop() {
     tempProbe7.read();
 
     currentTime = millis();
-    if (currentTime > (last_temp_publish + TEMP_PUBLISH_DELAY)) {
+    if (currentTime > (last_publish_time + PUBLISH_DELAY)) {
         tempProbe1.publish();
         tempProbe2.publish();
         tempProbe3.publish();
@@ -76,7 +77,8 @@ void loop() {
         tempProbe5.publish();
         tempProbe6.publish();
         tempProbe7.publish();
-        last_temp_publish = currentTime;
+        bucket.publish();
+        last_publish_time = currentTime;
     }
 
     /* ==== Valve / Ignitor ====
@@ -140,10 +142,7 @@ void loop() {
     // count bucket tip
     currentTime = millis();
     if (currentTime > (bucket.tip_time + BUCKET_TIP_COUNT_DELAY)) {
-        bucket.read();
-        if (bucket.tipped) {
-            bucket.publish();
-        }
+        bucket.read(); // read will also count if HIGH
     }
 
 } // end loop()

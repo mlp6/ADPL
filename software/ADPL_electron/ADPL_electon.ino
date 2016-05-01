@@ -46,7 +46,7 @@ LevelSensor levelSensor(B5);
 #include "Bucket.h"
 // instantiate bucket tipping sensor
 Bucket bucket(D1);
-#define BUCKET_TIP_COUNT_DELAY 60000  // ms; do not count a new bucket tip for
+#define BUCKET_TIP_COUNT_DELAY 1000  // ms; do not count a new bucket tip for
                                       // 1 min after initial count
 
 // initialize some time counters

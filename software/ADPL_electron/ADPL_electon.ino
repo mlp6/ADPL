@@ -30,11 +30,11 @@ Pump pump(PUMP);
 
 #include "TempProbe.h"
 // instantiate temperature probe objects on analog pins A0-A4
-TempProbe tempProbe1(HXCI);
-TempProbe tempProbe2(HXCO);
-TempProbe tempProbe3(HTR); // might want to rename this object to tie it to ignitor func
-TempProbe tempProbe4(HXHI);
-TempProbe tempProbe5(HXHO);
+TempProbe tempHXCI(HXCI);
+TempProbe tempHXCO(HXCO);
+TempProbe tempHTR(HTR); // might want to rename this object to tie it to ignitor func
+TempProbe tempHXHI(HXHI);
+TempProbe temHXHO(HXHO);
 //TempProbe tempProbe6(A5); // need to confirm this pin is available
 //TempProbe tempProbe7(A6); // need to confirm this pin is available
 
@@ -70,23 +70,23 @@ void setup() {
 
 void loop() {
     // read and publish probe temperatures
-    tempProbe1.read();
-    tempProbe2.read();
-    tempProbe3.read();
-    tempProbe4.read();
-    tempProbe5.read();
-    tempProbe6.read();
-    tempProbe7.read();
+    tempHXCI.read();
+    tempHXCO.read();
+    tempHTR.read();
+    tempHXHI.read();
+    tempHXHO.read();
+    //tempProbe6.read();
+    //tempProbe7.read();
 
     currentTime = millis();
     if (currentTime > (last_publish_time + PUBLISH_DELAY)) {
-        tempProbe1.publish();
-        tempProbe2.publish();
-        tempProbe3.publish();
-        tempProbe4.publish();
-        tempProbe5.publish();
-        tempProbe6.publish();
-        tempProbe7.publish();
+        tempHXCI.publish();
+        tempHXCO.publish();
+        tempHTR.publish();
+        tempHXHI.publish();
+        tempHXHO.publish();
+        //tempProbe6.publish();
+        //tempProbe7.publish();
         bucket.publish();
         last_publish_time = currentTime;
     }
@@ -99,7 +99,7 @@ void loop() {
      * The ignitor will spark for 5 s every 15 minutes (IGNITE_DELAY) while * gas is on.
     */
 
-    if (tempProbe3.temp <= INCINERATE_LOW_TEMP && valve.gasOn == false) {
+    if (tempHTR.temp <= INCINERATE_LOW_TEMP && valve.gasOn == false) {
         valve.open();
         delay(100);
         ignitor.fire();
@@ -109,7 +109,7 @@ void loop() {
 
         currentTime = millis();
 
-        if (tempProbe3.temp >= INCINERATE_HIGH_TEMP) {
+        if (tempHTR.temp >= INCINERATE_HIGH_TEMP) {
             valve.close();
         }
         // if 15 min have elapsed since last ignitor fire, then fire again

@@ -10,27 +10,37 @@
 
 #define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
 
+// Define GPIO pins by function
+#define HXCI A0 // Heat Exchanger Cold Inlet
+#define HXCO A1 // Heat Exchanger Cold Output
+#define HTR A2  // Heater
+#define HXHI A3 // Heat Exchanger Hot Inlet
+#define HXHO A4 // Heat Exchanger Hot Outlet
+#define PUMP 7
+#define VALVE 4
+#define IGNITOR 2
+
 #include "Valve.h"
 // instantiate valve object on digital pin #4
-Valve valve(4);
+Valve valve(VALVE);
 
 #include "Pump.h"
 // instatiate pump object on digital pin #7
-Pump pump(7);
+Pump pump(PUMP);
 
 #include "TempProbe.h"
 // instantiate temperature probe objects on analog pins A0-A4
-TempProbe tempProbe1(A0);
-TempProbe tempProbe2(A1);
-TempProbe tempProbe3(A2); // might want to rename this object to tie it to ignitor func
-TempProbe tempProbe4(A3);
-TempProbe tempProbe5(A4);
-TempProbe tempProbe6(A5); // need to confirm this pin is available
-TempProbe tempProbe7(A6); // need to confirm this pin is available
+TempProbe tempProbe1(HXCI);
+TempProbe tempProbe2(HXCO);
+TempProbe tempProbe3(HTR); // might want to rename this object to tie it to ignitor func
+TempProbe tempProbe4(HXHI);
+TempProbe tempProbe5(HXHO);
+//TempProbe tempProbe6(A5); // need to confirm this pin is available
+//TempProbe tempProbe7(A6); // need to confirm this pin is available
 
 #include "Ignitor.h"
 // instantiate ignitor object on digital pin #2
-Ignitor ignitor(2);
+Ignitor ignitor(IGNITOR);
 #define INCINERATE_LOW_TEMP 25  // will be 68 in field
 #define INCINERATE_HIGH_TEMP 28 // will be 72 in field
 #define IGNITE_DELAY 900000     // ms (15min); time between ignitor fires with open valve

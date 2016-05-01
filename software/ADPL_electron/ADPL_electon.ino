@@ -146,20 +146,4 @@ void loop() {
         }
     }
 
-    Serial.print(tempProbe1.temp);
-    Serial.print(", ");
-    Serial.print(tempProbe2.temp);
-    Serial.print(", ");
-    Serial.print(tempProbe3.temp);
-    Serial.print(", ");
-    Serial.print(tempProbe4.temp);
-    Serial.print(", ");
-    Serial.print(tempProbe5.temp);
-    Serial.print(", ");
-//    Serial.print(valve.gasOn);
-//    Serial.print(", ");
-//    Serial.print(pump.pumping);
-//    Serial.print(", ");
-    Serial.println(levelSensor.levelCurrentmA);
-
 } // end loop()

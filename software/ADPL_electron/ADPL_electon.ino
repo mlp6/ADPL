@@ -52,7 +52,7 @@ Bucket bucket(C0);
 
 // initialize some time counters
 unsigned long currentTime = 0;
-unsigned long last_temp_publish = 0;
+unsigned long last_publish_time = 0;
 
 void setup() {
     Serial.begin(9600);

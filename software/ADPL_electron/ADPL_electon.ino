@@ -29,14 +29,11 @@ Valve valve(VALVE);
 Pump pump(PUMP);
 
 #include "TempProbe.h"
-// instantiate temperature probe objects on analog pins A0-A4
 TempProbe tempHXCI("HXCI", HXCI);
 TempProbe tempHXCO("HXCO", HXCO);
-TempProbe tempHTR("HTR", HTR); // might want to rename this object to tie it to ignitor func
+TempProbe tempHTR("HTR", HTR);
 TempProbe tempHXHI("HXHI", HXHI);
 TempProbe tempHXHO("HXHO", HXHO);
-//TempProbe tempProbe6(A5); // need to confirm this pin is available
-//TempProbe tempProbe7(A6); // need to confirm this pin is available
 
 #include "Ignitor.h"
 // instantiate ignitor object on digital pin #2
@@ -51,14 +48,13 @@ LevelSensor levelSensor(B5);
 //define the current thresholds (mA) for the level sensor
 #define LEVEL_MIN_MA 6
 #define LEVEL_MAX_MA 18
-#define KEEP_PUMP_ON_TIME 30000     // ms; keep pump on for 5 min for intermediate level
-#define KEEP_PUMP_OFF_TIME 330000   // ms; keep pump off for 55 min after 5 min on time
+#define KEEP_PUMP_ON_TIME 30000     // 5 min
+#define KEEP_PUMP_OFF_TIME 330000   // 55 min off time after 5 min on time
 
 #include "Bucket.h"
 // instantiate bucket tipping sensor
 Bucket bucket(C0);
-#define BUCKET_TIP_COUNT_DELAY 1000  // ms; do not count a new bucket tip for
-                                      // 1 min after initial count
+#define BUCKET_TIP_COUNT_DELAY 1000  // 1 min delay
 
 // initialize some time counters
 unsigned long currentTime = 0;

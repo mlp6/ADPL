@@ -43,9 +43,6 @@ Ignitor ignitor(IGNITOR);
 
 #include "LevelSensor.h"
 LevelSensor levelSensor(LEVEL);
-//define the current thresholds (mA) for the level sensor
-#define LEVEL_MIN_MA 6
-#define LEVEL_MAX_MA 18
 #define KEEP_PUMP_ON_TIME 30000     // 5 min
 #define KEEP_PUMP_OFF_TIME 330000   // 55 min off time after 5 min on time
 
@@ -117,16 +114,14 @@ void loop() {
     */
     levelSensor.read();
 
-    if (levelSensor.levelCurrentmA < LEVEL_MIN_MA && pump.pumping) {
+    if (levelSensor.tooLow && pump.pumping) {
         pump.turnOff();
     }
-    else if (levelSensor.levelCurrentmA > LEVEL_MAX_MA && !pump.pumping) {
+    else if (levelSensor.tooHigh && !pump.pumping) {
         pump.turnOn();
     }
-    else if(levelSensor.levelCurrentmA > LEVEL_MIN_MA && levelSensor.levelCurrentmA <= LEVEL_MAX_MA) {
-
+    else if(!levelSensor.tooLow && !levelSensor.tooHigh) {
         currentTime = millis();
-
         if (!pump.pumping && (currentTime - pump.offTime) > KEEP_PUMP_OFF_TIME) {
             pump.turnOn();
         }

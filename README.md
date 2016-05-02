@@ -1,33 +1,33 @@
-#Anaerobic Digestion and Pasteurization Latrine (ADPL) 
+#Anaerobic Digestion and Pasteurization Latrine (ADPL)
+
+##Website
+http://sanitation.pratt.duke.edu/onsite-treatment
 
 ##Functional Specifications
 ##Collection Tank
 * When the level in a collection tank is between a minimum and maximum level,
-  the pump should be on for 5 min every hour. 
-  
-* When the level is below minimum, pump should be off. 
-  
-* When the level is above maximum, the pump should remain on. If I can run the
-  level sensor on analog output, I want to record the readings to know the
-  depth.
+  the pump should be on for 5 min every hour.
+* The pump is off When the level is below minimum.
+* The pump is on When the level is above maximum.
 
 ##Temperature Regulation
 * Record temperatures across 5 thermocouples.
-
-* If temperature 3 is below 68 C, a gas valve should open and an ignitor should
-  spark for 5 s. Until the temperature reaches 72 C, the valve should
-  remain open, and the ignitor should spark for 5 seconds, turn off for 15
-  min, and spark again for 5 s. Once the temperature is 72 C, the
-  valve should shut and ignitor remain off.
+* If the heater temperature (``tempHTR``) is < 68 C, the gas valve opens and the
+  ignitor sparks for 5 s.
+* The valve remains open until the heather temperature reaches 72 C; the ignitor
+  should spark for 5 seconds, turn off for 15 min, and spark again for 5 s.
+* Once the temperature is 72 C, the valve should shut and ignitor remain off.
 
 ##Repository Layout
-* ```software/ADPL_complete/```: Arduino code and libraries
-* ```hardware/```: DipTrace circuit schematic and PCB layout
-* ```docs/```: spec sheets for components
+* ```software/ADPL_uno/```: Arduino code and libraries (depracated)
+* ```software/ADPL_electron/```: Particle Electron code and libraries
+* ```hardware/```: control box circuit schematic, PCB layout, component spec
+  sheets and bill of materials
+* ```docs/```: documentation [FUTURE]
 
 ##Licenses
 * All software is covered by the MIT License.  See
-  [software/ADPL_complete/LICENSE](software/ADPL_complete/LICENSE).
+  [software/ADPL_*/LICENSE](software/ADPL_complete/LICENSE).
 
 * All circuit schematics and PCB layouts are covered by a Creative Commons
   Attribution 4.0 International License (CC BY 4.0)

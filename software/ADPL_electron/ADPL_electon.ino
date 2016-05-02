@@ -22,11 +22,6 @@
 #define LEVEL B5
 #define BUCKET C0
 
-#include "Valve.h"
-Valve valve(VALVE);
-
-#include "Pump.h"
-Pump pump(PUMP);
 
 #include "TempProbe.h"
 TempProbe tempHXCI("HXCI", HXCI);
@@ -35,16 +30,20 @@ TempProbe tempHTR("HTR", HTR);
 TempProbe tempHXHI("HXHI", HXHI);
 TempProbe tempHXHO("HXHO", HXHO);
 
+#include "Valve.h"
+Valve valve(VALVE);
 #include "Ignitor.h"
 Ignitor ignitor(IGNITOR);
 #define INCINERATE_LOW_TEMP 25  // will be 68 in field
 #define INCINERATE_HIGH_TEMP 28 // will be 72 in field
-#define IGNITE_DELAY 900000     // ms (15min); time between ignitor fires with open valve
+#define IGNITE_DELAY 900000     // 15 min between ignitor fires with open valve
 
-#include "LevelSensor.h"
-LevelSensor levelSensor(LEVEL);
+#include "Pump.h"
+Pump pump(PUMP);
 #define KEEP_PUMP_ON_TIME 30000     // 5 min
 #define KEEP_PUMP_OFF_TIME 330000   // 55 min off time after 5 min on time
+#include "LevelSensor.h"
+LevelSensor levelSensor(LEVEL);
 
 #include "Bucket.h"
 Bucket bucket(BUCKET);
@@ -66,7 +65,7 @@ void loop() {
     tempHXHO.read();
 
     currentTime = millis();
-    if (currentTime > (last_publish_time + PUBLISH_DELAY)) {
+    if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
         tempHXCI.publish();
         tempHXCO.publish();
         tempHTR.publish();
@@ -76,42 +75,25 @@ void loop() {
         last_publish_time = currentTime;
     }
 
-    /* ==== Valve / Ignitor ====
-     * Gas valve:
-     *      open if temperature < 68 (INCINERATE_LOW_TEMP)
-     *      closed if temperature > 72 (INCINERATE_HIGH_TEMP)
-     * When the temperature drops below 72, valve will not open until below 68.
-     * The ignitor will spark for 5 s every 15 minutes (IGNITE_DELAY) while * gas is on.
-    */
-
-    if (tempHTR.temp <= INCINERATE_LOW_TEMP && valve.gasOn == false) {
+    // measure temp, determine if light gas
+    if (tempHTR.temp <= INCINERATE_LOW_TEMP && !valve.gasOn) {
         valve.open();
         delay(100);
         ignitor.fire();
     }
 
-    if(valve.gasOn == true) {
-
+    if(valve.gasOn) {
         currentTime = millis();
-
         if (tempHTR.temp >= INCINERATE_HIGH_TEMP) {
             valve.close();
         }
         // if 15 min have elapsed since last ignitor fire, then fire again
-        else if(currentTime > (ignitor.timeLastFired + IGNITE_DELAY)) {
+        else if((currentTime - ignitor.timeLastFired) > IGNITE_DELAY) {
             ignitor.fire();
         }
     }
 
-    /* ==== Water Level Pump ====
-    Pump off when the level is <2", Remain on when >24". When the level is
-    2"<x<24", the pump should be on for 5 minutes, off 55 minutes.
-
-    Sensor output is 4 mA at bottom (4") and 20 mA at top (24").
-    Resistor is 237 Ohm
-
-    TO DO: Values for comparison need to be updated for conversion to inches
-    */
+    // read water level, determine pump on/off
     levelSensor.read();
 
     if (levelSensor.tooLow && pump.pumping) {
@@ -120,6 +102,7 @@ void loop() {
     else if (levelSensor.tooHigh && !pump.pumping) {
         pump.turnOn();
     }
+    // When the level is 2"<x<24", the pump should be on for 5 min, off 55 min.
     else if(!levelSensor.tooLow && !levelSensor.tooHigh) {
         currentTime = millis();
         if (!pump.pumping && (currentTime - pump.offTime) > KEEP_PUMP_OFF_TIME) {
@@ -134,7 +117,7 @@ void loop() {
 
     // count bucket tip
     currentTime = millis();
-    if (currentTime > (bucket.tip_time + BUCKET_TIP_COUNT_DELAY)) {
+    if ((currentTime - bucket.tip_time) > BUCKET_TIP_COUNT_DELAY) {
         bucket.read(); // read will also count if HIGH
     }
 

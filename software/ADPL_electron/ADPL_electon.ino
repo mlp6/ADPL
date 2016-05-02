@@ -19,13 +19,13 @@
 #define PUMP 7
 #define VALVE 4
 #define IGNITOR 2
+#define LEVEL B5
+#define BUCKET C0
 
 #include "Valve.h"
-// instantiate valve object on digital pin #4
 Valve valve(VALVE);
 
 #include "Pump.h"
-// instatiate pump object on digital pin #7
 Pump pump(PUMP);
 
 #include "TempProbe.h"
@@ -36,15 +36,13 @@ TempProbe tempHXHI("HXHI", HXHI);
 TempProbe tempHXHO("HXHO", HXHO);
 
 #include "Ignitor.h"
-// instantiate ignitor object on digital pin #2
 Ignitor ignitor(IGNITOR);
 #define INCINERATE_LOW_TEMP 25  // will be 68 in field
 #define INCINERATE_HIGH_TEMP 28 // will be 72 in field
 #define IGNITE_DELAY 900000     // ms (15min); time between ignitor fires with open valve
 
 #include "LevelSensor.h"
-// instantiate level sensor object on analog pin B5
-LevelSensor levelSensor(B5);
+LevelSensor levelSensor(LEVEL);
 //define the current thresholds (mA) for the level sensor
 #define LEVEL_MIN_MA 6
 #define LEVEL_MAX_MA 18
@@ -52,8 +50,7 @@ LevelSensor levelSensor(B5);
 #define KEEP_PUMP_OFF_TIME 330000   // 55 min off time after 5 min on time
 
 #include "Bucket.h"
-// instantiate bucket tipping sensor
-Bucket bucket(C0);
+Bucket bucket(BUCKET);
 #define BUCKET_TIP_COUNT_DELAY 1000  // 1 min delay
 
 // initialize some time counters
@@ -65,14 +62,11 @@ void setup() {
 }
 
 void loop() {
-    // read and publish probe temperatures
     tempHXCI.read();
     tempHXCO.read();
     tempHTR.read();
     tempHXHI.read();
     tempHXHO.read();
-    //tempProbe6.read();
-    //tempProbe7.read();
 
     currentTime = millis();
     if (currentTime > (last_publish_time + PUBLISH_DELAY)) {
@@ -81,8 +75,6 @@ void loop() {
         tempHTR.publish();
         tempHXHI.publish();
         tempHXHO.publish();
-        //tempProbe6.publish();
-        //tempProbe7.publish();
         bucket.publish();
         last_publish_time = currentTime;
     }

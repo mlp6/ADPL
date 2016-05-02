@@ -5,13 +5,14 @@
 
 class TempProbe {
     public:
-        TempProbe(int pin);
+        TempProbe(String name, int pin);
         void read();
         float temp;
         unsigned long timeRead;
         void publish();
     private:
         int _pin;
+        String _name;
         static constexpr int _NUMSAMPLES = 100;    // number of samples to read and average
         static constexpr int _SAMPLE_DELAY = 10;   // ms
         int _samples[_NUMSAMPLES];

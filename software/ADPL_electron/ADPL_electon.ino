@@ -30,11 +30,11 @@ Pump pump(PUMP);
 
 #include "TempProbe.h"
 // instantiate temperature probe objects on analog pins A0-A4
-TempProbe tempHXCI(HXCI);
-TempProbe tempHXCO(HXCO);
-TempProbe tempHTR(HTR); // might want to rename this object to tie it to ignitor func
-TempProbe tempHXHI(HXHI);
-TempProbe temHXHO(HXHO);
+TempProbe tempHXCI("HXCI", HXCI);
+TempProbe tempHXCO("HXCO", HXCO);
+TempProbe tempHTR("HTR", HTR); // might want to rename this object to tie it to ignitor func
+TempProbe tempHXHI("HXHI", HXHI);
+TempProbe tempHXHO("HXHO", HXHO);
 //TempProbe tempProbe6(A5); // need to confirm this pin is available
 //TempProbe tempProbe7(A6); // need to confirm this pin is available
 

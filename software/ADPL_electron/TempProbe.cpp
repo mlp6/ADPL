@@ -6,10 +6,11 @@
 #include "TempProbe.h"
 #include "math.h"
 
-TempProbe::TempProbe(int pin) {
+TempProbe::TempProbe(String name, int pin) {
     pinMode(pin, INPUT);
     _pin = pin;
-	Particle.variable("temp"+String(pin), (double) temp);
+    _name = name;
+	  Particle.variable(String(_pin), (double) temp);
 }
 
 void TempProbe::read() {
@@ -48,5 +49,5 @@ void TempProbe::read() {
 }
 
 void TempProbe::publish() {
-    Particle.publish("temp_probe", String(_pin) + ": " + String(temp));
+    Particle.publish(String(_name), String(temp));
 }

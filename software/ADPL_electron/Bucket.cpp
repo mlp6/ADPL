@@ -8,7 +8,7 @@
 Bucket::Bucket(int pin) {
     pinMode(pin, OUTPUT);
     _pin = pin;
-    unsigned long tip_time;
+    unsigned long tip_time = 0;
     unsigned int tip_count = 0;
     boolean tipped = false;
     Particle.variable("bucket", (int) tip_count);

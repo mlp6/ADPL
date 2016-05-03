@@ -21,8 +21,11 @@ void Bucket::read() {
         tipped = true;
         tip_count++;
     }
+    else{
+      tipped = false;
+    }
 }
 
 void Bucket::publish() {
-    Particle.publish(String("BUCKET"), String(tip_time) + "," + String(tip_count));
+    Particle.publish(String("BUCKET"), String(tip_time) + ", " + String(tip_count));
 }

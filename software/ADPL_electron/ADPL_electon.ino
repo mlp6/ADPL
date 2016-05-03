@@ -70,9 +70,7 @@ void loop() {
         tempHXCO.publish();
         tempHTR.publish();
         tempHXHI.publish();
-        delay(2000);
         tempHXHO.publish();
-        bucket.publish();
         last_publish_time = currentTime;
     }
 
@@ -120,6 +118,9 @@ void loop() {
     currentTime = millis();
     if ((currentTime - bucket.tip_time) > BUCKET_TIP_COUNT_DELAY) {
         bucket.read(); // read will also count if HIGH
+        if (bucket.tipped) {
+          bucket.publish();
+        }
     }
 
 } // end loop()

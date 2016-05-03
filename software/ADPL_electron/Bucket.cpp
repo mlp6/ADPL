@@ -24,6 +24,5 @@ void Bucket::read() {
 }
 
 void Bucket::publish() {
-    Particle.publish("bucket_tip_time", String(tip_time));
-    Particle.publish("bucket_tip_count", String(tip_count));
+    Particle.publish(String("BUCKET"), String(tip_time) + "," + String(tip_count));
 }

@@ -70,6 +70,7 @@ void loop() {
         tempHXCO.publish();
         tempHTR.publish();
         tempHXHI.publish();
+        delay(2000);
         tempHXHO.publish();
         bucket.publish();
         last_publish_time = currentTime;

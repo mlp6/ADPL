@@ -49,5 +49,5 @@ void TempProbe::read() {
 }
 
 void TempProbe::publish() {
-    Particle.publish(String(_name), String(temp));
+    Particle.publish(String(_name), String::format("%.1f", temp));
 }

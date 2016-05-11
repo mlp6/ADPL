@@ -1,7 +1,8 @@
 #Anaerobic Digestion and Pasteurization Latrine (ADPL)
 
-##Website
-http://sanitation.pratt.duke.edu/onsite-treatment
+##Projects Websites
+Overview: http://sanitation.pratt.duke.edu/onsite-treatment
+Data Server: http://adpl.colab.duke.edu
 
 ##Functional Specifications
 ##Collection Tank

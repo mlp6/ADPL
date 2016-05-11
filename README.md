@@ -1,8 +1,8 @@
 #Anaerobic Digestion and Pasteurization Latrine (ADPL)
 
 ##Projects Websites
-Overview: http://sanitation.pratt.duke.edu/onsite-treatment
-Data Server: http://adpl.colab.duke.edu
+* Overview: http://sanitation.pratt.duke.edu/onsite-treatment
+* Data Server: http://adpl.colab.duke.edu
 
 ##Functional Specifications
 ##Collection Tank
@@ -27,7 +27,7 @@ Data Server: http://adpl.colab.duke.edu
 * ```docs/```: documentation [FUTURE]
 
 ##Licenses
-* All software is covered by the MIT License.  See
+* All software is covered by the Apache v2.0 License.  See
   [software/ADPL_*/LICENSE](software/ADPL_complete/LICENSE).
 
 * All circuit schematics and PCB layouts are covered by a Creative Commons

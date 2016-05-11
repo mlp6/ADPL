@@ -1,16 +1,18 @@
 /* ADPL_complete.ino
- * This code includes all components - temp probes, level sensor, and relays
- * General overview of goals: Run pump based on tank level, operate burner based
- * on temp3
+ * Master MCU code for all components:
+ * + temp probes
+ * + level sensor
+ * + relays
+ * + bucket tip
  *
- * LICENSE: MIT (see LICENSE file)
+ * LICENSE: Apache v2.0 (see LICENSE file)
  *
- * Copyright (c) 2015-2016 Aaron Forbis-Stokes and Mark Palmeri (Duke University)
+ * Copyright (c) 2015-2016 Mark Palmeri (Duke University)
  */
 
 #define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
 
-// Define GPIO pins by function
+// Define GPIO pins (Particle Electron) by function
 #define HXCI A0 // Heat Exchanger Cold Inlet
 #define HXCO A1 // Heat Exchanger Cold Output
 #define HTR A2  // Heater

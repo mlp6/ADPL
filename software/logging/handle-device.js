@@ -5,10 +5,10 @@ var locMap = require('./config/device-map.js').locMap;
 
 module.exports = function(deviceUrl, io){
 	var es = new EventSource(deviceUrl); // Listen to the stream 
-	es.addEventListener('temp_probe', function(message){ 
+	es.addEventListener('HTR', function(message){ 
 		console.log("New Message"); 
-		realData = JSON.parse(message.data); 
-		console.log(realData); 
+		realData = JSON.parse(message.data);
+		realData["name"] = message.type;
 		addRecord(realData, io); 
 	}); 
 } 
@@ -19,8 +19,8 @@ function addRecord(data, io){
 		coreid:		data.coreid,
 		time:		new Date(data.published_at),
 		loc:		locMap[data.coreid],
-		probeid:	data.data.split(":")[0],
-		temp:		data.data.split(":")[1]
+		probeid:	data.name,
+		temp:		data.data
 	}
 	console.log(toAdd);
 	var newRecord = new LogEvent(toAdd);  

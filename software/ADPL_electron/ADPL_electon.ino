@@ -22,7 +22,7 @@
 #define VALVE 4
 #define IGNITOR 2
 #define LEVEL B5
-#define BUCKET D0
+#define BUCKET C0
 
 
 #include "TempProbe.h"

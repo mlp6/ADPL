@@ -4,13 +4,16 @@ var locMap = require('./config/device-map.js').locMap;
 
 
 module.exports = function(deviceUrl, io){
-	var es = new EventSource(deviceUrl); // Listen to the stream 
-	es.addEventListener('HTR', function(message){ 
-		console.log("New Message"); 
-		realData = JSON.parse(message.data);
-		realData["name"] = message.type;
-		addRecord(realData, io); 
-	}); 
+	var es = new EventSource(deviceUrl); // Listen to the stream
+    var temp_probes = ['HXCI', 'HXCO', 'HTR', 'HXHI', 'HXHO'];
+    for (probe in temp_probes) {
+        es.addEventListener(temp_probes[probe], function (message) {
+            console.log("New Message");
+            realData = JSON.parse(message.data);
+            realData["name"] = message.type;
+            addRecord(realData, io);
+        });
+    }
 } 
 
 

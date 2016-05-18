@@ -73,6 +73,8 @@ void loop() {
         tempHTR.publish();
         tempHXHI.publish();
         tempHXHO.publish();
+        delay(1500);
+        bucket.publish();
         last_publish_time = currentTime;
     }
 

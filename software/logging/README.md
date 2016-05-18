@@ -5,7 +5,7 @@ This web application is responsible for listening to real-time streaming data fr
 ## Setup
 To install this web application on a vanilla debian-flavored linux server:
   1. Install git: ```sudo apt-get install git```
-  2. Clone & run Suyash's provision script: 
+  2. Clone & run Suyash's provision script (a subtree is also available in ``provision/``): 
   
   ```bash
   git clone https://github.com/suyashkumar/provision.git

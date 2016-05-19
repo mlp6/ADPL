@@ -7,7 +7,7 @@ class TempProbe {
     public:
         TempProbe(String name, int pin);
         void read();
-        float temp;
+        double temp;
         unsigned long timeRead;
         void publish();
     private:

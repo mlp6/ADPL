@@ -78,6 +78,10 @@
 			</md-card-title>
 			<md-card-content style="height:100px" md-theme="altTheme"> 
 			<md-progress-circular md-mode="indeterminate" class="ng-show" ng-show = "valveShow"></md-progress-circular>
+			<div class="ng-hide" ng-hide = "valveShow">
+				Valve Status: <br>
+				<span class="label" style="font-size:15px" ng-class="gasOnLabel">{{gasOn}}</span>
+			</div>
 			</md-card-content>
 			</md-card>
 		</div>

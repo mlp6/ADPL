@@ -29,7 +29,34 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 		$scope.updateViewAll(); 
 
 	};
+	function updateMetadata(){
+		$http.get('/api/gasOn/'+$scope.currLoc).success(
+			function(data){
+				$scope.valveShow=false;
+				console.log(data);
+				if (data == true){
+					$scope.gasOn = "T";
+					$scope.gasOnLabel="label-success";	
+				} 
+				else if (data==false){
+					$scope.gasOn = "F";
+					$scope.gasOnLabel="label-danger";
+				}
+				else{
+					$scope.gasOn = "E";
+					$scope.gasOnLabel="label-default";
+				}
+				
+			});
+
+		}
+
+	
 	$scope.updateViewAll = function(){
+		// Update metadata
+		$scope.valveShow=true;
+		updateMetadata();
+		// Update plot
 		$scope.plotLoad=true;
 		$http.get('/api/list/'+$scope.currLoc).success(
 			function(data) {

@@ -1,3 +1,8 @@
+/*
+ * server.js
+ * Entry point for the ADPL web application
+ * @author: Suyash Kumar <suyashkumar2003@gmail.com>
+ */
 // Set up Express.js
 var express = require('express');
 var app = express();

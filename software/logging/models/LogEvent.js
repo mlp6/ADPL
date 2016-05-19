@@ -1,5 +1,7 @@
 /*
- * The schema to hold incoming events
+ * LogEvent.js
+ * The schema (and model) to hold incoming events
+ * @author: Suyash Kumar <suyashkumar2003@gmail.com>
  */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;

@@ -1,3 +1,9 @@
+/*
+ * message.js
+ * Module to hold all API function definitions dealing wih 
+ * message handling (using twilio)
+ * @author: Suyash Kumar <suyashkumar2003@gmail.com>
+ */
 var LogEvent = require('../models/LogEvent.js');
 var twilio_auth = require('./twilio_auth.js');
 

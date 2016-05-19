@@ -1,5 +1,7 @@
 /*
- * Set up the application's routes.
+ * routes.js
+ * Application routes are set up here.
+ * @author: Suyash Kumar <suyashkumar2003@gmail.com>
  */
 
 var express = require('express');

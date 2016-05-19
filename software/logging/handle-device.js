@@ -1,3 +1,10 @@
+/*
+ * handle-device.js
+ * This module handles listening to the particle device stream and saving recieved data 
+ * in real time to the database (LogEvent models). It also has capability to send push 
+ * notifications to clients using socketio when new packages arrive. 
+ * @author: Suyash Kumar <suyashkumar2003@gmail.com>
+ */
 var EventSource = require('eventsource'); // Pull in event source
 var LogEvent = require('./models/LogEvent.js');
 var locMap = require('./config/device-map.js').locMap; 

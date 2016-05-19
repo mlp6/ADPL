@@ -1,3 +1,8 @@
+/*
+ * device-map.js
+ * Holds mapping to/from coreid to internal loc identifier
+ * @author: Suyash Kumar <suyashkumar2003@gmail.com>
+ */
 module.exports={
 	locMap : {
 		"1b0048000c51343334363138": "kenya-1",

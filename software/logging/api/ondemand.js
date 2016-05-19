@@ -1,3 +1,9 @@
+/*
+ * ondemand.js
+ * Holds all API function definitions relating to polling ADPL site variables 
+ * on demand
+ * @author: Suyash Kumar <suyashkumar2003@gmail.com>
+ */
 var request = require("request"); 
 var deviceMap = require("../config/device-map.js");
 module.exports = {

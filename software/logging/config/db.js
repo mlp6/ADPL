@@ -1,3 +1,8 @@
+/*
+ * db.js
+ * Database configuration happens here
+ * @author: Suyash Kumar <suyashkumar2003@gmail.com>
+ */
 var mongoose = require('mongoose');
 
 var config = {

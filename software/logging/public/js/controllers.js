@@ -1,3 +1,9 @@
+/*
+ * controllers.js
+ * Holds the AngularJS controllers for this application. 
+ * Front end code for the ADPL application
+ * @author: Suyash Kumar <suyashkumar2003@gmail.com>
+ */
 angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 
 .controller('ADPLCtrl',  ['$scope','$http', function($scope, $http) {

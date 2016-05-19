@@ -10,8 +10,9 @@ module.exports = {
 			var parsed = JSON.parse(body);
 			if (parsed.hasOwnProperty("error")){
 				res.send("error");
-			}
+			}else{
 			res.json(parsed.result);
+			}
 		});
 
 

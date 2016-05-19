@@ -20,4 +20,11 @@ After provisioning a server as noted above:
   3. Install dependencies: `npm install`
   4. Set the port to run on: `export PORT=80`
   5. Run using authbind if running on a privliged port: `authbind node server.js`
-  
+
+## Automate Server Start on Boot
+Once the kinks in the server setup are sorted out, the server can be automatically started on boot by adding the
+following line to ``/etc/rc.local``:
+
+```
+sudo -iu bitnami /usr/bin/screen -dmS server /bin/bash /home/bitnami/ADPL/software/logging/start_adpl_server.sh
+```

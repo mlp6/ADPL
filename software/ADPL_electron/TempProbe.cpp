@@ -10,7 +10,7 @@ TempProbe::TempProbe(String name, int pin) {
     pinMode(pin, INPUT);
     _pin = pin;
     _name = name;
-	  Particle.variable(String(_pin), (double) temp);
+	  Particle.variable(String(_pin), temp);
 }
 
 void TempProbe::read() {

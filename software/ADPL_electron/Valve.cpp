@@ -10,6 +10,7 @@ Valve::Valve(int pin) {
     _pin = pin;
     // make sure gas valve is OFF to start with
     close();
+    Particle.variable("gasOn", gasOn); 
 }
 
 void Valve::open() {

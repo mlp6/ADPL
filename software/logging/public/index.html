@@ -69,6 +69,20 @@
 
 	</div>
 	<div class="row">
+		<div class= "col-lg-8 col-lg-offset-2 ng-hide" ng-hide="plotHide">
+			<md-card>
+			<md-card-title>
+			<md-card-title-text>
+				<span class="md-headline"> Metadata </span>
+			</md-card-title-text>
+			</md-card-title>
+			<md-card-content style="height:100px" md-theme="altTheme"> 
+			<md-progress-circular md-mode="indeterminate" class="ng-show" ng-show = "valveShow"></md-progress-circular>
+			</md-card-content>
+			</md-card>
+		</div>
+	</div>
+	<div class="row">
 	<div class="col-lg-8 col-lg-offset-2 ng-hide" ng-hide = "plotHide">
 		<md-card>
 		<md-card-title>
@@ -77,6 +91,8 @@
           </md-card-title-text>
         </md-card-title>
 		<md-card-content>
+			<md-progress-circular md-mode="indeterminate" class="ng-show text-center" style="margin:auto" ng-show = "plotLoad"></md-progress-circular>
+		
  					<div id="graph" class="text-center" style="height:500px;">
 						<div class="text-center" style="width:100%;height:500px" id="g2"><svg id = "g3"></svg></div>
 					</div> 
@@ -91,20 +107,6 @@
           </md-card-actions>
 		</md-card>	
 		</div>
-		<div class="col-lg-2 ng-hide" ng-hide="plotHide">
-			<md-card>
-			<md-card-title>
-			<md-card-title-text>
-				<span class="md-headline"> Metadata </span>
-			</md-card-title-text>
-			</md-card-title>
-			<md-card-content style="height:400px" md-theme="altTheme"> 
-
-			</md-card-content>
-			</md-card>
-		</div>
-
-
 	</div> 
 
 	<div class="row">

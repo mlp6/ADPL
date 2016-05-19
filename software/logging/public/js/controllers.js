@@ -5,6 +5,8 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 	updateLocations();
 	$scope.currLoc= "";
 	$scope.plotHide=true;	
+	$scope.valveShow=true;
+	$scope.plotLoad=true;
 	$scope.currChannel=""
 
 
@@ -53,6 +55,7 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 					}
 				}
 				console.log(plotArray);
+				$scope.plotLoad=false;
 				updateGraph(plotArray);
 				$scope.plotTitle = "Temperature Data ("+$scope.currLoc+")";
 				$scope.plotData = plotData;

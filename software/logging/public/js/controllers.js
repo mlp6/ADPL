@@ -30,6 +30,7 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 
 	};
 	$scope.updateViewAll = function(){
+		$scope.plotLoad=true;
 		$http.get('/api/list/'+$scope.currLoc).success(
 			function(data) {
 

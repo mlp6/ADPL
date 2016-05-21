@@ -16,7 +16,7 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 	$scope.currChannel=""
 	
 	// Socket IO
-	var socket = io('http://localhost:9000');
+	var socket = io('http://localhost:9000'); // On production set this to http://pulse.suyash.io TODO: make this an env var in future
 	socket.on('HXHO', function(data){
 		console.log('New Data');
 		console.log(data);

@@ -37,5 +37,5 @@ function addRecord(data, io){
 	newRecord.save(function(err,event){
 		if(err) console.log("error in saving to database"+err);
 	})
-	io.emit('new',newRecord);
+	io.emit(data.name,newRecord);
 }

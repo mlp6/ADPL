@@ -6,7 +6,7 @@
  */
 angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 
-.controller('ADPLCtrl',  ['$scope','$http', function($scope, $http) {
+.controller('ADPLCtrl',  ['$scope','$http','$mdToast',  function($scope, $http, $mdToast) {
 	console.log('start'); 
 	updateLocations();
 	$scope.currLoc= "";
@@ -14,7 +14,30 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 	$scope.valveShow=true;
 	$scope.plotLoad=true;
 	$scope.currChannel=""
+	
+	// Socket IO
+	var socket = io('http://localhost:9000');
+	socket.on('HXHO', function(data){
+		console.log('New Data');
+		console.log(data);
+		if (data['loc'] == $scope.currLoc){
+			// Update view
+			$scope.updateViewAll();	
+			showToast('New Data, refreshing...');
 
+		}
+		
+	});
+	
+	function showToast(message){
+		$mdToast.show(
+      	$mdToast.simple()
+		.position('bottom right')
+        .textContent(message) 
+        .hideDelay(3000)
+    );
+
+	}
 
 	function updateLocations(){ 
 		$http.get('/api/sites').success(
@@ -33,6 +56,7 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 	$scope.changeLoc = function(){ 
 		$scope.plotHide=false;
 		$scope.updateViewAll(); 
+		showToast('Change');
 
 	};
 	function updateMetadata(){

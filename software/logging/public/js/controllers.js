@@ -56,7 +56,7 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 	$scope.changeLoc = function(){ 
 		$scope.plotHide=false;
 		$scope.updateViewAll(); 
-		showToast('Change');
+		
 
 	};
 	function updateMetadata(){

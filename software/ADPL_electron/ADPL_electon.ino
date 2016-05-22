@@ -44,6 +44,8 @@ Bucket bucket(BUCKET);
 unsigned long currentTime = 0;
 unsigned long last_publish_time = 0;
 
+char temps_str [69];
+
 void setup() {
     Serial.begin(9600);
 }
@@ -57,12 +59,10 @@ void loop() {
 
     currentTime = millis();
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
-        tempHXCI.publish();
-        tempHXCO.publish();
-        tempHTR.publish();
-        tempHXHI.publish();
-        tempHXHO.publish();
-        delay(1500);
+        sprintf(temps_str,"HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f",
+                tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp);
+        Particle.publish("TEMPS",temps_str);
+        delay(1000);
         bucket.publish();
         last_publish_time = currentTime;
     }

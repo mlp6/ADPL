@@ -15,6 +15,9 @@ module.exports = function(deviceUrl, io){
     es.addEventListener("TEMPS", function (message) {
         console.log("New Message");
         realData = JSON.parse(message.data);
+        // readData.data, published by the Electron, is close, but not valid, JSON;
+        // true JSON formatting will cost more characters, so will just manually
+        // parse the data
 		for (d in realData.data.split(",")) {
 			realData.probeid = realData.data.split(",")[d].split(":")[0].replace(/\s+/g, '');
 			realData.temp = realData.data.split(",")[d].split(":")[1].replace(/\s+/g, '');

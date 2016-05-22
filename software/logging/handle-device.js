@@ -1,6 +1,6 @@
 /*
  * handle-device.js
- * This module handles listening to the particle device stream and saving recieved data 
+ * This module handles listening to the particle device stream and saving received data
  * in real time to the database (LogEvent models). It also has capability to send push 
  * notifications to clients using socketio when new packages arrive. 
  * @author: Suyash Kumar <suyashkumar2003@gmail.com>
@@ -12,15 +12,15 @@ var locMap = require('./config/device-map.js').locMap;
 
 module.exports = function(deviceUrl, io){
 	var es = new EventSource(deviceUrl); // Listen to the stream
-    var temp_probes = ['HXCI', 'HXCO', 'HTR', 'HXHI', 'HXHO'];
-    for (probe in temp_probes) {
-        es.addEventListener(temp_probes[probe], function (message) {
-            console.log("New Message");
-            realData = JSON.parse(message.data);
-            realData["name"] = message.type;
-            addRecord(realData, io);
-        });
-    }
+    es.addEventListener("TEMPS", function (message) {
+        console.log("New Message");
+        realData = JSON.parse(message.data);
+		for (d in realData.data.split(",")) {
+			realData.probeid = realData.data.split(",")[d].split(":")[0].replace(/\s+/g, '');
+			realData.temp = realData.data.split(",")[d].split(":")[1].replace(/\s+/g, '');
+			addRecord(realData, io);
+		}
+    });
 } 
 
 
@@ -29,8 +29,8 @@ function addRecord(data, io){
 		coreid:		data.coreid,
 		time:		new Date(data.published_at),
 		loc:		locMap[data.coreid],
-		probeid:	data.name,
-		temp:		data.data
+		probeid:	data.probeid,
+		temp:		data.temp
 	}
 	console.log(toAdd);
 	var newRecord = new LogEvent(toAdd);  

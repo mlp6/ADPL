@@ -6,7 +6,7 @@
 #include "Bucket.h"
 
 Bucket::Bucket(int pin) {
-    pinMode(pin, INPUT);
+    pinMode(pin, INPUT_PULLDOWN);
     _pin = pin;
     unsigned long tip_time = 0;
     unsigned int tip_count = 0;

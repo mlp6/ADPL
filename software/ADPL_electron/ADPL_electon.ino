@@ -113,6 +113,7 @@ void loop() {
         bucket.read(); // read will also count if HIGH
         if (bucket.tipped) {
           bucket.publish();
+          bucket.tipped = false;
         }
     }
 

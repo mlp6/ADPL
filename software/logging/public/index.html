@@ -102,10 +102,10 @@
 					</div> 
 		</md-card-content> 
 		 <md-card-actions layout="row" layout-align="end center">
-          <md-button class="md-icon-button" aria-label="Favorite" ng-click="saveSVG()">
+          <md-button class="md-icon-button" aria-label="Favorite" ng-click="saveCSV(plotData)">
         	<i class="fa fa-floppy-o" aria-hidden="true"></i> 
 			<md-tooltip >
-           		Quick Save Graph 
+				Download CSV
           </md-tooltip>
           </md-button>
           </md-card-actions>
@@ -113,10 +113,6 @@
 		</div>
 	</div> 
 
-	<div class="row">
-			<div class="col-lg-8 col-lg-offset-2 text-center ng-hide" ng-hide="plotHide" >
-			  <md-button ng-click="saveCSV(plotData)">Download CSV</md-button> 
-			</div>
 	<br>
 	<br>
 

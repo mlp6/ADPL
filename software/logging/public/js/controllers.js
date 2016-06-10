@@ -15,7 +15,7 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 	$scope.plotLoad=true;
 	$scope.currChannel=""
 	
-	// Socket IO
+	// Socket IO Push Updates
 	var socket = io('http://adpl.suyash.io'); // For testing change this as needed. TODO: Set this maybe by templating?  
 	socket.on('HXHO', function(data){
 		console.log('New Data');
@@ -59,7 +59,8 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 		
 
 	};
-	function updateMetadata(){
+	function updateMetadata(plotData){
+		// Update Valve Status: 
 		$http.get('/api/gasOn/'+$scope.currLoc).success(
 			function(data){
 				$scope.valveShow=false;
@@ -78,14 +79,27 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 				}
 				
 			});
-
+		// Update Average Temps:
+		var pIDs = ["HXHO", "HTR", "HXHI", "HXCO", "HXCI"];
+		var N = 20; 
+		for(var probeIndex in pIDs){
+			var currSel = plotData[pIDs[probeIndex]];
+			var lastN = currSel.slice(Math.max(currSel.length - N, 1));
+			var currSum = 0;
+			var totalSeen = 0;
+			for (var pairIndex in lastN){
+				currSum = currSum + lastN[pairIndex]["y"];
+				totalSeen = totalSeen + 1;
+			}
+			var avg = currSum/totalSeen; 
+			$scope[pIDs[probeIndex]+"Avg"] = avg.toFixed(1);	
 		}
+
+	}
 
 	
 	$scope.updateViewAll = function(){
-		// Update metadata
-		$scope.valveShow=true;
-		updateMetadata();
+
 		// Update plot
 		$scope.plotLoad=true;
 		$http.get('/api/list/'+$scope.currLoc).success(
@@ -117,7 +131,11 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 				updateGraph(plotArray);
 				$scope.plotTitle = "Temperature Data ("+$scope.currLoc+")";
 				$scope.plotData = plotData;
+						// Update metadata
+		$scope.valveShow=true;
+		updateMetadata(plotData);
 			}); 
+
 	}
 	$scope.updateViewSingle = function(){
 		$http.get('/api/list/'+$scope.currLoc+"/"+$cope.currChannel).success(

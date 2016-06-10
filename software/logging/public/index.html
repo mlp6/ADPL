@@ -8,6 +8,7 @@
 <!---       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.3/nv.d3.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.5/angular-material.min.css">
+		<link rel="stylesheet" href="style.css">
 
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>     
@@ -68,6 +69,8 @@
 
 
 	</div>
+
+	<!-- Metadata-->
 	<div class="row">
 		<div class= "col-lg-8 col-lg-offset-2 ng-hide" ng-hide="plotHide">
 			<md-card>
@@ -76,12 +79,40 @@
 				<span class="md-headline"> Metadata </span>
 			</md-card-title-text>
 			</md-card-title>
-			<md-card-content style="height:100px" md-theme="altTheme"> 
-			<md-progress-circular md-mode="indeterminate" class="ng-show" ng-show = "valveShow"></md-progress-circular>
-			<div class="ng-hide" ng-hide = "valveShow">
-				Valve Status: <br>
-				<span class="label" style="font-size:15px" ng-class="gasOnLabel">{{gasOn}}</span>
+			<md-card-content class="text-center" style="float:left;margin:auto;"> 
+		
+		
+
+			<div class="metadata-item text-center ">
+				<div class="text-center metadata-title">Valve Status</div> <br>
+				<span class="label label-default ng-hide" ng-hide="valveShow" style="font-size:15px" ng-class="gasOnLabel">{{gasOn}}</span>
+				<md-progress-circular md-mode="indeterminate" class="ng-show text-center" style="float:left;margin:auto" ng-show = "valveShow"></md-progress-circular>
+			</div> 
+		
+	
+			<div class="metadata-item text-center example example-double">
+				<div class="metadata-title">	
+					<md-tooltip md-direction="top">
+						Over last 20 Samples, deg C
+         			 </md-tooltip> 
+					 Average Temps
+				</div> <br>
+
+				<span class="label label-default" style="font-size:15px">HXHO: {{HXHOAvg}}</span>
+				<span class="label label-default" style="font-size:15px">HTR: {{HTRAvg}}</span>
+				<span class="label label-default" style="font-size:15px">HXHI: {{HXHIAvg}}</span>
+				<span class="label label-default" style="font-size:15px">HXCI: {{HXCIAvg}}</span>
+
 			</div>
+
+			<div class="metadata-item text-center example example-double">
+				<div class="metadata-title">Bucket Tips </div> <br> 
+					<span class="label label-default" style="font-size:15px">E</span>
+
+			</div>
+
+
+			
 			</md-card-content>
 			</md-card>
 		</div>

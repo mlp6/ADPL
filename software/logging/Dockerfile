@@ -27,7 +27,7 @@ RUN     cd /src; npm install --production
 
 COPY    . /src
 
-EXPOSE  80
+EXPOSE  9000
 
 USER    adpl
 CMD     ["authbind", "node", "/src/server.js"]

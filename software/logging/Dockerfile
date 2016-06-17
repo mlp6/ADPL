@@ -17,12 +17,13 @@ RUN     apt-get install -y mongodb-org
 RUN     mkdir /data && mkdir /data/db
 
 COPY    package.json /src/package.json
-RUN     cd /src; npm install --production
+
+WORKDIR /src
+
+RUN     npm install --production
 
 COPY    . /src
 
 EXPOSE  9000
 
-WORKDIR /src
-
-CMD     ["node", "./server.js"]
+CMD     ["node", "server.js"]

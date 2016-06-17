@@ -3,7 +3,7 @@ FROM    ubuntu:14.04
 RUN     apt-get update
 
 ### Install proper repos for nodejs and install
-RUN     apt-get -y install curl
+RUN     apt-get install -y curl
 RUN     curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 RUN     apt-get install -y nodejs
 
@@ -16,16 +16,19 @@ RUN     apt-get install -y mongodb-org
 # Make default dirs for mongodb.
 RUN     mkdir -p /data/db
 
-ENTRYPOINT ["/usr/bin/mongod"]
+#ENTRYPOINT ["/usr/bin/mongod"]
 
-COPY    package.json /src/package.json
+RUN     apt-get -y install supervisor
+RUN     mkdir -p /var/log/supervisor
+
+COPY    supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+COPY    . /src
 
 WORKDIR /src
 
 RUN     npm install --production
 
-COPY    . /src
-
 EXPOSE  9000
 
-CMD     ["node", "/src/server.js"]
+CMD     ["/usr/bin/supervisord"]

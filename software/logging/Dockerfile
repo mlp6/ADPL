@@ -28,4 +28,4 @@ COPY    . /src
 
 EXPOSE  9000
 
-CMD     ["/usr/bin/node", "server.js"]
+CMD     ["node", "/src/server.js"]

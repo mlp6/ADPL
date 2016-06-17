@@ -14,7 +14,7 @@ RUN     apt-get update
 RUN     apt-get install -y mongodb-org
 
 # Make default dirs for mongodb.
-RUN     mkdir /data && mkdir /data/db
+RUN     mkdir -p /data/db
 
 COPY    package.json /src/package.json
 

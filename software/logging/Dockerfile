@@ -16,6 +16,8 @@ RUN     apt-get install -y mongodb-org
 # Make default dirs for mongodb.
 RUN     mkdir -p /data/db
 
+ENTRYPOINT ["/usr/bin/mongod"]
+
 COPY    package.json /src/package.json
 
 WORKDIR /src

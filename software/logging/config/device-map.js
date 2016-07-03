@@ -6,10 +6,11 @@
 module.exports={
 	locMap : {
 		"1b0048000c51343334363138": "ADPLKenyaNorth0437",
-        "48002d000b51343334363138": "ADPLKenyaCentral9822",
-		// "530031000a51343334363138": "durham-1",
+        "48002d000b51343334363138": "ADPLKenyaCentral9822", 
 		"440032000a51343334363138": "ADPLdukelab4601",
-		"5a004e001751353338363036": "ADPLDukelab0278"
+		"5a004e001751353338363036": "ADPLDukelab0278",
+		"310057000951343334363138": "ADPLPhilippinesSagay3904",
+		"170044000c51343334363138": "ADPLPhilippinesSubayon1817"
 	}, // Maps coreids to a location identifier
 	locMapRev : function(){ 
 		revMap = {};

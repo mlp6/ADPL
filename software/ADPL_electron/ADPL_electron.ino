@@ -38,7 +38,7 @@ LevelSensor levelSensor(LEVEL);
 
 #include "Bucket.h"
 Bucket bucket(BUCKET);
-#define BUCKET_TIP_COUNT_DELAY 10000  // 10 s delay
+#define BUCKET_TIP_COUNT_DELAY 2500  // 2.5 s delay
 
 // initialize some time counters
 unsigned long currentTime = 0;

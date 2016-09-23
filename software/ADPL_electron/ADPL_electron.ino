@@ -10,6 +10,9 @@
  * Copyright (c) 2015-2016 Mark Palmeri (Duke University)
  */
 
+SYSTEM_THREAD(ENABLED);  // parallel user and system threads
+                         // to allow function w/o cell connectivity
+
 #define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
 
 #include "pin_mapping.h"

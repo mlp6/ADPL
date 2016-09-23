@@ -19,6 +19,9 @@ module.exports = function(deviceUrl, io){
         // true JSON formatting will cost more characters, so will just manually
         // parse the data
 		for (d in realData.data.split(",")) {
+            if (realData.data === undefined || realData.data === null) {
+                continue;
+            }
 			realData.probeid = realData.data.split(",")[d].split(":")[0].replace(/\s+/g, '');
 			realData.temp = realData.data.split(",")[d].split(":")[1].replace(/\s+/g, '');
 			addRecord(realData, io);

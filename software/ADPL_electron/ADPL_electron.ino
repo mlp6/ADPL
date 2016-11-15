@@ -51,16 +51,18 @@ char temps_str [69];
 
 void setup() {
     Serial.begin(9600);
+    Particle.variable("currentTime", currentTime);
 }
 
 void loop() {
+    currentTime = millis();
+
     tempHXCI.read();
     tempHXCO.read();
     tempHTR.read();
     tempHXHI.read();
     tempHXHO.read();
 
-    currentTime = millis();
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
         sprintf(temps_str,"HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f",
                 tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp);

@@ -46,6 +46,7 @@ Bucket bucket(BUCKET);
 // initialize some time counters
 unsigned long currentTime = 0;
 unsigned long last_publish_time = 0;
+int temp_count = 1;
 
 char temps_str [69];
 
@@ -57,11 +58,8 @@ void setup() {
 void loop() {
     currentTime = millis();
 
-    tempHXCI.read();
-    tempHXCO.read();
-    tempHTR.read();
-    tempHXHI.read();
-    tempHXHO.read();
+    // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
+    temp_count = read_temp(temp_count);
 
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
         sprintf(temps_str,"HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f",
@@ -123,3 +121,31 @@ void loop() {
     }
 
 } // end loop()
+
+
+int read_temp(int temp_count) {
+    switch (temp_count) {
+        case 1:
+            tempHXCI.read();
+            temp_count++;
+            break;
+        case 2:
+            tempHXCO.read();
+            temp_count++;
+            break;
+        case 3:
+            tempHTR.read();
+            temp_count++;
+            break;
+        case 4:
+            tempHXHI.read();
+            temp_count++;
+            break;
+        case 5:
+            tempHXHO.read();
+            temp_count = 1;
+            break;
+    }
+
+    return temp_count;
+}

@@ -41,7 +41,6 @@ LevelSensor levelSensor(LEVEL);
 
 #include "Bucket.h"
 Bucket bucket(BUCKET);
-#define BUCKET_TIP_COUNT_DELAY 2500  // 2.5 s delay
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -53,6 +52,8 @@ char temps_str [69];
 void setup() {
     Serial.begin(9600);
     Particle.variable("currentTime", currentTime);
+    // count bucket tips on one-shot rise
+    attachInterrupt(BUCKET, bucket_tipped, RISING);
 }
 
 void loop() {
@@ -109,19 +110,7 @@ void loop() {
             }
         }
     }
-
-    // count bucket tip
-    currentTime = millis();
-    if ((currentTime - bucket.tip_time) > BUCKET_TIP_COUNT_DELAY) {
-        bucket.read(); // read will also count if HIGH
-        if (bucket.tipped) {
-          bucket.publish();
-          bucket.tipped = false;
-        }
-    }
-
-} // end loop()
-
+}
 
 int read_temp(int temp_count) {
     switch (temp_count) {
@@ -148,4 +137,8 @@ int read_temp(int temp_count) {
     }
 
     return temp_count;
+}
+
+void bucket_tipped() {
+    bucket.tipped();
 }

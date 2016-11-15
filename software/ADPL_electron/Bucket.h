@@ -6,13 +6,10 @@
 class Bucket {
     public:
         Bucket(int pin);
-        void read();
+        void tipped();
         unsigned long tip_time;
         unsigned int tip_count;
-        boolean tipped;
         void publish();
-    private:
-        int _pin;
 };
 
 #endif

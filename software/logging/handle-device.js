@@ -27,10 +27,10 @@ module.exports = function(deviceUrl, io){
 			addRecord(realData, io);
 		}
     });
-    es.addEventListener("error", function (message) {
+    es.onerror = function (err) {
         console.log("ERROR (Likely Event Source)");
-        console.log(message);
-    });
+        console.log(err);
+    };
 } 
 
 

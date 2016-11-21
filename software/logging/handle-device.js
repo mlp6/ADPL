@@ -15,18 +15,18 @@ module.exports = function(deviceUrl, io){
     es.addEventListener("TEMPS", function (message) {
         console.log("New Message");
         realData = JSON.parse(message.data);
-        // readData.data, published by the Electron, is close, but not valid, JSON;
-        // true JSON formatting will cost more characters, so will just manually
-        // parse the data
-		for (d in realData.data.split(",")) {
-            if (realData.data === undefined || realData.data === null) {
-                continue;
-            }
-			realData.probeid = realData.data.split(",")[d].split(":")[0].replace(/\s+/g, '');
-			realData.temp = realData.data.split(",")[d].split(":")[1].replace(/\s+/g, '');
-			addRecord(realData, io);
-		}
+        try {
+            probeTempSamples = realData.data.split(",")
+            probeTempSamples.map((probeTempSample) => {
+                addRecord(probeTempSample, realData.coreid, realData.published_at, io);
+            }); 
+        } catch (err) {
+            console.log("ERROR parsing and saving TEMPS message");
+            console.log("Message", message);
+            console.log("Error:", err);
+        }
     });
+
     es.onerror = function (err) {
         console.log("ERROR (Likely Event Source)");
         console.log(err);
@@ -34,18 +34,18 @@ module.exports = function(deviceUrl, io){
 } 
 
 
-function addRecord(data, io){
+function addRecord(probeTempSample, coreid, publishedAt, io){
 	var toAdd= {
-		coreid:		data.coreid,
-		time:		new Date(data.published_at),
-		loc:		locMap[data.coreid],
-		probeid:	data.probeid,
-		temp:		data.temp
+		coreid:		coreid,
+		time:		new Date(publishedAt),
+		loc:		locMap[coreid],
+		probeid:	probeTempSample.split(":")[0].trim(),
+		temp:	    probeTempSample.split(":")[1].trim()	
 	}
 	console.log(toAdd);
 	var newRecord = new LogEvent(toAdd);  
-	newRecord.save(function(err,event){
+	newRecord.save(function(err, event){
 		if(err) console.log("error in saving to database"+err);
 	})
-	io.emit(data.probeid,newRecord);
+	io.emit(toAdd.probeid, newRecord);
 }

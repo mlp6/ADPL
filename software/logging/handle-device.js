@@ -18,15 +18,20 @@ module.exports = function(deviceUrl, io){
         // readData.data, published by the Electron, is close, but not valid, JSON;
         // true JSON formatting will cost more characters, so will just manually
         // parse the data
-		for (d in realData.data.split(",")) {
-            if (realData.data === undefined || realData.data === null) {
-                continue;
+		for (d in realData.data.split(",")) { 
+            try {
+			    realData.probeid = realData.data.split(",")[d].split(":")[0].replace(/\s+/g, '');
+			    realData.temp = realData.data.split(",")[d].split(":")[1].replace(/\s+/g, '');
+			    addRecord(realData, io);
+            } catch (err) {
+                console.log("ERROR parsing split TEMPS message chunk");
+                console.log("Message", message); 
+                console.log("d:", d); 
+                console.log("Error", err);
             }
-			realData.probeid = realData.data.split(",")[d].split(":")[0].replace(/\s+/g, '');
-			realData.temp = realData.data.split(",")[d].split(":")[1].replace(/\s+/g, '');
-			addRecord(realData, io);
 		}
     });
+
     es.onerror = function (err) {
         console.log("ERROR (Likely Event Source)");
         console.log(err);

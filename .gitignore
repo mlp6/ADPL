@@ -5,4 +5,3 @@ software/logging/node_modules
 software/logging/api/twilio_auth.js
 .idea
 CMakeLists.txt
-electron_system_firmware

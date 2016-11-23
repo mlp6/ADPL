@@ -4,7 +4,7 @@ RUN     apt-get update
 
 ### Install proper repos for nodejs and install
 RUN     apt-get install -y curl
-RUN     curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+RUN     curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 RUN     apt-get install -y nodejs
 
 ### Install proper repos for Mongodb and install

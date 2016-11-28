@@ -5,7 +5,7 @@
  * @author: Suyash Kumar <suyashkumar2003@gmail.com>
  */
 var LogEvent = require('../models/LogEvent.js');
-var twilio_auth = require('./twilio_auth.js');
+var twilioAuth = require('./twilio_auth.js');
 
 module.exports = {
 	onText: function(req,res){ 
@@ -25,7 +25,7 @@ module.exports = {
 
 }
 function sendText(data, req){
-	var client = require('twilio')(twilio_auth.sid, twilio_auth.auth);
+	var client = require('twilio')(twilioAuth.sid, twilioAuth.auth);
     var createTempString = function(item) {
         return `${item.probeid}: ${item.temp} C`;
     };

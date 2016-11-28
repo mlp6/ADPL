@@ -8,6 +8,7 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var errorHandler = require('./api/error-handling');
 
 // Load libraries
 var bodyParser = require('body-parser');
@@ -23,6 +24,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Set up static content
 app.use(express.static(__dirname + '/node_modules')); // client-side frameworks
 app.use(express.static(__dirname + '/public')); // HTML, CSS 
+
+// Set up error handling
+app.use(errorHandler);
 
 // Connect to Mongodb
 require('./config/db')();

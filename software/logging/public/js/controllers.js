@@ -80,7 +80,7 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 				
 			});
 		// Update Average Temps:
-		var pIDs = ["HXHO", "HTR", "HXHI", "HXCO", "HXCI"];
+		var pIDs = ["HXCI", "HXCO", "HTR", "HXHI", "HXHO"];
 		var N = 20; 
 		for(var probeIndex in pIDs){
 			var currSel = plotData[pIDs[probeIndex]];

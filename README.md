@@ -27,6 +27,7 @@
 
 ###Repository Layout
 * ```software/ADPL_electron/```: Particle Electron code and libraries
+* ```software/logging/```: NodeJS/MongoDB webserver
 * ```hardware/```: control box circuit schematic, PCB layout, component spec
   sheets and bill of materials
 * ```docs/```: API documentation [FUTURE]

@@ -96,12 +96,29 @@
 						Over last 20 Samples, deg C
          			 </md-tooltip> 
 					 Average Temps
-				</div> <br>
-
-				<span class="label label-default" style="font-size:15px">HXHO: {{HXHOAvg}}</span>
-				<span class="label label-default" style="font-size:15px">HTR: {{HTRAvg}}</span>
-				<span class="label label-default" style="font-size:15px">HXHI: {{HXHIAvg}}</span>
-				<span class="label label-default" style="font-size:15px">HXCI: {{HXCIAvg}}</span>
+				</div> 
+                <div style="margin-top:20px">
+                    <span class="label label-default metadata-avg-temp">
+                        <div> HXCI </div>
+                        {{HXCIAvg}}
+                    </span>
+                    <span class="label label-default metadata-avg-temp"> 
+                        <div> HXCO </div> 
+                        {{HXCOAvg}}
+                    </span>
+                    <span class="label label-default metadata-avg-temp"> 
+                        <div> HTR: </div> 
+                        {{HTRAvg}}
+                    </span>
+                    <span class="label label-default metadata-avg-temp"> 
+                        <div> HXHI </div> 
+                        {{HXHIAvg}}
+                    </span>
+                    <span class="label label-default metadata-avg-temp"> 
+                        <div> HXHO </div> 
+                        {{HXHOAvg}}
+                    </span>
+                </div>
 
 			</div>
 

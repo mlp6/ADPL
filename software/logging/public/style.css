@@ -13,7 +13,11 @@
 }
 .metadata-title {
 	margin-bottom: -5px;
-	font-weight: bold;
+	font-weight: bold; 
+}
 
+.metadata-avg-temp {
+    font-size: 15px;
+    display: inline-block;
 }
 

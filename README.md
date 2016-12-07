@@ -4,19 +4,12 @@
 * Overview: http://sanitation.pratt.duke.edu/onsite-treatment
 * Data Dashboard: http://adpl.colab.duke.edu
 
-##Functional Specifications
-###Collection Tank
-* When the level in a collection tank is between a minimum and maximum level,
-  the pump should be on for 5 min every hour.
-* The pump is off when the level is below minimum.
-* The pump is on when the level is above maximum.
-
 ###Temperature Regulation
 * Record temperatures across 5[-7] thermocouples.
 * If the heater temperature (``HTR``) is < 68 C, the gas valve opens and the
-  ignitor sparks for 5 s.
-* The valve remains open until the heather temperature reaches 72 C; the ignitor
-  should spark for 5 seconds, turn off for 15 min, and spark again for 5 s.
+  ignitor sparks for 1 s.
+* The valve remains open until the heater temperature reaches 72 C; the ignitor
+  should spark for 1 seconds, turn off for 15 min, and spark again for 1 s.
 * Once the temperature is 72 C, the valve should shut and ignitor remain off.
 * Temperatures are published to the web server every 2.5 min.
 * Valve status will be polled when the dashboard is refreshed.
@@ -25,8 +18,13 @@
 * Bucket tips are recorded and counted.
 * Count events are published to the web server.
 
+###Pump Regulation (India only)
+* Pump turns on for 5 minutes, turns off for 55 minutes 
+  (sequence starts with pump off so that any disconnection/loss of power does not turn pump on when rebooting)
+
 ###Repository Layout
 * ```software/ADPL_electron/```: Particle Electron code and libraries
+* ```software/logging/```: NodeJS/MongoDB webserver
 * ```hardware/```: control box circuit schematic, PCB layout, component spec
   sheets and bill of materials
 * ```docs/```: API documentation [FUTURE]

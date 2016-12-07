@@ -6,6 +6,7 @@
 // Set up Express.js
 var express = require('express');
 var app = express();
+var cors = require('cors');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var errorHandler = require('./api/error-handling');
@@ -16,6 +17,9 @@ var morgan = require('morgan');
 
 // Set up logging
 app.use(morgan('dev'));
+
+// Set up cors (allow all origins)
+app.use(cors());
 
 // Set up body parsing
 app.use(bodyParser.json());

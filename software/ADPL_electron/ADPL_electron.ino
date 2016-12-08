@@ -28,8 +28,8 @@ TempProbe tempHXHO("HXHO", HXHO);
 Valve valve(VALVE);
 #include "Ignitor.h"
 Ignitor ignitor(IGNITOR);
-#define INCINERATE_LOW_TEMP 25  // will be 68 in field
-#define INCINERATE_HIGH_TEMP 28 // will be 72 in field
+#define INCINERATE_LOW_TEMP 68  // will be 68 in field
+#define INCINERATE_HIGH_TEMP 72 // will be 72 in field
 #define IGNITE_DELAY 900000     // 15 min between ignitor fires with open valve
 
 #include "Pump.h"

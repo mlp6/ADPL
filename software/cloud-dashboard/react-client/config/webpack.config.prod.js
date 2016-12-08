@@ -84,7 +84,8 @@ module.exports = {
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web'
-    }
+    },
+	modulesDirectories: ["src", "node_modules"],
   },
   
   module: {
@@ -114,6 +115,8 @@ module.exports = {
         exclude: [
           /\.html$/,
           /\.(js|jsx)$/,
+		  /\.sass/,
+		  /\.scss/,
           /\.css$/,
           /\.json$/
         ],
@@ -130,6 +133,11 @@ module.exports = {
         loader: 'babel',
         
       },
+	  {
+	   	test: /(\.scss|\.css)$/,
+    	include: /react-toolbox/, 
+	  	loaders: ["style?modules", "css?modules", "sass?modules"]
+	  },
       // The notation here is somewhat confusing.
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.

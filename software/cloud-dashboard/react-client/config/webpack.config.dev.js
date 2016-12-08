@@ -154,8 +154,7 @@ module.exports = {
         loader: 'json'
       }
     ]
-  },
-  
+  }, 
   // We use PostCSS for autoprefixing only.
   postcss: function() {
     return [

@@ -4,7 +4,7 @@ import LocationsReducer from './locations-reducer';
 
 const rootReducer = combineReducers({
 	temps: TempReducer,
-	locations: LocationsReducer
+	locationData: LocationsReducer
 });
 
 export default rootReducer;

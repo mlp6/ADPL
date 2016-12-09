@@ -19,8 +19,8 @@ module.exports = {
 			}
 			if (parsed.hasOwnProperty("error")){
 				res.send("error");
-			}else{
-			res.json(parsed.result);
+			} else {
+				res.json(parsed.result);
 			}
 		});
 

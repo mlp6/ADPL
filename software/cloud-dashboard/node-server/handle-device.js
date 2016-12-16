@@ -45,7 +45,11 @@ function addRecord(parsedData, io){
  * 		"coreid":"4b0031000d51353432393339"
  * 	}
  * }
+ * This function returns a map of all the transducer fields to 
+ * corresponding values along with published_at and coreid 
+ * (e.g. {HXHO: 100, ... , coreid: "", published_at: ""})
  * @param {object} message
+ * @return {object} a map of data fields to their values (including transducers) 
  */
 function parseMessage(message) {
 	deviceData = JSON.parse(message.data); 

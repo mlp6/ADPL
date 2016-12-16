@@ -60,7 +60,7 @@ void loop() {
     temp_count = read_temp(temp_count);
 
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
-        sprintf(temps_str,"HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,VALVE:%d",
+        sprintf(temps_str,"HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d",
                 tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp, int(valve.gasOn));
         Particle.publish("TEMPS",temps_str);
         delay(1000);

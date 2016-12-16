@@ -16,8 +16,8 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 	$scope.currChannel=""
 	
 	// Socket IO Push Updates
-	//var socket = io('http://adpl.suyash.io'); // For testing change this as needed. TODO: Set this maybe by templating?  
-	var socket = io('http://localhost:9000'); // For testing change this as needed. TODO: Set this maybe by templating?  
+	var socket = io('http://adpl.suyash.io'); // For testing change this as needed. TODO: Set this maybe by templating?  
+	//var socket = io('http://localhost:9000'); // For testing change this as needed. TODO: Set this maybe by templating?  
 	socket.on('HXHO', function(data){
 		console.log('New Data');
 		console.log(data);

@@ -38,7 +38,7 @@ class LocationSelector extends Component {
 	} 
 }
 
-LocationSelector.protoTypes = {
+LocationSelector.propTypes = {
 	locations: PropTypes.array.isRequired,
 	fetchTemps: PropTypes.func.isRequired, 
 }

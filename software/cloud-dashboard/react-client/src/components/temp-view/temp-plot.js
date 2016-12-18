@@ -13,14 +13,20 @@ class TempPlot extends Component {
 		return downsampledArray;
 	}
 
+	formatDate = date => { 
+		const dateObj = new Date(date);
+		return `${dateObj.getMonth().toString()}/${dateObj.getDate().toString()} ${dateObj.getHours()}:${dateObj.getMinutes()}`
+	}
+
 	renderPlot = () => {
 		const data = this.props.temps.data.map( currentItem => {
 			return { ...currentItem.temps, time: currentItem.time };
 		});
+
 		return ( 
 			<div style={{}}>
-			<LineChart width={700} height={300} data={this.downsampleArray(data, 30)}>
-				<XAxis dataKey="time"/>
+			<LineChart width={700} height={300} data={this.downsampleArray(data, 30).reverse()}>
+				<XAxis dataKey="time" interval={10} tickFormatter={this.formatDate} />
 				<YAxis />
 				{
 					Object.keys(data[0]).map((currentItem, index) => {
@@ -34,7 +40,8 @@ class TempPlot extends Component {
 						);
 					})
 				}
-				<Tooltip/>
+				<Tooltip
+					labelFormatter={this.formatDate}/>
 				<Legend />
 				<CartesianGrid strokeDasharray="3 3" />
 			</LineChart> 

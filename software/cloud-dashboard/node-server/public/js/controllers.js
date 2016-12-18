@@ -17,6 +17,7 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 	
 	// Socket IO Push Updates
 	var socket = io('http://adpl.suyash.io'); // For testing change this as needed. TODO: Set this maybe by templating?  
+	//var socket = io('http://localhost:9000'); // For testing change this as needed. TODO: Set this maybe by templating?  
 	socket.on('HXHO', function(data){
 		console.log('New Data');
 		console.log(data);
@@ -103,39 +104,40 @@ angular.module('adplApp', ['ngMaterial', 'ngMessages'])
 		// Update plot
 		$scope.plotLoad=true;
 		$http.get('/api/list/'+$scope.currLoc).success(
-			function(data) {
-
-				var plotData = {}; // key is probeid, value is array of {x: , y: } objects
-
-				for (i=0;i<data.length;i++){
-					if (!(data[i].probeid in plotData)){
-						plotData[data[i].probeid] = [];	
-					} 
-					if (data[i].temp < 0){
-						continue;
+			function(data) { 
+				var plotData = { // key is probeid, value is array of {x: , y: } objects
+					HXHO: [],
+					HXHI: [],
+					HXCO: [],
+					HXCI: [],
+					HTR:  [] 
+				}; 
+				plotData = data.reduce(function(result, currentSample) {
+					for (var probeid in plotData) {
+						var currentObject = {
+							x: new Date(currentSample['time']), 
+							y: currentSample['temps'][probeid]
+						};
+						result[probeid].push(currentObject);
 					}
-					plotData[data[i].probeid].push({x:new Date(data[i].time), y:data[i].temp});
-				}
-				console.log(plotData);
+					return result;
+				}, plotData); 
 				// build plot array
 				var plotArray = []; 
 				for (var key in plotData){
 					if (plotData.hasOwnProperty(key)){
 						var currSeries = {"key":key, "values":plotData[key]};
 						plotArray.push(currSeries); 
-						console.log("h");
 					}
-				}
-				console.log(plotArray);
+				} 
 				$scope.plotLoad=false;
 				updateGraph(plotArray);
 				$scope.plotTitle = "Temperature Data ("+$scope.currLoc+")";
 				$scope.plotData = plotData;
-						// Update metadata
-		$scope.valveShow=true;
-		updateMetadata(plotData);
-			}); 
-
+			// Update metadata
+			$scope.valveShow=true;
+			updateMetadata(plotData);
+		}); 
 	}
 	$scope.updateViewSingle = function(){
 		$http.get('/api/list/'+$scope.currLoc+"/"+$cope.currChannel).success(

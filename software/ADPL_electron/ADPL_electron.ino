@@ -1,7 +1,6 @@
 /* ADPL_complete.ino
  * Master MCU code for all components:
  * + temp probes
- * + level sensor
  * + relays
  * + bucket tip
  *
@@ -28,16 +27,14 @@ TempProbe tempHXHO("HXHO", HXHO);
 Valve valve(VALVE);
 #include "Ignitor.h"
 Ignitor ignitor(IGNITOR);
-#define INCINERATE_LOW_TEMP 25  // will be 68 in field
-#define INCINERATE_HIGH_TEMP 28 // will be 72 in field
+#define INCINERATE_LOW_TEMP 68  // will be 68 in field
+#define INCINERATE_HIGH_TEMP 72 // will be 72 in field
 #define IGNITE_DELAY 900000     // 15 min between ignitor fires with open valve
 
 #include "Pump.h"
 Pump pump(PUMP);
 #define KEEP_PUMP_ON_TIME 30000     // 5 min
 #define KEEP_PUMP_OFF_TIME 330000   // 55 min off time after 5 min on time
-#include "LevelSensor.h"
-LevelSensor levelSensor(LEVEL);
 
 #include "Bucket.h"
 Bucket bucket(BUCKET);
@@ -63,8 +60,8 @@ void loop() {
     temp_count = read_temp(temp_count);
 
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
-        sprintf(temps_str,"HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f",
-                tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp);
+        sprintf(temps_str,"HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d",
+                tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp, int(valve.gasOn));
         Particle.publish("TEMPS",temps_str);
         delay(1000);
         bucket.publish();
@@ -89,25 +86,13 @@ void loop() {
         }
     }
 
-    // read water level, determine pump on/off
-    levelSensor.read();
-
-    if (levelSensor.tooLow && pump.pumping) {
-        pump.turnOff();
-    }
-    else if (levelSensor.tooHigh && !pump.pumping) {
+    currentTime = millis();
+    if (!pump.pumping && (currentTime - pump.offTime) > KEEP_PUMP_OFF_TIME) {
         pump.turnOn();
     }
-    // When the level is 2"<x<24", the pump should be on for 5 min, off 55 min.
-    else if(!levelSensor.tooLow && !levelSensor.tooHigh) {
-        currentTime = millis();
-        if (!pump.pumping && (currentTime - pump.offTime) > KEEP_PUMP_OFF_TIME) {
-            pump.turnOn();
-        }
-        else if (pump.pumping) {
-            if ((currentTime - pump.onTime) > KEEP_PUMP_ON_TIME) {
-                pump.turnOff();
-            }
+    else if (pump.pumping) {
+        if ((currentTime - pump.onTime) > KEEP_PUMP_ON_TIME) {
+            pump.turnOff();
         }
     }
 }

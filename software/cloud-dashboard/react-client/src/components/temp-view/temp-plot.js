@@ -35,7 +35,7 @@ class TempPlot extends Component {
 							<Line 
 								type="monotone"
 								dataKey={currentItem} 
-								key={currentItem}
+								key={currentItem} 
 								stroke={LINE_COLORS[index]}/>
 						);
 					})

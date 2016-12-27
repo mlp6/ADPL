@@ -1,6 +1,7 @@
 /*
- * logs.js
- * Module to hold all API functions dealing with logs
+ * temperature-handlers.js
+ * Module to hold all API functions dealing with temperature
+ * events
  * @author: Suyash Kumar <suyashkumar2003@gmail.com>
  */ 
 var TemperatureEvent = require('../models/temperature-event');

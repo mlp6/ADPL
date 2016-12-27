@@ -38,9 +38,9 @@ require('./config/db')();
 // Set up app routes
 require('./config/routes')(app);
 
-// Set up device handler
-var deviceURL = "https://api.particle.io/v1/devices/events?access_token=7883544edea996822936af401fad4209c2ba5627"; 
-require('./handle-device.js')(deviceURL, io);
+// Set up ADPL devices handler
+var particleURL = "https://api.particle.io/v1/devices/events?access_token=7883544edea996822936af401fad4209c2ba5627"; 
+require('./handle-device.js')(particleURL, io);
 
 io.on('connection',function(socket){
 	console.log("hello");

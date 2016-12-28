@@ -1,9 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { Card, CardTitle } from 'react-toolbox/lib/card';
+import {Button, IconButton} from 'react-toolbox/lib/button'; 
 import ProgressBar from 'react-toolbox/lib/progress_bar';
 import TempPlot from './temp-view/temp-plot';
 
 class TempView extends Component {
+
+	state = {
+		tempPlotSidebarOpen: false
+	}
 
 	renderLoadingView = () => {
 		return (
@@ -12,6 +17,10 @@ class TempView extends Component {
 			</div>
 		)
 	} 
+
+	toggleTempPlotSidebar = () => {
+		return this.setState({tempPlotSidebarOpen: !this.state.tempPlotSidebarOpen});
+	}
 
 	render() {
 		return ( 
@@ -25,14 +34,21 @@ class TempView extends Component {
 					}
 				</Card>
 				<Card style={{minHeight: '400px', marginTop: '20px'}}> 
-					<CardTitle
-						title="Temperature Data"
-						subtitle="Last 3 Days"/>
+					<div style={{margin: '20px'}}>
+						<h3 style={{display: 'inline-block', float: 'left'}}> Temperature </h3>
+						<IconButton 
+							className="material-icons" 
+							style={{float: 'right'}} 
+							icon='menu'
+							onClick={this.toggleTempPlotSidebar}/>
+					</div>
 					{
 						this.props.temps.loading && 
 						this.renderLoadingView()
 					}
-					<TempPlot temps={this.props.temps}/>
+					<TempPlot 
+						temps={this.props.temps} 
+						sideBarOpen={this.state.tempPlotSidebarOpen}/>
 				</Card>
 			</div>
 		);

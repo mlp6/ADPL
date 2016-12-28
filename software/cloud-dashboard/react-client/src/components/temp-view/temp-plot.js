@@ -35,7 +35,7 @@ class TempPlot extends Component {
 		const data = this.props.temps.data.map( currentItem => {
 			return { ...currentItem.temps, time: currentItem.time };
 		});
-		console.log(data.length);
+		
 		return ( 
 			<div style={{}}>
 			<Layout>

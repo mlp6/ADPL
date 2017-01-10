@@ -141,6 +141,8 @@ function build(previousSizeMap) {
     console.log(chalk.green('Compiled successfully.'));
     console.log();
 
+	copyToServer();
+
     console.log('File sizes after gzip:');
     console.log();
     printFileSizes(stats, previousSizeMap);
@@ -217,4 +219,8 @@ function copyPublicFolder() {
     dereference: true,
     filter: file => file !== paths.appHtml
   });
+}
+
+function copyToServer() {
+	fs.copySync('build', '../node-server/public/new', {}, err => console.log(err)); 
 }

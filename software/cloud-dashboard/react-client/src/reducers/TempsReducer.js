@@ -6,7 +6,8 @@ export default function(state = {}, action) {
 				return Object.assign({}, state, {loading: true});
 			} else {
 				return Object.assign({}, state, {data: action.payload.data, loading: false});
-			}
+			} 
+			
 	}
 	return state;
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { fetchTemps, fetchLocations, selectLocation} from '../actions/index';
+import { fetchTemps, fetchLocations, selectLocation, setDaysToFetch} from '../actions/index';
 import { Button } from 'react-toolbox/lib/button';
 import {Tab, Tabs} from 'react-toolbox';
 import LocationSelector from '../components/location-selector';
@@ -28,13 +28,17 @@ class Dashboard extends Component {
 				<LocationSelector 
 					locations={this.props.locations} 
 					selectLocation={this.props.selectLocation}
-					fetchTemps={this.props.fetchTemps}/>
+					fetchTemps={this.props.fetchTemps}
+					meta={this.props.meta}/>
 				{
 					this.props.currentLocation &&
 					<Tabs index={this.state.tabIndex} onChange={this.handleTabChange}>
 						<Tab label="Temps">
 							<TempView
-								temps={this.props.temps} />
+								temps={this.props.temps} 
+								fetchTemps={this.props.fetchTemps}
+								setDaysToFetch={this.props.setDaysToFetch}
+								currentLocation={this.props.currentLocation}/>
 						</Tab>
 						<Tab label="Bucket Tips">
 
@@ -47,14 +51,15 @@ class Dashboard extends Component {
 }
 
 const mapDispatchToProps = dispatch => {
-	return bindActionCreators({ fetchTemps, fetchLocations, selectLocation }, dispatch);
+	return bindActionCreators({ fetchTemps, fetchLocations, selectLocation, setDaysToFetch}, dispatch);
 }
 
 const mapStateToProps = state => {
 	return { 
 		temps: state.temps,
 		locations: state.locationData.locations,
-		currentLocation: state.locationData.currentLocation
+		currentLocation: state.locationData.currentLocation,
+		meta: state.meta,
 	}
 }
 

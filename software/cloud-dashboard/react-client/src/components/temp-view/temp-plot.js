@@ -48,20 +48,21 @@ class TempPlot extends Component {
 		const newSliderState = {};
 		newSliderState[slider] = value;
 		this.setState(newSliderState);
-	}
+	} 
 
 	handleDaysToFetchChange = () => { 
 		this.props.fetchTemps(this.props.currentLocation, this.state.daysToFetch);
 		this.props.setDaysToFetch(this.state.daysToFetch);
 		this.setState({daysToShow: this.state.daysToFetch}); 
 		this.props.toggleSidebar(); 
-	}
+	} 
 
 	componentWillReceiveProps(nextProps) { 
-		if (nextProps.temps.data.length > defaultNumberOfPoints && nextProps.temps.data.length != this.props.temps.data.length) {
+		if (nextProps.temps.data.length > defaultNumberOfPoints && 
+			(this.props.temps.data && (nextProps.temps.data.length != this.props.temps.data.length))) {
 			this.setState({downsampleFactor: Math.floor(nextProps.temps.data.length/defaultNumberOfPoints)});
 		}
-	}
+	} 
 
 	renderPlot = () => {
 		const data = this.props.temps.data.map( currentItem => {

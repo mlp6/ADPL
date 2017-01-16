@@ -14,8 +14,8 @@ var ondemand = require('../api/ondemand');
 module.exports = function(app) { 
 	app.get('/api/list', temperatureHandlers.list);
 	app.get('/api/list/:loc', temperatureHandlers.listLoc); 
-	app.get('/api/list-all/:loc',temperatureHandlers.listLocAll);
-	app.get('/api/list/:loc/:pin', temperatureHandlers.listPin);
+	app.get('/api/list/:loc/:days', temperatureHandlers.listLastNDays);
+	app.get('/api/list-all/:loc',temperatureHandlers.listLocAll); 
 	app.get('/api/sites',sites.listSites);
 	app.get('/api/gasOn/:loc',ondemand.getValveStatus);
 	app.post('/api/message', message.onText);

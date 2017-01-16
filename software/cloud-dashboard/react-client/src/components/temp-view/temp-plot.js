@@ -44,6 +44,7 @@ class TempPlot extends Component {
 								<XAxis dataKey="time" interval={30} tickFormatter={this.formatDate} />
 								<YAxis />
 								{
+									// Draw a line for each temperature probe:
 									Object.keys(data[0]).map((currentItem, index) => {
 										if (currentItem === 'time') return null;
 										return (
@@ -55,8 +56,7 @@ class TempPlot extends Component {
 										);
 									})
 								}
-								<Tooltip
-									labelFormatter={this.formatDate}/>
+								<Tooltip labelFormatter={this.formatDate}/>
 								<Legend />
 								<CartesianGrid strokeDasharray="3 3" />
 							</LineChart> 
@@ -85,11 +85,10 @@ class TempPlot extends Component {
 	render() {
 		return (
 			<div>
-			{
-				!this.props.temps.loading &&
-				this.renderPlot()	
-			} 
-
+				{
+					!this.props.temps.loading &&
+					this.renderPlot()	
+				} 
 			</div>
 		);
 	} 

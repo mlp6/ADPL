@@ -48,6 +48,10 @@ class TempView extends Component {
 					}
 					<TempPlot 
 						temps={this.props.temps} 
+						fetchTemps={this.props.fetchTemps}
+						currentLocation={this.props.currentLocation}
+						toggleSidebar={this.toggleTempPlotSidebar}
+						setDaysToFetch={this.props.setDaysToFetch}
 						sideBarOpen={this.state.tempPlotSidebarOpen}/>
 				</Card>
 			</div>

@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Dropdown from 'react-toolbox/lib/dropdown';
+import constants from '../constants'; 
 
 class LocationSelector extends Component {
 	constructor(props) {
@@ -19,7 +20,7 @@ class LocationSelector extends Component {
 
 	handleChange = value => {
 		this.setState({currentValue: value});
-		this.props.fetchTemps(value);
+		this.props.fetchTemps(value, this.props.meta.daysToFetch || constants.daysToFetch);
 		this.props.selectLocation(value);
 	}
 

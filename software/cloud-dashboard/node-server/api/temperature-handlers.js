@@ -28,12 +28,17 @@ module.exports = {
 			if(err) res.send(err);
 			res.json(records);
 		});	
-	}, 
-	listPin: function(req, res){
-		TemperatureEvent.find({probeid: req.params.pin, loc: req.params.loc}, function(err, records){
+	},
+	listLastNDays: function(req, res) { 
+		const currentDate = new Date();
+		//TODO: add validation on req.params.days
+		currentDate.setDate(currentDate.getDate() - parseInt(req.params.days));
+		TemperatureEvent.find({loc: req.params.loc, time: {'$gte': currentDate}})
+		.sort({time: -1})
+		.exec((err, records) => {
 			if(err) res.send(err);
 			res.json(records);
-		});	
-	} 
+		});
+	}
 
 }

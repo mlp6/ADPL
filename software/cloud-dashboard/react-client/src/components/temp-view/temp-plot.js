@@ -3,13 +3,20 @@ import {Button, IconButton} from 'react-toolbox/lib/button';
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts' 
 import { Layout, NavDrawer, Panel, Sidebar } from 'react-toolbox'; 
 import Slider from 'react-toolbox/lib/slider'; 
+import constants from '../../constants';
+import Input from 'react-toolbox/lib/input';
+import './temp-plot.css';
 
 const LINE_COLORS = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33']
 
-class TempPlot extends Component {
-	
+const defaultNumberOfPoints = 300;
+
+class TempPlot extends Component { 
+
 	state = {
-		downsampleFactor: 25
+		downsampleFactor: 4,
+		daysToFetch: constants.daysToFetch,
+		daysToShow: constants.daysToFetch,
 	}
 
 	downsampleArray = (array, factor) => {
@@ -18,6 +25,18 @@ class TempPlot extends Component {
 			downsampledArray.push(array[i]);	
 		}
 		return downsampledArray;
+	}
+
+	filterDatesToShow = (array) => {
+		const cutoffDate = new Date();
+		cutoffDate.setDate(cutoffDate.getDate() - this.state.daysToShow);
+
+		array = array.filter(value => { 
+			const date = new Date(value.time); 
+			return date > cutoffDate; 
+		});
+
+		return array;
 	}
 
 	formatDate = date => { 
@@ -31,50 +50,109 @@ class TempPlot extends Component {
 		this.setState(newSliderState);
 	}
 
+	handleDaysToFetchChange = () => { 
+		this.props.fetchTemps(this.props.currentLocation, this.state.daysToFetch);
+		this.props.setDaysToFetch(this.state.daysToFetch);
+		this.setState({daysToShow: this.state.daysToFetch}); 
+		this.props.toggleSidebar(); 
+	}
+
+	componentWillReceiveProps(nextProps) { 
+		if (nextProps.temps.data.length > defaultNumberOfPoints && nextProps.temps.data.length != this.props.temps.data.length) {
+			this.setState({downsampleFactor: Math.floor(nextProps.temps.data.length/defaultNumberOfPoints)});
+		}
+	}
+
 	renderPlot = () => {
 		const data = this.props.temps.data.map( currentItem => {
 			return { ...currentItem.temps, time: currentItem.time };
 		});
+		return (
+			<LineChart width={700} height={300} data={this.filterDatesToShow(this.downsampleArray(data, this.state.downsampleFactor)).reverse()}>
+				<XAxis dataKey="time" interval={30} tickFormatter={this.formatDate} />
+				<YAxis />
+				{
+					// Draw a line for each temperature probe:
+					Object.keys(data[0]).map((currentItem, index) => {
+						if (currentItem === 'time') return null;
+						return (
+							<Line 
+								type="monotone"
+								dataKey={currentItem} 
+								key={currentItem} 
+								animationDuration={500}
+								stroke={LINE_COLORS[index]}/>
+						);
+					})
+				}
+				<Tooltip labelFormatter={this.formatDate}/>
+				<Legend />
+				<CartesianGrid strokeDasharray="3 3" />
+			</LineChart> 
+		); 
+	}
+
+	renderDaysToShow = () => {
+		return ( 
+			<div>
+			<p> Days to show </p>
+			<Slider 
+				min={1} 
+				max={this.state.daysToFetch} 
+				step={1}
+				pinned
+				snaps
+				editable 
+				value={this.state.daysToShow} 
+				onChange={this.handleSliderChange.bind(this, 'daysToShow')}/> 
+			</div>
+		); 
+	}
+
+	renderView = () => {
 		
 		return ( 
-			<div style={{}}>
+			<div>
 			<Layout>
 					<Panel>
-							<LineChart width={700} height={300} data={this.downsampleArray(data, this.state.downsampleFactor).reverse()}>
-								<XAxis dataKey="time" interval={30} tickFormatter={this.formatDate} />
-								<YAxis />
-								{
-									Object.keys(data[0]).map((currentItem, index) => {
-										if (currentItem === 'time') return null;
-										return (
-											<Line 
-												type="monotone"
-												dataKey={currentItem} 
-												key={currentItem} 
-												stroke={LINE_COLORS[index]}/>
-										);
-									})
-								}
-								<Tooltip
-									labelFormatter={this.formatDate}/>
-								<Legend />
-								<CartesianGrid strokeDasharray="3 3" />
-							</LineChart> 
+							<div style={{textAlign: 'center'}}>
+								Temperature (past {this.state.daysToShow} days, {this.props.currentLocation})
+							</div>
+							{this.renderPlot()}
+							<div className="sidebar-content">	
+								{this.renderDaysToShow()}
+							</div>
 					</Panel>
+
 					<Sidebar pinned={this.props.sideBarOpen} width={6}>
-						<div>
+						<div className="sidebar-content">
 							<h4> Plot Options </h4>
 							<p> Downsample Sampling Scale Factor </p>	
 							<Slider 
-								min={10} 
-								max={100} 
+								min={1} 
+								max={50} 
 								step={5}
 								pinned
 								snaps
 								editable 
 								value={this.state.downsampleFactor} 
 								onChange={this.handleSliderChange.bind(this, 'downsampleFactor')}/>
-
+							{this.renderDaysToShow()}
+							<p> Days to fetch </p>	
+							<div>
+								<Input 
+									type='text' 
+									className="sidebar-input"
+									value={this.state.daysToFetch} 
+									onChange={this.handleSliderChange.bind(this, 'daysToFetch')} />
+								<Button 
+									style={{display: 'inline-block'}} 
+									icon="cached"
+									primary
+									onClick={this.handleDaysToFetchChange}>
+									Fetch
+								</Button>
+							</div> 
 						</div>
 					</Sidebar>
 			</Layout>
@@ -82,14 +160,13 @@ class TempPlot extends Component {
 		);
 	}
 
-	render() {
+	render() { 
 		return (
 			<div>
-			{
-				!this.props.temps.loading &&
-				this.renderPlot()	
-			} 
-
+				{
+					!this.props.temps.loading &&
+					this.renderView()	
+				} 
 			</div>
 		);
 	} 

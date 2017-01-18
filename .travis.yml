@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-    -6
+    - 6
 before_install: true
 install:
     - cd ./software/cloud-dashboard/react-client

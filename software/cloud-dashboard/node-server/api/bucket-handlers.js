@@ -20,7 +20,9 @@ module.exports = {
 		BucketEvent.find({}, (err, records) => sendDBEvents(err, records, res)); 
 	}, 
 	listLoc: function(req, res) {
-		BucketEvent.find({loc: req.params.loc}, (err, records) => sendDBEvents(err, records, res)); 
+		BucketEvent.find({loc: req.params.loc})
+		.sort({time: -1})
+		.exec((err, records) => sendDBEvents(err, records, res)); 
 
 	} 
 

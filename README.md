@@ -1,5 +1,5 @@
 #Anaerobic Digestion and Pasteurization Latrine (ADPL)
-
+<a href="https://travis-ci.org/mlp6/ADPL"><img src="https://travis-ci.org/mlp6/ADPL.svg?branch=master" /></a>
 ##Projects Websites
 * Overview: http://sanitation.pratt.duke.edu/onsite-treatment
 * Data Dashboard: http://adpl.colab.duke.edu

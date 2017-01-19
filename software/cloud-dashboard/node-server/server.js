@@ -10,6 +10,7 @@ var cors = require('cors');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var errorHandler = require('./api/error-handling');
+var handleDevice = require('./handle-device');
 
 // Load libraries
 var bodyParser = require('body-parser');
@@ -40,10 +41,10 @@ require('./config/routes')(app);
 
 // Set up ADPL devices handler
 var particleURL = "https://api.particle.io/v1/devices/events?access_token=7883544edea996822936af401fad4209c2ba5627"; 
-require('./handle-device.js')(particleURL, io);
+handleDevice.handleStream(particleURL, io);
 
 io.on('connection',function(socket){
-	console.log("hello");
+	console.log("Client Connected");
 });
 
 exports = module.exports = app;

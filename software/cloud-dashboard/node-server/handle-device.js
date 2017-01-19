@@ -9,29 +9,36 @@ var EventSource = require('eventsource'); // Pull in event source
 var TempUtil = require('./handle-device/temp-util');
 var BucketUtil = require('./handle-device/bucket-util');
 
-function handleDevice(deviceUrl, io){
+function handleTemperatureMessage(message, io) { 
+	try {
+		const parsedData = TempUtil.parseMessage(message); 
+		TempUtil.addRecord(parsedData, io);
+	} catch (err) {
+		console.log("ERROR: Parsing Temps Message", message, err);	
+	}
+}
+
+function handleBucketMessage(message, io) {
+	try {
+		const parsedData = BucketUtil.parseMessage(message);
+		BucketUtil.addRecord(parsedData, io);
+	} catch (err) {
+		console.log("ERROR: Parsing BUCKET Message", message, err);
+	}
+
+}
+
+function handleStream(deviceUrl, io){
 	var es = new EventSource(deviceUrl); // Listen to the stream
 
 	// Add temperature event listener
-    es.addEventListener("TEMPS", function (message) {
-        console.log("New Message");
-		try {
-  			const parsedData = TempUtil.parseMessage(message); 
-			TempUtil.addRecord(parsedData, io);
-		} catch (err) {
-			console.log("ERROR: Parsing Temps Message", message, err);	
-		}
-    });
+    es.addEventListener("TEMPS", (message) => {
+		handleTemperatureMessage(message, io);
+	});
 
 	// Add bucket tip listener
-	es.addEventListener("BUCKET", function(message) {
-		try {
-			const parsedData = BucketUtil.parseMessage(message);
-			BucketUtil.addRecord(parsedData, io);
-		} catch (err) {
-			console.log("ERROR: Parsing BUCKET Message", message, err);
-		}
-
+	es.addEventListener("BUCKET", (message) => {
+		handleBucketMessage(message, io);	
 	});
 
     es.onerror = function (err) {
@@ -40,4 +47,8 @@ function handleDevice(deviceUrl, io){
     };
 } 
 
-module.exports = handleDevice; // Export handleDevice function
+module.exports =  {
+	handleStream, // Export handleDevice function
+	handleTemperatureMessage,
+	handleBucketMessage
+}

@@ -4,4 +4,14 @@ node_js:
 install:
     - cd ./software/cloud-dashboard/react-client
     - npm install
-script: npm run test
+    - cd ..
+    - cd node-server
+    - npm install
+    - cd ..
+script: 
+    - cd react-client
+    - npm run test
+    - cd ..
+    - cd node-server
+    - npm run test -- --coverage
+

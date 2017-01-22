@@ -39,6 +39,10 @@ Pump pump(PUMP);
 #include "Bucket.h"
 Bucket bucket(BUCKET);
 
+//in development
+#include "PinchValve.h:
+PinchValve pinchValve(STEP, DIR, SLEEP);
+
 // initialize some time counters
 unsigned long currentTime = 0;
 unsigned long last_publish_time = 0;

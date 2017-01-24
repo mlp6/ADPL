@@ -18,6 +18,9 @@ it('TempPlot renders', () => {
 
 describe('Date formatting', () => {
 	const component = ReactTestUtils.renderIntoDocument(React.createElement(TempPlot, props)); 
+	// Date is set in this day to be timezone agnostic
+ 	// relative to server running this.
+	// TODO(suyashkumar): revisit this test to determine if there's a better way to set up
 	const testDate = new Date();
 	testDate.setDate(23);
 	testDate.setHours(23);

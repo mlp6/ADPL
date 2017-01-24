@@ -43,7 +43,7 @@ class TempPlot extends Component {
 		const dateObj = new Date(date);
 		const getMinutes = minuteString => (minuteString.length > 1) ? minuteString : "0" + minuteString;
 		
-		return `${dateObj.getMonth()+1}/${dateObj.getDate().toString()} ${dateObj.getHours()}:${getMinutes(dateObj.getMinutes().toString())}`
+		return `${dateObj.getMonth()+1}/${dateObj.getDate()+1} ${dateObj.getHours()}:${getMinutes(dateObj.getMinutes().toString())}`
 	}
 
 	handleSliderChange = (slider, value) => {

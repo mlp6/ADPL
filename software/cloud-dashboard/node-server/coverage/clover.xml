@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1484810570460" clover="3.2.0">
+  <project timestamp="1484810570460" name="All files">
+    <metrics statements="84" coveredstatements="31" conditionals="14" coveredconditionals="0" methods="22" coveredmethods="2" elements="120" coveredelements="33" complexity="0" loc="84" ncloc="84" packages="6" files="8" classes="8">
+      <package name="node-server">
+        <metrics statements="20" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="2"/>
+        <file name="handle-device.js" path="/Users/suyashkumar/Dropbox/Projects/ADPL/software/cloud-dashboard/node-server/handle-device.js">
+          <metrics statements="20" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="2"/>
+          <line num="8" count="1" type="stmt"/>
+          <line num="9" count="1" type="stmt"/>
+          <line num="10" count="1" type="stmt"/>
+          <line num="13" count="1" type="stmt"/>
+          <line num="14" count="1" type="stmt"/>
+          <line num="15" count="1" type="stmt"/>
+          <line num="17" count="0" type="stmt"/>
+          <line num="22" count="1" type="stmt"/>
+          <line num="23" count="1" type="stmt"/>
+          <line num="24" count="1" type="stmt"/>
+          <line num="26" count="0" type="stmt"/>
+          <line num="32" count="0" type="stmt"/>
+          <line num="35" count="0" type="stmt"/>
+          <line num="36" count="0" type="stmt"/>
+          <line num="40" count="0" type="stmt"/>
+          <line num="41" count="0" type="stmt"/>
+          <line num="44" count="0" type="stmt"/>
+          <line num="45" count="0" type="stmt"/>
+          <line num="46" count="0" type="stmt"/>
+          <line num="50" count="1" type="stmt"/>
+        </file>
+      </package>
+      <package name="node-server.api">
+        <metrics statements="16" coveredstatements="2" conditionals="8" coveredconditionals="0" methods="8" coveredmethods="0"/>
+        <file name="temperature-handlers.js" path="/Users/suyashkumar/Dropbox/Projects/ADPL/software/cloud-dashboard/node-server/api/temperature-handlers.js">
+          <metrics statements="16" coveredstatements="2" conditionals="8" coveredconditionals="0" methods="8" coveredmethods="0"/>
+          <line num="7" count="1" type="stmt"/>
+          <line num="9" count="1" type="stmt"/>
+          <line num="12" count="0" type="stmt"/>
+          <line num="13" count="0" type="stmt"/>
+          <line num="14" count="0" type="stmt"/>
+          <line num="18" count="0" type="stmt"/>
+          <line num="19" count="0" type="stmt"/>
+          <line num="20" count="0" type="stmt"/>
+          <line num="24" count="0" type="stmt"/>
+          <line num="28" count="0" type="stmt"/>
+          <line num="29" count="0" type="stmt"/>
+          <line num="33" count="0" type="stmt"/>
+          <line num="35" count="0" type="stmt"/>
+          <line num="36" count="0" type="stmt"/>
+          <line num="39" count="0" type="stmt"/>
+          <line num="40" count="0" type="stmt"/>
+        </file>
+      </package>
+      <package name="node-server.config">
+        <metrics statements="6" coveredstatements="1" conditionals="2" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <file name="device-map.js" path="/Users/suyashkumar/Dropbox/Projects/ADPL/software/cloud-dashboard/node-server/config/device-map.js">
+          <metrics statements="6" coveredstatements="1" conditionals="2" coveredconditionals="0" methods="1" coveredmethods="0"/>
+          <line num="6" count="1" type="stmt"/>
+          <line num="17" count="0" type="stmt"/>
+          <line num="18" count="0" type="stmt"/>
+          <line num="19" count="0" type="stmt"/>
+          <line num="20" count="0" type="stmt"/>
+          <line num="23" count="0" type="stmt"/>
+        </file>
+      </package>
+      <package name="node-server.handle-device">
+        <metrics statements="30" coveredstatements="6" conditionals="4" coveredconditionals="0" methods="7" coveredmethods="0"/>
+        <file name="bucket-util.js" path="/Users/suyashkumar/Dropbox/Projects/ADPL/software/cloud-dashboard/node-server/handle-device/bucket-util.js">
+          <metrics statements="12" coveredstatements="3" conditionals="2" coveredconditionals="0" methods="3" coveredmethods="0"/>
+          <line num="8" count="1" type="stmt"/>
+          <line num="9" count="1" type="stmt"/>
+          <line num="20" count="0" type="stmt"/>
+          <line num="27" count="0" type="stmt"/>
+          <line num="28" count="0" type="stmt"/>
+          <line num="29" count="0" type="stmt"/>
+          <line num="30" count="0" type="stmt"/>
+          <line num="32" count="0" type="stmt"/>
+          <line num="45" count="0" type="stmt"/>
+          <line num="46" count="0" type="stmt"/>
+          <line num="47" count="0" type="stmt"/>
+          <line num="50" count="1" type="stmt"/>
+        </file>
+        <file name="temp-util.js" path="/Users/suyashkumar/Dropbox/Projects/ADPL/software/cloud-dashboard/node-server/handle-device/temp-util.js">
+          <metrics statements="18" coveredstatements="3" conditionals="2" coveredconditionals="0" methods="4" coveredmethods="0"/>
+          <line num="7" count="1" type="stmt"/>
+          <line num="8" count="1" type="stmt"/>
+          <line num="19" count="0" type="stmt"/>
+          <line num="33" count="0" type="stmt"/>
+          <line num="34" count="0" type="stmt"/>
+          <line num="35" count="0" type="stmt"/>
+          <line num="36" count="0" type="stmt"/>
+          <line num="38" count="0" type="stmt"/>
+          <line num="61" count="0" type="stmt"/>
+          <line num="62" count="0" type="stmt"/>
+          <line num="65" count="0" type="stmt"/>
+          <line num="66" count="0" type="stmt"/>
+          <line num="67" count="0" type="stmt"/>
+          <line num="68" count="0" type="stmt"/>
+          <line num="72" count="0" type="stmt"/>
+          <line num="73" count="0" type="stmt"/>
+          <line num="75" count="0" type="stmt"/>
+          <line num="78" count="1" type="stmt"/>
+        </file>
+      </package>
+      <package name="node-server.models">
+        <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <file name="bucket-event.js" path="/Users/suyashkumar/Dropbox/Projects/ADPL/software/cloud-dashboard/node-server/models/bucket-event.js">
+          <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+          <line num="7" count="1" type="stmt"/>
+          <line num="8" count="1" type="stmt"/>
+          <line num="9" count="1" type="stmt"/>
+          <line num="16" count="1" type="stmt"/>
+        </file>
+        <file name="temperature-event.js" path="/Users/suyashkumar/Dropbox/Projects/ADPL/software/cloud-dashboard/node-server/models/temperature-event.js">
+          <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+          <line num="7" count="2" type="stmt"/>
+          <line num="8" count="2" type="stmt"/>
+          <line num="9" count="2" type="stmt"/>
+          <line num="23" count="2" type="stmt"/>
+        </file>
+      </package>
+      <package name="node-server.tests.handle-device">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <file name="test-data.js" path="/Users/suyashkumar/Dropbox/Projects/ADPL/software/cloud-dashboard/node-server/tests/handle-device/test-data.js">
+          <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+          <line num="2" count="1" type="stmt"/>
+          <line num="4" count="1" type="stmt"/>
+          <line num="6" count="1" type="stmt"/>
+          <line num="8" count="1" type="stmt"/>
+        </file>
+      </package>
+    </metrics>
+  </project>
+</coverage>

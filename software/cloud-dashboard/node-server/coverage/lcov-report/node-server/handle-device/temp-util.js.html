@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for node-server/handle-device/temp-util.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">All files</a> / <a href="index.html">node-server/handle-device</a> temp-util.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">15.79% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>3/19</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/2</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/4</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">16.67% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>3/18</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
+ * handle-device/temp-util.js
+ * A set of utility functions used to parse and save 
+ * temperature events published from ADPL systems.
+ * @author: Suyash Kumar &lt;suyashkumar2003@gmail.com&gt;
+ */
+var TemperatureEvent = require('../models/temperature-event');
+var locMap = require('../config/device-map.js').locMap; 
+&nbsp;
+/*
+ * addRecord
+ * Responsible for adding a temperature-event record to
+ * the database.
+ *
+ * @param {object} parsedData: See output from parseMessage function below
+ * @param {oject} io: socketio object
+ */
+function <span class="fstat-no" title="function not covered" >addRecord(</span>parsedData, io){
+	var newTemperatureEvent= <span class="cstat-no" title="statement not covered" >{</span>
+		coreid:		parsedData.coreid,
+		time:		new Date(parsedData.published_at),
+		loc:		locMap[parsedData.coreid], 
+		temps:		{
+			HXCI:	parsedData.HXCI,
+			HXCO:	parsedData.HXCO,
+			HTR:	parsedData.HTR,
+			HXHI:	parsedData.HXHI,
+			HXHO:	parsedData.HXHO
+		},
+		valveStatus: parsedData.V // Null if doesn't exist
+	}
+	
+<span class="cstat-no" title="statement not covered" >	console.log(newTemperatureEvent);</span>
+	var newRecord = <span class="cstat-no" title="statement not covered" >new TemperatureEvent(newTemperatureEvent);  </span>
+<span class="cstat-no" title="statement not covered" >	newRecord.save(<span class="fstat-no" title="function not covered" >fu</span>nction(err, event){</span>
+<span class="cstat-no" title="statement not covered" >		if(err) <span class="cstat-no" title="statement not covered" >console.log("error in saving to database"+err);</span></span>
+	})
+<span class="cstat-no" title="statement not covered" >	io.emit(newTemperatureEvent.probeid, newRecord);</span>
+}
+&nbsp;
+/**
+ * parseMessage
+ * Responsible for parsing a Particle Temperature Publish 
+ * message from the ADPL platform. A sample message
+ * looks like:
+ * {
+ * 	"data": {
+ * 		"data":"HXCI:18.9,HXCO:21.8,HTR:80.6,HXHI:22.7,HXHO:19.0",
+ * 		""ttl":"60",
+ * 		"published_at":"2016-12-02T06:18:25.026Z",
+ * 		"coreid":"4b0031000d51353432393339"
+ * 	}
+ * }
+ * This function returns a map of all the transducer fields to 
+ * corresponding values along with published_at and coreid 
+ * (e.g. {HXHO: 100, ... , coreid: "", published_at: ""})
+ * @param {object} message
+ * @return {object} a map of data fields to their values (including transducers) 
+ */
+function <span class="fstat-no" title="function not covered" >parseMessage(</span>message) {
+<span class="cstat-no" title="statement not covered" >	deviceData = JSON.parse(message.data); </span>
+	const splitData = <span class="cstat-no" title="statement not covered" >deviceData.data.split(",");</span>
+	
+	// Parse Transducer data
+	const parsedData = <span class="cstat-no" title="statement not covered" >splitData.reduce(<span class="fstat-no" title="function not covered" >(r</span>esult, current) =&gt; {</span>
+		const currentSplit = <span class="cstat-no" title="statement not covered" >current.split(":");</span>
+<span class="cstat-no" title="statement not covered" >		result[currentSplit[0]] = currentSplit[1];</span>
+<span class="cstat-no" title="statement not covered" >		return result;</span>
+	}, {}); 
+	
+	// Add metadata
+<span class="cstat-no" title="statement not covered" >	parsedData['published_at'] = deviceData['published_at'];</span>
+<span class="cstat-no" title="statement not covered" >	parsedData['coreid'] = deviceData['coreid'];</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >	return parsedData;</span>
+}
+&nbsp;
+module.exports = {
+	parseMessage,
+	addRecord
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Jan 18 2017 23:22:50 GMT-0800 (PST)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

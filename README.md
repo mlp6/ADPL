@@ -2,7 +2,7 @@
 
 ##Projects Websites
 * Overview: http://sanitation.pratt.duke.edu/onsite-treatment
-* Data Dashboard: http://adpl.colab.duke.edu
+* Data Dashboard: http://adpl.colab.duke.edu/new
 
 ###Temperature Regulation
 * Record temperatures across 5[-7] thermocouples.

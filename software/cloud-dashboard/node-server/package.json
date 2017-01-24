@@ -4,7 +4,7 @@
   "description": "Autologs and displays data from the adpl project in kenya",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Suyash Kumar",
   "license": "ISC",
@@ -19,5 +19,9 @@
     "socket.io": "^1.4.5",
     "socketio": "^1.0.0",
     "twilio": "^2.9.1"
+  },
+  "devDependencies": {
+    "jest": "^18.1.0",
+    "sinon": "^1.17.7"
   }
 }

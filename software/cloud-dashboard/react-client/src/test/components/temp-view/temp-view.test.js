@@ -18,16 +18,20 @@ it('TempPlot renders', () => {
 
 describe('Date formatting', () => {
 	const component = ReactTestUtils.renderIntoDocument(React.createElement(TempPlot, props)); 
+	const testDate = new Date();
+	testDate.setDate(23);
+	testDate.setHours(23);
+	testDate.setMonth(0);
+	testDate.setMinutes(58);
 
-	it('should format typical dates correctly', () => {
-		const testDate = new Date('2017-01-24T07:58:32.289Z'); // 1/24/2017 23:58
+	it('should format typical dates correctly', () => { 
 		const expectedDateString = '1/24 23:58';
 		const formattedDate = component.formatDate(testDate);
 		expect(formattedDate).toEqual(expectedDateString);
 	})
 
 	it('should render dates with zero padding correctly', () => {
-		const testDate = new Date('2017-01-24T07:08:32.289Z'); // 1/24/2017 23:08
+		testDate.setMinutes(8);	
 		const expectedDateString = '1/24 23:08';
 		const formattedDate = component.formatDate(testDate);
 		expect(formattedDate).toEqual(expectedDateString);

@@ -14,7 +14,7 @@ const defaultNumberOfPoints = 300;
 class TempPlot extends Component { 
 
 	state = {
-		downsampleFactor: 4,
+		downsampleFactor: 10,
 		daysToFetch: constants.daysToFetch,
 		daysToShow: constants.daysToFetch,
 	}
@@ -38,10 +38,12 @@ class TempPlot extends Component {
 
 		return array;
 	}
-
+	
 	formatDate = date => { 
 		const dateObj = new Date(date);
-		return `${dateObj.getMonth().toString()}/${dateObj.getDate().toString()} ${dateObj.getHours()}:${dateObj.getMinutes()}`
+		const getMinutes = minuteString => (minuteString.length > 1) ? minuteString : "0" + minuteString;
+		
+		return `${dateObj.getMonth()+1}/${dateObj.getDate().toString()} ${dateObj.getHours()}:${getMinutes(dateObj.getMinutes().toString())}`
 	}
 
 	handleSliderChange = (slider, value) => {
@@ -68,9 +70,12 @@ class TempPlot extends Component {
 		const data = this.props.temps.data.map( currentItem => {
 			return { ...currentItem.temps, time: currentItem.time };
 		});
+		//TODO(suyashkumar): explore more efficient ways to do this (caching) instead of calculating on every render
+		const dataToShow = this.filterDatesToShow(this.downsampleArray(data, this.state.downsampleFactor)).reverse();
+		const tickInterval = Math.floor(dataToShow.length / 5);
 		return (
-			<LineChart width={700} height={300} data={this.filterDatesToShow(this.downsampleArray(data, this.state.downsampleFactor)).reverse()}>
-				<XAxis dataKey="time" interval={30} tickFormatter={this.formatDate} />
+			<LineChart width={700} height={300} data={dataToShow}>
+				<XAxis dataKey="time" label="Date" interval={tickInterval} tickFormatter={this.formatDate} />
 				<YAxis />
 				{
 					// Draw a line for each temperature probe:
@@ -111,7 +116,6 @@ class TempPlot extends Component {
 	}
 
 	renderView = () => {
-		
 		return ( 
 			<div>
 			<Layout>

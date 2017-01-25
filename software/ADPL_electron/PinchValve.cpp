@@ -5,34 +5,58 @@
 #include "application.h"
 #include "PinchValve.h"
 
-PinchValve::PinchValve(int dir_pin, int step_pin, int sleep_pin) {
+PinchValve::PinchValve(int dir_pin, int step_pin, int sleep_pin, int up_pin, int down_pin) {
     pinMode(dir_pin, OUTPUT);
     pinMode(step_pin, OUTPUT);
     pinMode(sleep_pin, OUTPUT);
+    pinMode(up_pin, INPUT);
+    pinMode(down_pin, INPUT);
+
     _dir_pin = dir_pin;
     _step_pin = step_pin;
     _sleep_pin = sleep_pin;
-    flow_pos = 0;
-    particle.variable("flow_pos", flow_pos);
-    //develop a reset
+    _up_pin = up_pin;
+    _down_pin = down_pin;
+
+    digitalWrite(_sleep_pin, LOW);
+    int flow_pos = 0;
+    bool up = false;
+    bool down = false;
 }
 
-void PinchValve::shiftOpen() {
-    //need to investigate which direction opens, closes
-    digitalWrite(_dir_pin, HIGH);
-    for (int i = 0; i < 100; i++) {
+void PinchValve::read(){
+    if (digitalRead(_up_pin) == LOW){
+        up = true;
+    }
+    if (digitalRead(_down_pin) == LOW){
+        down = true;
+    }
+}
+
+void PinchValve::shiftUp() {
+    digitalWrite(_dir_pin, LOW);
+    digitalWrite(_sleep_pin, HIGH);
+    for (int i = 0; i < 400; i++) {
         digitalWrite(_step_pin, HIGH);
-        delay(100);
+        delay(1);
+        digitalWrite(_step_pin, LOW);
+        delay(1);
     };
-    flow_pos +=100;
+    flow_pos +=400;
+    up = false;
+    digitalWrite(_sleep_pin, LOW);
 };
 
-void PinchValve::shiftClose() {
-    //need to investigate which direction opens, closes
-    digitalWrite(_dir_pin, LOW);
-    for (int i = 0; i < 100; i++) {
+void PinchValve::shiftDown() {
+    digitalWrite(_dir_pin, HIGH);
+    digitalWrite(_sleep_pin, HIGH);
+    for (int i = 0; i < 400; i++) {
         digitalWrite(_step_pin, HIGH);
-        delay(100);
+        delay(1);
+        digitalWrite(_step_pin, LOW);
+        delay(1);
     };
-    flow_pos -= 100;
+    flow_pos -= 400;
+    down = false;
+    digitalWrite(_sleep_pin, LOW);
 };

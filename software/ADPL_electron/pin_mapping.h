@@ -10,7 +10,8 @@
 //#define LEVEL B5
 //#define BUCKET C0 // Duke
 #define BUCKET C4 // Kenya
-#define STEP D1
-#define DIR D2
-#define SLEEP D3
-
+#define STEP D2
+#define DIR D3
+#define SLEEP D6
+#define UP B5
+#define DOWN B4

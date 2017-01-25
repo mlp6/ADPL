@@ -4,14 +4,19 @@
 class PinchValve{
 
     public:
-        PinchValve(int dir_pin, int step_pin, int sleep_pin);
-        void shiftOpen();
-        void shiftClose();
+        PinchValve(int dir_pin, int step_pin, int sleep_pin, int up_pin, int down_pin);
+        void shiftUp();
+        void shiftDown();
+        void read();
         int flow_pos;
+        bool up;
+        bool down;
     private:
-        _dir_pin;
-        _step_pin;
-        _sleep_pin;
+        int _dir_pin;
+        int _step_pin;
+        int _sleep_pin;
+        int _up_pin;
+        int _down_pin;
 };
 
 #endif //ADPL_PINCHVALVE_H

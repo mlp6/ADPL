@@ -8,7 +8,7 @@ class Valve {
         Valve(int pin);
         void open();
         void close();
-        boolean gasOn;
+        bool gasOn;
     private:
         int _pin;
 };

@@ -39,9 +39,8 @@ Pump pump(PUMP);
 #include "Bucket.h"
 Bucket bucket(BUCKET);
 
-//in development
-#include "PinchValve.h:
-PinchValve pinchValve(STEP, DIR, SLEEP);
+#include "PinchValve.h"
+PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN);
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -58,6 +57,15 @@ void setup() {
 }
 
 void loop() {
+
+    pinchValve.read();
+    if(pinchValve.down){
+        pinchValve.shiftDown();
+    }
+    if(pinchValve.up){
+        pinchValve.shiftUp();
+    }
+
     currentTime = millis();
 
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read

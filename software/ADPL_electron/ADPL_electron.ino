@@ -57,6 +57,14 @@ void setup() {
 }
 
 void loop() {
+    // read the push buttons
+    pinchValve.read();
+    if(pinchValve.down){
+        pinchValve.shiftDown();
+    }
+    if(pinchValve.up){
+        pinchValve.shiftUp();
+    }
 
     currentTime = millis();
 
@@ -69,18 +77,18 @@ void loop() {
         Particle.publish("TEMPS",temps_str);
         delay(1000);
         bucket.publish();
-        bucket.updateFlow();
+        double flow_rate = bucket.updateFlow();
+
+        if(flow_rate < 6.0){
+            pinchValve.shiftUp();
+        }
+        else if (flow_rate > 12.0){
+            pinchValve.shiftDown();
+        }
+
         last_publish_time = currentTime;
     }
 
-    // read the push buttons
-    pinchValve.read();
-    if(pinchValve.down){
-        pinchValve.shiftDown();
-    }
-    if(pinchValve.up){
-        pinchValve.shiftUp();
-    }
 
     // measure temp, determine if light gas
     if (tempHTR.temp <= INCINERATE_LOW_TEMP && !valve.gasOn) {

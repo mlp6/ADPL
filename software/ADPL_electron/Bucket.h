@@ -11,7 +11,7 @@ class Bucket {
         unsigned int tip_count;
         void publish();
         double bucket_array[6];
-        void updateFlow();
+        double updateFlow();
         double flow_rate;
     private:
         int iter;

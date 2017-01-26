@@ -7,10 +7,9 @@ class PinchValve{
         PinchValve(int dir_pin, int step_pin, int sleep_pin, int up_pin, int down_pin);
         void shiftUp();
         void shiftDown();
-        void read();
-        int flow_pos;
-        bool up;
-        bool down;
+        void determineFlow();
+        int flow_rate;
+
     private:
         int _dir_pin;
         int _step_pin;

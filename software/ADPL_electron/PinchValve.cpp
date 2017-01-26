@@ -19,20 +19,9 @@ PinchValve::PinchValve(int dir_pin, int step_pin, int sleep_pin, int up_pin, int
     _down_pin = down_pin;
 
     digitalWrite(_sleep_pin, LOW);
-    int flow_pos = 0;
-    particle.Variable("flow_pos", (int) flow_pos);
-    bool up = false;
-    bool down = false;
-}
-
-void PinchValve::read(){
-    // closed switch, pulls down the level, reads this pin
-    if (digitalRead(_up_pin) == LOW){
-        up = true;
-    }
-    if (digitalRead(_down_pin) == LOW){
-        down = true;
-    }
+    int flow_rate = 0;
+    // particle.Variable("flowRate", flow_rate);
+    // double bucket_array[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 }
 
 void PinchValve::shiftUp() {
@@ -45,8 +34,6 @@ void PinchValve::shiftUp() {
         digitalWrite(_step_pin, LOW);
         delay(1);
     };
-    flow_pos +=400;
-    up = false;
     digitalWrite(_sleep_pin, LOW);
 };
 
@@ -60,7 +47,5 @@ void PinchValve::shiftDown() {
         digitalWrite(_step_pin, LOW);
         delay(1);
     };
-    flow_pos -= 400;
-    down = false;
     digitalWrite(_sleep_pin, LOW);
 };

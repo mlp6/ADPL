@@ -54,11 +54,18 @@ void setup() {
     Particle.variable("currentTime", currentTime);
     // count bucket tips on one-shot rise
     attachInterrupt(BUCKET, bucket_tipped, RISING);
-    attachInterrupt(UP, shift_up, FALLING);
-    attachInterrupt(DOWN, shift_down, FALLING);
 }
 
 void loop() {
+
+    // read the push buttons
+    pinchValve.read();
+    if(pinchValve.down){
+        pinchValve.shiftDown();
+    }
+    if(pinchValve.up){
+        pinchValve.shiftUp();
+    }
 
     currentTime = millis();
 
@@ -73,9 +80,6 @@ void loop() {
         bucket.publish();
         last_publish_time = currentTime;
     }
-
-    // determine flow rate
-
 
     // measure temp, determine if light gas
     if (tempHTR.temp <= INCINERATE_LOW_TEMP && !valve.gasOn) {
@@ -136,10 +140,4 @@ int read_temp(int temp_count) {
 
 void bucket_tipped() {
     bucket.tipped();
-}
-void shift_up(){
-    pinchValve.shiftUp();
-}
-void shift_down(){
-    pinchValve.shiftDown();
 }

@@ -10,6 +10,11 @@ class Bucket {
         unsigned long tip_time;
         unsigned int tip_count;
         void publish();
+        double bucket_array[6];
+        void updateFlow();
+        double flow_rate;
+    private:
+        int iter;
 };
 
 #endif

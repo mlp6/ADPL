@@ -58,15 +58,6 @@ void setup() {
 
 void loop() {
 
-    // read the push buttons
-    pinchValve.read();
-    if(pinchValve.down){
-        pinchValve.shiftDown();
-    }
-    if(pinchValve.up){
-        pinchValve.shiftUp();
-    }
-
     currentTime = millis();
 
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
@@ -78,7 +69,17 @@ void loop() {
         Particle.publish("TEMPS",temps_str);
         delay(1000);
         bucket.publish();
+        bucket.updateFlow();
         last_publish_time = currentTime;
+    }
+
+    // read the push buttons
+    pinchValve.read();
+    if(pinchValve.down){
+        pinchValve.shiftDown();
+    }
+    if(pinchValve.up){
+        pinchValve.shiftUp();
     }
 
     // measure temp, determine if light gas

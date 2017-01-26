@@ -20,11 +20,13 @@ PinchValve::PinchValve(int dir_pin, int step_pin, int sleep_pin, int up_pin, int
 
     digitalWrite(_sleep_pin, LOW);
     int flow_pos = 0;
+    particle.Variable("flow_pos", (int) flow_pos);
     bool up = false;
     bool down = false;
 }
 
 void PinchValve::read(){
+    // closed switch, pulls down the level, reads this pin
     if (digitalRead(_up_pin) == LOW){
         up = true;
     }
@@ -34,6 +36,7 @@ void PinchValve::read(){
 }
 
 void PinchValve::shiftUp() {
+    // shifts the linear step motor a full quarter turn up, opening valve
     digitalWrite(_dir_pin, LOW);
     digitalWrite(_sleep_pin, HIGH);
     for (int i = 0; i < 400; i++) {
@@ -48,6 +51,7 @@ void PinchValve::shiftUp() {
 };
 
 void PinchValve::shiftDown() {
+    // shifts the linear step motor a full quarter turn down, closing valve
     digitalWrite(_dir_pin, HIGH);
     digitalWrite(_sleep_pin, HIGH);
     for (int i = 0; i < 400; i++) {

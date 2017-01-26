@@ -58,6 +58,7 @@ void setup() {
 
 void loop() {
 
+    // read the push buttons
     pinchValve.read();
     if(pinchValve.down){
         pinchValve.shiftDown();

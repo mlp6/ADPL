@@ -44,7 +44,6 @@ unsigned long currentTime = 0;
 unsigned long last_publish_time = 0;
 int temp_count = 1;
 
-char temps_str [69];
 
 void setup() {
     Serial.begin(9600);
@@ -60,12 +59,7 @@ void loop() {
     temp_count = read_temp(temp_count);
 
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
-        sprintf(temps_str,"HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d",
-                tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp, int(valve.gasOn));
-        Particle.publish("TEMPS",temps_str);
-        delay(1000);
-        bucket.publish();
-        last_publish_time = currentTime;
+        last_publish_time = publish_data(last_publish_time);
     }
 
     // measure temp, determine if light gas
@@ -126,4 +120,24 @@ int read_temp(int temp_count) {
 
 void bucket_tipped() {
     bucket.tipped();
+}
+
+
+int publish_data(int last_publish_time) {
+    bool publish_success;
+    char data_str [69];
+
+    sprintf(data_str,"HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d",
+            tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
+            int(valve.gasOn), int(bucket.tip_count));
+
+    publish_success = Particle.publish("DATA",data_str);
+
+    if (publish_success) {
+        last_publish_time = currentTime;
+        // reset the bucket tip count after every successful publish (webserver will accumulate count)
+        bucket.tip_count = 0;
+    }
+
+    return last_publish_time;
 }

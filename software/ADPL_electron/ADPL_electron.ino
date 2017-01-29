@@ -127,7 +127,12 @@ int publish_data(int last_publish_time) {
     bool publish_success;
     char data_str [69];
 
-    sprintf(data_str,"HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d",
+    // allow for data str to be created that doesn't update bucket if count = 0
+    const char* fmt_string = "HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d";
+    const char* fmt_string_no_bucket = "HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d";
+
+    // bucket.tip_count will be ignored if not needed by sprintf
+    sprintf(data_str, (bucket.tip_count > 0) ? fmt_string : fmt_string_no_bucket,
             tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
             int(valve.gasOn), int(bucket.tip_count));
 
@@ -135,7 +140,8 @@ int publish_data(int last_publish_time) {
 
     if (publish_success) {
         last_publish_time = currentTime;
-        // reset the bucket tip count after every successful publish (webserver will accumulate count)
+        // reset the bucket tip count after every successful publish
+        // (webserver will accumulate count)
         bucket.tip_count = 0;
     }
 

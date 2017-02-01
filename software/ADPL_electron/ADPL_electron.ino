@@ -54,17 +54,12 @@ void setup() {
     Particle.variable("currentTime", currentTime);
     // count bucket tips on one-shot rise
     attachInterrupt(BUCKET, bucket_tipped, RISING);
+    attachInterrupt(UP, up_pushed, LOW);
+    attachInterrupt(DOWN, down_pushed, LOW);
 }
 
 void loop() {
     // read the push buttons
-    pinchValve.read();
-    if(pinchValve.down){
-        pinchValve.shiftDown();
-    }
-    if(pinchValve.up){
-        pinchValve.shiftUp();
-    }
 
     currentTime = millis();
 
@@ -149,4 +144,12 @@ int read_temp(int temp_count) {
 
 void bucket_tipped() {
     bucket.tipped();
+}
+
+void up_pushed() {
+    pinchValve.shiftUp();
+}
+
+void down_pushed(){
+    pinchValve.shiftDown();
 }

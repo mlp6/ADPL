@@ -23,16 +23,6 @@ PinchValve::PinchValve(int dir_pin, int step_pin, int sleep_pin, int up_pin, int
     bool down = false;
 }
 
-void PinchValve::read(){
-    // closed switch, pulls down the level, reads this pin
-    if (digitalRead(_up_pin) == LOW){
-        up = true;
-    }
-    if (digitalRead(_down_pin) == LOW){
-        down = true;
-    }
-}
-
 void PinchValve::shiftUp() {
     // shifts the linear step motor a full quarter turn up, opening valve
     digitalWrite(_dir_pin, LOW);

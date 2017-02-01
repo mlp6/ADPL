@@ -1,8 +1,10 @@
 import React, { Component, PropTypes } from 'react';
-import { Card, CardTitle } from 'react-toolbox/lib/card';
+import { Card, CardTitle, CardText } from 'react-toolbox/lib/card';
 import {Button, IconButton} from 'react-toolbox/lib/button'; 
 import ProgressBar from 'react-toolbox/lib/progress_bar';
 import TempPlot from './temp-view/temp-plot';
+import Notes from './temp-view/notes';
+import './temp-view/temp-view.css';
 
 class TempView extends Component {
 
@@ -25,17 +27,17 @@ class TempView extends Component {
 	render() {
 		return ( 
 			<div>
-				<Card style={{minHeight: '100px'}}>
-					<CardTitle
-						title="Metadata"/> 
+				<Card className="card" style={{minHeight: '100px'}}>
+					<CardTitle title="Metadata"/> 
 					{
 						this.props.temps.loading && 
 						this.renderLoadingView()
 					}
 				</Card>
-				<Card style={{minHeight: '400px', marginTop: '20px'}}> 
+
+				<Card className="card" style={{minHeight: '400px'}}> 
 					<div style={{margin: '20px'}}>
-						<h3 style={{display: 'inline-block', float: 'left'}}> Temperature </h3>
+						<h4 style={{display: 'inline-block', float: 'left'}}> Temperature </h4>
 						<IconButton 
 							className="material-icons" 
 							style={{float: 'right'}} 
@@ -54,6 +56,13 @@ class TempView extends Component {
 						setDaysToFetch={this.props.setDaysToFetch}
 						sideBarOpen={this.state.tempPlotSidebarOpen}/>
 				</Card>
+
+				<Card className="card"> 
+					<CardTitle title="Notes"/> 
+						<CardText>
+							<Notes currentLocation={this.props.currentLocation}/>					
+						</CardText>
+					</Card>
 			</div>
 		);
 	}

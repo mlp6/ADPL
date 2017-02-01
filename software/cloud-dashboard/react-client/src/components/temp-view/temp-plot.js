@@ -5,7 +5,7 @@ import { Layout, NavDrawer, Panel, Sidebar } from 'react-toolbox';
 import Slider from 'react-toolbox/lib/slider'; 
 import constants from '../../constants';
 import Input from 'react-toolbox/lib/input';
-import './temp-plot.css';
+import './temp-plot/temp-plot.css';
 
 const LINE_COLORS = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33']
 

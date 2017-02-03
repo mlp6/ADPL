@@ -12,6 +12,8 @@
 SYSTEM_THREAD(ENABLED);  // parallel user and system threads
                          // to allow function w/o cell connectivity
 
+unsigned long SYS_VERSION;
+
 #define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
 
 #include "pin_mapping.h"
@@ -50,6 +52,10 @@ void setup() {
     Particle.variable("currentTime", currentTime);
     // count bucket tips on one-shot rise
     attachInterrupt(BUCKET, bucket_tipped, RISING);
+
+    // collect the system firmware version to fetch OTA
+    SYS_VERSION = System.versionNumber();
+    Particle.variable("SYS_VERSION", SYS_VERSION);
 }
 
 void loop() {

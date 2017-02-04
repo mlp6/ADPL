@@ -35,6 +35,11 @@ function handleStream(deviceUrl, io){
     es.addEventListener("TEMPS", (message) => {
 		handleTemperatureMessage(message, io);
 	});
+	
+	// Add new DATA event listener
+    es.addEventListener("DATA", (message) => {
+		handleTemperatureMessage(message, io);
+	});
 
 	// Add bucket tip listener
 	es.addEventListener("BUCKET", (message) => {

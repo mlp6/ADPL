@@ -21,6 +21,7 @@
     "twilio": "^2.9.1"
   },
   "devDependencies": {
+    "babel-plugin-transform-class-properties": "^6.22.0",
     "jest": "^18.1.0",
     "sinon": "^1.17.7"
   }

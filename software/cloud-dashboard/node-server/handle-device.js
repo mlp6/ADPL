@@ -13,7 +13,7 @@ function handleDataMessage(message, io) {
 		const parsedData = MessageUtil.parseMessage(message); 
 		MessageUtil.addRecords(parsedData, io);
 	} catch (err) {
-		console.log("ERROR: Parsing Temps Message", message, err);	
+		console.log("ERROR: Parsing DATA Message", message, err);	
 	}
 }
 

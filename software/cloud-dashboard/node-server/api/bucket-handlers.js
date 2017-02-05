@@ -22,8 +22,18 @@ module.exports = {
 	listLoc: function(req, res) {
 		BucketEvent.find({loc: req.params.loc})
 		.sort({time: -1})
-		.exec((err, records) => sendDBEvents(err, records, res)); 
-
-	} 
+		.exec((err, records) => sendDBEvents(err, records, res));
+	},
+	listLastNDays: function(req, res) { 
+		const currentDate = new Date();
+		//TODO: add validation on req.params.days
+		currentDate.setDate(currentDate.getDate() - parseInt(req.params.days));
+		BucketEvent.find({loc: req.params.loc, time: {'$gte': currentDate}})
+		.sort({time: -1})
+		.exec((err, records) => {
+			if(err) res.send(err);
+			res.json(records);
+		}); 
+	},
 
 };

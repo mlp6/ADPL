@@ -14,7 +14,7 @@ const defaultNumberOfPoints = 300;
 class TempPlot extends Component { 
 
 	state = {
-		downsampleFactor: 10,
+		downsampleFactor: 15,
 		daysToFetch: constants.daysToFetch,
 		daysToShow: constants.daysToFetch,
 	}

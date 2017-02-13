@@ -4,14 +4,16 @@ import { bindActionCreators } from 'redux';
 import { fetchBucketTips } from '../actions/index';
 
 class BucketView extends Component {
-	constructor() {
-		this.props.fetchBucketTips( '', 1)
+	constructor(props) {
+		super(props);
+		this.props.fetchBucketTips('ADPLKenyaN3763', 20)
 	}
 	render() {
+		console.log('test')
+		console.log(this.props.bucket);
 		return (
-			<div>
-			hi
-			{this.props.bucket}
+			<div onClick={() => this.props.fetchBucketTips('ADPLKenyaN3763', 20)}>
+			hi 
 			</div>
 		);
 	}
@@ -28,3 +30,5 @@ const mapStateToProps = state => {
 		meta: state.meta,
 	}
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(BucketView);

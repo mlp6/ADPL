@@ -166,12 +166,21 @@ class TempPlot extends Component {
 	}
 
 	render() { 
+		const dataExists = !this.props.temps.loading && this.props.temps.data.length > 0;
 		return (
 			<div>
 				{
+					dataExists &&	
 					!this.props.temps.loading &&
 					this.renderView()	
-				} 
+				}
+				{
+					!dataExists &&
+					!this.props.temps.loading &&
+					<div style={{textAlign: 'center'}}>
+						No Data for the past {this.state.daysToFetch} days. Increase days to fetch in the plot menu (to the upper right).
+					</div>
+				}
 			</div>
 		);
 	} 

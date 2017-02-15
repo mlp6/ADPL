@@ -12,8 +12,8 @@ module.exports={
         "3e001d000e51353432393339": "ADPLKenyaN6833",
         "400057000a51343334363138": "ADPLDuke0785",
         "20002a001951353338363036": "ADPLDuke6191",
-		"310057000951343334363138": "ADPLPhilippinesSagay3904",
-		"170044000c51343334363138": "ADPLPhilippinesSubayon1817",
+		"310057000951343334363138": "Philippines-Sagay",
+		"170044000c51343334363138": "Philippines-Subayon",
         "520051000351353337353037": "India",
         "2d0042000951343334363138": "ADPLIndia2723"
 	}, // Maps coreids to a location identifier

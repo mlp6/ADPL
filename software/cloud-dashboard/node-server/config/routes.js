@@ -12,6 +12,7 @@ var sites = require('../api/sites');
 var ondemand = require('../api/ondemand');
 
 module.exports = function(app) { 
+	// TODO: change temp endpoints to api/temp/list*
 	app.get('/api/list', temperatureHandlers.list);
 	app.get('/api/list/:loc', temperatureHandlers.listLoc); 
 	app.get('/api/list/:loc/:days', temperatureHandlers.listLastNDays);
@@ -23,4 +24,5 @@ module.exports = function(app) {
 	// Bucket Endpoints
 	app.get('/api/bucket/list', bucketHandlers.list);
 	app.get('/api/bucket/list/:loc', bucketHandlers.listLoc);
+	app.get('/api/bucket/list/:loc/:days', bucketHandlers.listLastNDays);
 };

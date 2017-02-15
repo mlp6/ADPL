@@ -1,22 +1,46 @@
 /*
  * handle-device/temp-util.js
  * A set of utility functions used to parse and save 
- * temperature events published from ADPL systems.
+ * DATA events published from ADPL systems.
  * @author: Suyash Kumar <suyashkumar2003@gmail.com>
  */
 var TemperatureEvent = require('../models/temperature-event');
+var BucketEvent = require('../models/bucket-event');
 var locMap = require('../config/device-map.js').locMap; 
 
 /*
- * addRecord
- * Responsible for adding a temperature-event record to
- * the database.
+ * addRecords
+ * Responsible for adding information from DATA publish 
+ * events to the database. This includes temperature data,
+ * valve status data, and optional bucket tip data.
  *
  * @param {object} parsedData: See output from parseMessage function below
  * @param {oject} io: socketio object
  */
-function addRecord(parsedData, io){
-	var newTemperatureEvent= {
+function addRecords(parsedData, io){
+	addTemperatureRecord(parsedData, io);
+	parsedData.B && addBucketRecord(parsedData, io); // Add only if bucket data is present
+}
+
+function addBucketRecord(parsedData, io) {
+	var newBucketEvent = {
+		coreid:	parsedData.coreid,
+		loc:	locMap[parsedData.coreid],
+		time:	new Date(parsedData.published_at),
+		data:	parsedData.B
+	};
+
+	console.log(newBucketEvent);
+	var newBucketRecord = new BucketEvent(newBucketEvent);
+	newBucketRecord.save((err, event) => {
+		if(err) console.log("error in saving to database" + err);
+	});
+	io.emit(newBucketEvent.coreid, newBucketRecord);
+
+}
+
+function addTemperatureRecord(parsedData, io) {
+	var newTemperatureEvent = {
 		coreid:		parsedData.coreid,
 		time:		new Date(parsedData.published_at),
 		loc:		locMap[parsedData.coreid], 
@@ -27,15 +51,15 @@ function addRecord(parsedData, io){
 			HXHI:	parsedData.HXHI,
 			HXHO:	parsedData.HXHO
 		},
-		valveStatus: parsedData.V // Null if doesn't exist
+		valveStatus: parsedData.V // undefined if doesn't exist
 	}
 	
 	console.log(newTemperatureEvent);
 	var newRecord = new TemperatureEvent(newTemperatureEvent);  
-	newRecord.save(function(err, event){
-		if(err) console.log("error in saving to database"+err);
-	})
-	io.emit(newTemperatureEvent.probeid, newRecord);
+	newRecord.save((err, event) => {
+		if(err) console.log("error in saving to database" + err);
+	}); 
+	io.emit(newTemperatureEvent.loc, newRecord);
 }
 
 /**
@@ -77,5 +101,5 @@ function parseMessage(message) {
 
 module.exports = {
 	parseMessage,
-	addRecord
+	addRecords
 }

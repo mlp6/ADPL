@@ -7,6 +7,4 @@
 #define VALVE 4
 #define IGNITOR 2
 #define PUMP D0
-//#define LEVEL B5
-//#define BUCKET C0 // Duke
-#define BUCKET C4 // Kenya
+#define BUCKET C4 // 

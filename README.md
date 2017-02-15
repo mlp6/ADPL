@@ -7,7 +7,7 @@
 ###Temperature Regulation
 * Record temperatures across 5[-7] thermocouples.
 * If the heater temperature (``HTR``) is < 68 C, the gas valve opens and the
-  ignitor sparks for 1 s.
+  ignitor is on for 10 s.
 * The valve remains open until the heater temperature reaches 72 C; the ignitor
   should spark for 1 seconds, turn off for 15 min, and spark again for 1 s.
 * Once the temperature is 72 C, the valve should shut and ignitor remain off.
@@ -18,17 +18,17 @@
 * Bucket tips are recorded and counted.
 * Count events are published to the web server.
 
-###Pump Regulation (India only)
-* Pump turns on for 5 minutes, turns off for 55 minutes 
-  (sequence starts with pump off so that any disconnection/loss of power does not turn pump on when rebooting)
+###Pump Regulation
+* Pump turns on for 10 s every 30 minutes 
 
 ###Repository Layout
 * ```software/ADPL_electron/```: Particle Electron code and libraries
-* ```software/logging/```: NodeJS/MongoDB webserver
+* ```software/cloud-dashboard/```: NodeJS/MongoDB server; ReactJS client
 * ```hardware/```: control box circuit schematic, PCB layout, component spec
   sheets and bill of materials
 * ```docs/```: API documentation [FUTURE]
 * ```software/ADPL_uno/```: Arduino code and libraries (depracated)
+* ```software/electron_system_firmware/```: system firmware on different field units
 
 ###Licenses
 * All software is covered by the Apache v2.0 License.  See

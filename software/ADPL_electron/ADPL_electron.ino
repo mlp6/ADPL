@@ -35,8 +35,8 @@ Ignitor ignitor(IGNITOR);
 
 #include "Pump.h"
 Pump pump(PUMP);
-#define KEEP_PUMP_ON_TIME 30000     // 5 min
-#define KEEP_PUMP_OFF_TIME 330000   // 55 min off time after 5 min on time
+#define KEEP_PUMP_ON_TIME 10000     // 10s on every 30min
+#define KEEP_PUMP_OFF_TIME 1790000   // 30min-10s off time (29 min 50s)
 
 #include "Bucket.h"
 Bucket bucket(BUCKET);

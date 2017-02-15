@@ -10,7 +10,7 @@ class Ignitor {
         unsigned long timeLastFired;
     private:
         int _pin;
-        static const int _ignitor_on_time = 1000;   // ms; keep on for 1 s
+        static const int _ignitor_on_time = 10000;   // ms; keep on for 10 s
 
 };
 

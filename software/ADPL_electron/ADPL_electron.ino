@@ -54,8 +54,8 @@ void setup() {
     Particle.variable("currentTime", currentTime);
     // count bucket tips on one-shot rise
     attachInterrupt(BUCKET, bucket_tipped, RISING);
-    attachInterrupt(UP, up_pushed, LOW);
-    attachInterrupt(DOWN, down_pushed, LOW);
+    attachInterrupt(UP, up_pushed, FALLING);
+    attachInterrupt(DOWN, down_pushed, FALLING);
 }
 
 void loop() {

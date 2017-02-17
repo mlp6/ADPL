@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import TotalBucketTips from './bucket-view/total-bucket-tips';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fetchBucketTips } from '../actions/index';
@@ -6,14 +7,18 @@ import { fetchBucketTips } from '../actions/index';
 class BucketView extends Component {
 	constructor(props) {
 		super(props);
-		this.props.fetchBucketTips('ADPLKenyaN3763', 20)
+		this.props.fetchBucketTips(this.props.currentLocation, this.props.meta.daysToFetch);
 	}
-	render() {
-		console.log('test')
+
+	render() { 
 		console.log(this.props.bucket);
-		return (
-			<div onClick={() => this.props.fetchBucketTips('ADPLKenyaN3763', 20)}>
-			hi 
+		return ( 
+			<div> 
+				<TotalBucketTips 
+					bucketData={this.props.bucket.data} 
+					daysToFetch={this.props.meta.daysToFetch}
+					loading={this.props.bucket.loading} />	
+
 			</div>
 		);
 	}

@@ -41,8 +41,8 @@ class Dashboard extends Component {
 								currentLocation={this.props.currentLocation}/>
 						</Tab>
 						<Tab label="Bucket Tips">
-							<BucketView 
-								currentLocation={this.props.currentLocation}/>	
+							<BucketView />
+								
 						</Tab>
 					</Tabs>
 				}

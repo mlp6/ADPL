@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fetchTemps, fetchLocations, selectLocation, setDaysToFetch} from '../actions/index';
 import { Button } from 'react-toolbox/lib/button';
+import BucketView from './bucket-view';
 import {Tab, Tabs} from 'react-toolbox';
 import LocationSelector from '../components/location-selector';
 import TempView from '../components/temp-view';
@@ -20,9 +21,8 @@ class Dashboard extends Component {
 	handleTabChange = index => {
 		this.setState({tabIndex: index});
 	}
-
+	// TODO: Refactor LocationSelector and TempView into containers 
 	render() {
-		console.log(this.props);
 		return (
 			<div className="dashboard"> 
 				<LocationSelector 
@@ -41,7 +41,8 @@ class Dashboard extends Component {
 								currentLocation={this.props.currentLocation}/>
 						</Tab>
 						<Tab label="Bucket Tips">
-
+							<BucketView />
+								
 						</Tab>
 					</Tabs>
 				}

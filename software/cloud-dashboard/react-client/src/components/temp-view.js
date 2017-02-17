@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { Card, CardTitle, CardText } from 'react-toolbox/lib/card';
 import {Button, IconButton} from 'react-toolbox/lib/button'; 
-import ProgressBar from 'react-toolbox/lib/progress_bar';
 import TempPlot from './temp-view/temp-plot';
 import Notes from './temp-view/notes';
+import LoadingView from './util/loading-view';
 import './temp-view/temp-view.css';
 
 class TempView extends Component {
@@ -11,14 +11,6 @@ class TempView extends Component {
 	state = {
 		tempPlotSidebarOpen: false
 	}
-
-	renderLoadingView = () => {
-		return (
-			<div style={{textAlign: 'center'}}>
-				<ProgressBar type="circular" mode="indeterminate"/>
-			</div>
-		)
-	} 
 
 	toggleTempPlotSidebar = () => {
 		return this.setState({tempPlotSidebarOpen: !this.state.tempPlotSidebarOpen});
@@ -31,7 +23,7 @@ class TempView extends Component {
 					<CardTitle title="Metadata"/> 
 					{
 						this.props.temps.loading && 
-						this.renderLoadingView()
+						<LoadingView />
 					}
 				</Card>
 
@@ -46,7 +38,7 @@ class TempView extends Component {
 					</div>
 					{
 						this.props.temps.loading && 
-						this.renderLoadingView()
+						<LoadingView />
 					}
 					<TempPlot 
 						temps={this.props.temps} 

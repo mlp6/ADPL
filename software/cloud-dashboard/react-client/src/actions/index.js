@@ -4,6 +4,7 @@ export const FETCH_TEMPS = 'FETCH_TEMPS';
 export const FETCH_LOCATIONS = 'FETCH_LOCATIONS';
 export const SELECT_LOCATION = 'SELECT_LOCATION';
 export const SET_DAYS_TO_FETCH = 'SET_DAYS_TO_FETCH';
+export const FETCH_BUCKET_TIPS = 'FETCH_BUCKET_TIPS';
 
 const serverUrl = 'http://adpl.suyash.io'; 
 //const serverUrl = 'http://localhost:9000';
@@ -33,5 +34,12 @@ export function setDaysToFetch(daysToFetch) {
 	return {
 		type: SET_DAYS_TO_FETCH,
 		daysToFetch
+	}
+}
+
+export function fetchBucketTips(location, numDays) {
+	return {
+		type: FETCH_BUCKET_TIPS,
+		payload: axios.get(`${serverUrl}/api/bucket/list/${location}/${numDays}`)
 	}
 }

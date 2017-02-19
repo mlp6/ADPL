@@ -6,11 +6,11 @@
 
 const notesData = {
 	"Kenya-Central": "Some analong inputs have been damaged. Replacement in progress.", 
-	"Kenya-North": "Kenya North Notes",
+	"Kenya-North": "Some analong inputs have been damaged. Replacement in progress.",
 	"Duke": "Not in operation while a new circuit is under development.",
 	"Philippines-Sagay": "",
 	"Philippines-Subayon": "", 
-	"India": "Heating system not in operation due to repairs to anaerobic digester. System should be functional by mid-February.",
+	"India": "",
 }
 
 export default notesData;

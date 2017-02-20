@@ -113,6 +113,13 @@ void loop() {
         }
     }
 
+    if(pinchValve.down) {
+        pinchValve.shiftDown();
+    }
+
+    if(pinchValve.up) (
+        pinchValve.shiftUp();
+    }
 }
 
 int read_temp(int temp_count) {
@@ -147,9 +154,9 @@ void bucket_tipped() {
 }
 
 void up_pushed() {
-    pinchValve.shiftUp();
+    pinchValve.up = true;
 }
 
 void down_pushed(){
-    pinchValve.shiftDown();
+    pinchValve.down = true;
 }

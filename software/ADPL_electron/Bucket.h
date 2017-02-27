@@ -8,6 +8,12 @@ class Bucket {
         Bucket(int pin);
         void tipped();
         unsigned int tip_count;
+        void publish();
+        double bucket_array[6];
+        double updateFlow();
+        double flow_rate;
+    private:
+        int iter;
 };
 
 #endif

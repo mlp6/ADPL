@@ -41,6 +41,9 @@ Pump pump(PUMP);
 #include "Bucket.h"
 Bucket bucket(BUCKET);
 
+#include "PinchValve.h"
+PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN);
+
 // initialize some time counters
 unsigned long currentTime = 0;
 unsigned long last_publish_time = 0;
@@ -52,13 +55,15 @@ void setup() {
     Particle.variable("currentTime", currentTime);
     // count bucket tips on one-shot rise
     attachInterrupt(BUCKET, bucket_tipped, RISING);
-
     // collect the system firmware version to fetch OTA
     SYS_VERSION = System.versionNumber();
     Particle.variable("SYS_VERSION", SYS_VERSION);
+    attachInterrupt(UP, up_pushed, FALLING);
+    attachInterrupt(DOWN, down_pushed, FALLING);
 }
 
 void loop() {
+    // read the push buttons
     currentTime = millis();
 
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
@@ -95,6 +100,14 @@ void loop() {
             pump.turnOff();
         }
     }
+
+    if(pinchValve.down) {
+        pinchValve.shiftDown();
+    }
+
+    if(pinchValve.up) (
+        pinchValve.shiftUp();
+    }
 }
 
 int read_temp(int temp_count) {
@@ -128,7 +141,6 @@ void bucket_tipped() {
     bucket.tipped();
 }
 
-
 int publish_data(int last_publish_time) {
     bool publish_success;
     char data_str [69];
@@ -152,4 +164,11 @@ int publish_data(int last_publish_time) {
     }
 
     return last_publish_time;
+
+void up_pushed() {
+    pinchValve.up = true;
+}
+
+void down_pushed(){
+    pinchValve.down = true;
 }

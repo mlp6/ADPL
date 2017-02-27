@@ -42,7 +42,7 @@ Pump pump(PUMP);
 Bucket bucket(BUCKET);
 
 #include "PinchValve.h"
-PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN);
+PinchValve pinchValve(DIR, STEP, SLEEP);
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -104,7 +104,6 @@ void loop() {
     if(pinchValve.down) {
         pinchValve.shiftDown();
     }
-
     if(pinchValve.up) {
         pinchValve.shiftUp();
     }

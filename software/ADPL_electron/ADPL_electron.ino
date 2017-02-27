@@ -105,7 +105,7 @@ void loop() {
         pinchValve.shiftDown();
     }
 
-    if(pinchValve.up) (
+    if(pinchValve.up) {
         pinchValve.shiftUp();
     }
 }
@@ -164,6 +164,7 @@ int publish_data(int last_publish_time) {
     }
 
     return last_publish_time;
+}
 
 void up_pushed() {
     pinchValve.up = true;

@@ -23,11 +23,11 @@ void PinchValve::shiftUp() {
     // shifts the linear step motor a full quarter turn up, opening valve
     digitalWrite(_dir_pin, LOW);
     digitalWrite(_sleep_pin, HIGH);
-    for (int i = 0; i < 400; i++) {
+    for (int i = 0; i < _QUARTERTURN; i++) {
         digitalWrite(_step_pin, HIGH);
-        delay(1);
+        delay(_DELAY);
         digitalWrite(_step_pin, LOW);
-        delay(1);
+        delay(_DELAY);
     };
     up = false;
     digitalWrite(_sleep_pin, LOW);
@@ -37,11 +37,11 @@ void PinchValve::shiftDown() {
     // shifts the linear step motor a full quarter turn down, closing valve
     digitalWrite(_dir_pin, HIGH);
     digitalWrite(_sleep_pin, HIGH);
-    for (int i = 0; i < 400; i++) {
+    for (int i = 0; i < _QUARTERTURN; i++) {
         digitalWrite(_step_pin, HIGH);
-        delay(1);
+        delay(_DELAY);
         digitalWrite(_step_pin, LOW);
-        delay(1);
+        delay(_DELAY);
     };
     down = false;
     digitalWrite(_sleep_pin, LOW);

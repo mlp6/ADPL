@@ -10,6 +10,13 @@ class BucketView extends Component {
 		this.props.fetchBucketTips(this.props.currentLocation, this.props.meta.daysToFetch);
 	}
 
+	componentWillReceiveProps(nextProps) {
+		if (this.props.currentLocation != nextProps.currentLocation) {
+			// Refresh bucket tips for new location
+			nextProps.fetchBucketTips(nextProps.currentLocation, nextProps.meta.daysToFetch);		
+		}
+	}
+
 	render() { 
 		console.log(this.props.bucket);
 		return ( 

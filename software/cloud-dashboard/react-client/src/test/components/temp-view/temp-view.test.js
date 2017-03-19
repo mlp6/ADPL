@@ -28,14 +28,14 @@ describe('Date formatting', () => {
 	testDate.setMinutes(58);
 
 	it('should format typical dates correctly', () => { 
-		const expectedDateString = '1/24 23:58';
+		const expectedDateString = '1/23 23:58';
 		const formattedDate = component.formatDate(testDate);
 		expect(formattedDate).toEqual(expectedDateString);
 	})
 
 	it('should render dates with zero padding correctly', () => {
 		testDate.setMinutes(8);	
-		const expectedDateString = '1/24 23:08';
+		const expectedDateString = '1/23 23:08';
 		const formattedDate = component.formatDate(testDate);
 		expect(formattedDate).toEqual(expectedDateString);
 	});

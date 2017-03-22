@@ -1,0 +1,23 @@
+
+.metadata-item {
+	padding-left: 15px;
+	padding-right: 15px;
+	float: left;
+	border-right: 2px ridge #C4C4C4; 
+
+}
+.metadata-item-end {
+	padding-left: 15px;
+	padding-right: 15px;
+	float: left;
+}
+.metadata-title {
+	margin-bottom: -5px;
+	font-weight: bold; 
+}
+
+.metadata-avg-temp {
+    font-size: 15px;
+    display: inline-block;
+}
+

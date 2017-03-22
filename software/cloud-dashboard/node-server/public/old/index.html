@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="adplApp">
+ <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+                <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <!-- Optional theme -->
+<!---       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.3/nv.d3.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.5/angular-material.min.css">
+		<link rel="stylesheet" href="style.css">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>     
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+       	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script> 
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.5/angular-material.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.3/nv.d3.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>	
+		
+		<script type="text/javascript" src="https://cdn.rawgit.com/eligrey/FileSaver.js/62d219a0fac54b94cd4f230e7bfc55aa3f8dcfa4/FileSaver.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+		
+		
+        <script src="js/controllers.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
+        <style>
+         
+            .btn.act, .btn:act {background-color:blue;}
+        </style>
+    </head>
+
+
+	<body id="home" ng-controller="ADPLCtrl" style="background-color:#FAFAFA;">
+		<div id="control">
+<md-content>	
+ <md-toolbar >
+      <h2 class="md-toolbar-tools">
+        <span>ADPL-Dash</span>
+      </h2>
+    </md-toolbar>
+</md-content>
+		</div>
+	
+	<div class="container">
+	<br>
+	<br>
+	<div class="well text-center">
+		<h2> Welcome to ADPL Dash</h2>
+	</div>
+
+	<div class="row"> 
+	<div class = "col-md-4 col-md-offset-4">
+		<md-input-container class="md-block" flex-gt-sm>	
+		<label>Select Location</label>
+		<md-select ng-model="currLoc" ng-change="changeLoc()"> 
+			<md-option ng-repeat="item in locations" value="{{item}}" placeholder = "Select Location" >
+			{{item}}	
+			</md-option>
+		</md-select>
+		</md-input-container>
+	</div>
+
+
+	</div>
+
+	<!-- Metadata-->
+	<div class="row">
+		<div class= "col-lg-8 col-lg-offset-2 ng-hide" ng-hide="plotHide">
+			<md-card>
+			<md-card-title>
+			<md-card-title-text>
+				<span class="md-headline"> Metadata </span>
+			</md-card-title-text>
+			</md-card-title>
+			<md-card-content class="text-center" style="float:left;margin:auto;"> 
+		
+		
+
+			<div class="metadata-item text-center ">
+				<div class="text-center metadata-title">Valve Status</div> <br>
+				<span class="label label-default ng-hide" ng-hide="valveShow" style="font-size:15px" ng-class="gasOnLabel">{{gasOn}}</span>
+				<md-progress-circular md-mode="indeterminate" class="ng-show text-center" style="float:left;margin:auto" ng-show = "valveShow"></md-progress-circular>
+			</div> 
+		
+	
+			<div class="metadata-item text-center example example-double">
+				<div class="metadata-title">	
+					<md-tooltip md-direction="top">
+						Over last 20 Samples, deg C
+         			 </md-tooltip> 
+					 Average Temps
+				</div> 
+                <div style="margin-top:20px">
+                    <span class="label label-default metadata-avg-temp">
+                        <div> HXCI </div>
+                        {{HXCIAvg}}
+                    </span>
+                    <span class="label label-default metadata-avg-temp"> 
+                        <div> HXCO </div> 
+                        {{HXCOAvg}}
+                    </span>
+                    <span class="label label-default metadata-avg-temp"> 
+                        <div> HTR </div> 
+                        {{HTRAvg}}
+                    </span>
+                    <span class="label label-default metadata-avg-temp"> 
+                        <div> HXHI </div> 
+                        {{HXHIAvg}}
+                    </span>
+                    <span class="label label-default metadata-avg-temp"> 
+                        <div> HXHO </div> 
+                        {{HXHOAvg}}
+                    </span>
+                </div>
+
+			</div>
+
+			<div class="metadata-item text-center example example-double">
+				<div class="metadata-title">Bucket Tips </div> <br> 
+					<span class="label label-default" style="font-size:15px">E</span>
+
+			</div>
+
+
+			
+			</md-card-content>
+			</md-card>
+		</div>
+	</div>
+	<div class="row">
+	<div class="col-lg-8 col-lg-offset-2 ng-hide" ng-hide = "plotHide">
+		<md-card>
+		<md-card-title>
+		  <md-card-title-text>
+            <span class="md-headline">{{plotTitle}}</span>
+          </md-card-title-text>
+        </md-card-title>
+		<md-card-content>
+			<md-progress-circular md-mode="indeterminate" class="ng-show text-center" style="margin:auto" ng-show = "plotLoad"></md-progress-circular>
+		
+ 					<div id="graph" class="text-center" style="height:500px;">
+						<div class="text-center" style="width:100%;height:500px" id="g2"><svg id = "g3"></svg></div>
+					</div> 
+		</md-card-content> 
+		 <md-card-actions layout="row" layout-align="end center">
+          <md-button class="md-icon-button" aria-label="Favorite" ng-click="saveCSV(plotData)">
+        	<i class="fa fa-floppy-o" aria-hidden="true"></i> 
+			<md-tooltip >
+				Download CSV
+          </md-tooltip>
+          </md-button>
+          </md-card-actions>
+		</md-card>	
+		</div>
+	</div> 
+
+	<br>
+	<br>
+
+	<div class="row">
+		<div class = "col-md-12 text-center">
+				Web by <a href="http://suyashkumar.com" target=_blank>Suyash Kumar</a> | Project by <a href="http://sanitation.pratt.duke.edu/onsite-treatment/about-onsite-treatment-project" target=_blank>ADPL Team</a> 
+		</div>
+	
+	</div> 
+
+
+	</body>
+</html>

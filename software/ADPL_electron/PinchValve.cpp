@@ -17,6 +17,8 @@ PinchValve::PinchValve(int dir_pin, int step_pin, int sleep_pin) {
     digitalWrite(_sleep_pin, LOW);
     bool up = false;
     bool down = false;
+    int position = 0;
+    Particle.variable("position", position);
 }
 
 void PinchValve::shiftUp() {
@@ -30,6 +32,7 @@ void PinchValve::shiftUp() {
         delay(_DELAY);
     };
     up = false;
+    position += 1;
     digitalWrite(_sleep_pin, LOW);
 };
 
@@ -44,5 +47,6 @@ void PinchValve::shiftDown() {
         delay(_DELAY);
     };
     down = false;
+    position -= 1;
     digitalWrite(_sleep_pin, LOW);
 };

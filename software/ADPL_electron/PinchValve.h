@@ -9,13 +9,14 @@ class PinchValve{
         void shiftDown();
         bool up;
         bool down;
+        int position;
 
     private:
         int _dir_pin;
         int _step_pin;
         int _sleep_pin;
-        static constexpr _QUARTERTURN int 400;
-        static constexpr _DELAY float 1.0;
+        static constexpr int _QUARTERTURN = 400;
+        static constexpr float _DELAY  = 1.0;
 
 };
 

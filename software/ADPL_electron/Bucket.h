@@ -9,11 +9,13 @@ class Bucket {
         void tipped();
         unsigned int tip_count;
         void publish();
-        double bucket_array[6];
-        double updateFlow();
+        int bucket_array[6];
+        double updateFlow(bool was_successful);
         double flow_rate;
+        bool was_successful;
     private:
         int iter;
+        int sum;
 };
 
 #endif

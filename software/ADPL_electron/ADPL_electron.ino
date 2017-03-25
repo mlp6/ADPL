@@ -59,8 +59,8 @@ void setup() {
     SYS_VERSION = System.versionNumber();
     Particle.variable("SYS_VERSION", SYS_VERSION);
     // sense buttons
-    //attachInterrupt(UP, up_pushed, FALLING);
-    //attachInterrupt(DOWN, down_pushed, FALLING);
+    attachInterrupt(UP, up_pushed, FALLING);
+    attachInterrupt(DOWN, down_pushed, FALLING);
     //attachInterrupt(RES, res_pushed, FALLING);
 }
 
@@ -70,7 +70,6 @@ void loop() {
 
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
     temp_count = read_temp(temp_count);
-
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
         last_publish_time = publish_data(last_publish_time);
     }
@@ -155,7 +154,9 @@ int publish_data(int last_publish_time) {
             tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
             int(valve.gasOn), int(bucket.tip_count));
 
+    double flow_rate = bucket.updateFlow(bucket.was_successful);
     publish_success = Particle.publish("DATA",data_str);
+    bucket.was_successful = publish_success;
 
     if (publish_success) {
         last_publish_time = currentTime;
@@ -172,13 +173,9 @@ void res_pushed(){
 }
 
 void up_pushed() {
-    if (pinchValve.position < 6){
-      pinchValve.up = true;
-    }
+  pinchValve.up = true;
 }
 
 void down_pushed(){
-    if (pinchValve.position > -6){
-      pinchValve.down = true;
-    }
+  pinchValve.down = true;
 }

@@ -23,6 +23,7 @@ PinchValve::PinchValve(int dir_pin, int step_pin, int sleep_pin, int up_pin, int
     bool down = false;
     int position = 0;
     Particle.variable("position", position);
+
 }
 
 void PinchValve::shiftDown() {

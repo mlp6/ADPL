@@ -42,7 +42,7 @@ Pump pump(PUMP);
 Bucket bucket(BUCKET);
 
 #include "PinchValve.h"
-PinchValve pinchValve(DIR, STEP, SLEEP);
+PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RES);
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -58,8 +58,10 @@ void setup() {
     // collect the system firmware version to fetch OTA
     SYS_VERSION = System.versionNumber();
     Particle.variable("SYS_VERSION", SYS_VERSION);
-    attachInterrupt(UP, up_pushed, FALLING);
-    attachInterrupt(DOWN, down_pushed, FALLING);
+    // sense buttons
+    //attachInterrupt(UP, up_pushed, FALLING);
+    //attachInterrupt(DOWN, down_pushed, FALLING);
+    //attachInterrupt(RES, res_pushed, FALLING);
 }
 
 void loop() {
@@ -101,6 +103,11 @@ void loop() {
         }
     }
 
+    if(bucket.tip_count>3){
+      pinchValve.up = true;
+    }
+
+    // flag variables changed in attachInterrupt function
     if(pinchValve.down) {
         pinchValve.shiftDown();
     }
@@ -165,10 +172,18 @@ int publish_data(int last_publish_time) {
     return last_publish_time;
 }
 
+void res_pushed(){
+  pinchValve.position = 0;
+}
+
 void up_pushed() {
-    pinchValve.up = true;
+    if (pinchValve.position < 6){
+      pinchValve.up = true;
+    }
 }
 
 void down_pushed(){
-    pinchValve.down = true;
+    if (pinchValve.position > -6){
+      pinchValve.down = true;
+    }
 }

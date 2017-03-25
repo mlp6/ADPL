@@ -4,12 +4,12 @@
 class PinchValve{
 
     public:
-        PinchValve(int dir_pin, int step_pin, int sleep_pin);
+        PinchValve(int dir_pin, int step_pin, int sleep_pin, int up_pin, int down_pin, int reset_pin);
         void shiftUp();
         void shiftDown();
-        bool up;
-        bool down;
-        int position;
+        volatile bool up;
+        volatile bool down;
+        volatile int position;
 
     private:
         int _dir_pin;

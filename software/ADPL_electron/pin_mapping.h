@@ -15,3 +15,4 @@
 #define SLEEP D6
 #define UP B5
 #define DOWN B4
+#define RES B3

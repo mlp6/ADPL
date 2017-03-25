@@ -102,11 +102,6 @@ void loop() {
             pump.turnOff();
         }
     }
-
-    if(bucket.tip_count>3){
-      pinchValve.up = true;
-    }
-
     // flag variables changed in attachInterrupt function
     if(pinchValve.down) {
         pinchValve.shiftDown();

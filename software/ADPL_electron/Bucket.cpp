@@ -20,10 +20,11 @@ void Bucket::tipped() {
     tip_count++;
 }
 
-double Bucket::updateFlow(bool was_successful){
+void Bucket::updateFlow(bool was_successful, int publish_delay){
     iter++;
+
     // if the last publish was a success, simply populate the new tip_count
-    // otherwise take the difference between the now and last time
+    // otherwise take the difference between that now and last time
     if (was_successful){
       bucket_array[iter%6] = tip_count;
     }
@@ -31,13 +32,14 @@ double Bucket::updateFlow(bool was_successful){
       bucket_array[iter%6] = tip_count - bucket_array[(iter-1)%6];
     }
 
-    // take sum of total tips in last 15 minutes to calculate flow rate
-    double sum = 0.0;
+    // take sum of total tips in the given period to calculate tips/min
+    double sum = 0;
     for (int i=0; i < 6; i++){
-      sum = sum + bucket_array[i];
+      sum += bucket_array[i];
     }
-    double flow_rate = sum/15.0;
-    return flow_rate;
+
+    int bucket_time = ((6*publish_delay)/60000);
+    flow_rate = ((double)sum)/bucket_time;
 }
 
 void Bucket::publish() {

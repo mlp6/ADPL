@@ -14,7 +14,7 @@ SYSTEM_THREAD(ENABLED);  // parallel user and system threads
 
 unsigned long SYS_VERSION;
 
-#define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
+#define PUBLISH_DELAY 10000 // 30 sec for testing //150000  // 2.5 min b/w variable publish
 
 #include "pin_mapping.h"
 
@@ -101,6 +101,7 @@ void loop() {
             pump.turnOff();
         }
     }
+
     // flag variables changed in attachInterrupt function
     if(pinchValve.down) {
         pinchValve.shiftDown();
@@ -154,7 +155,7 @@ int publish_data(int last_publish_time) {
             tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
             int(valve.gasOn), int(bucket.tip_count));
 
-    double flow_rate = bucket.updateFlow(bucket.was_successful);
+    bucket.updateFlow(bucket.was_successful, PUBLISH_DELAY);
     publish_success = Particle.publish("DATA",data_str);
     bucket.was_successful = publish_success;
 
@@ -163,6 +164,13 @@ int publish_data(int last_publish_time) {
         // reset the bucket tip count after every successful publish
         // (webserver will accumulate count)
         bucket.tip_count = 0;
+    }
+
+    if (bucket.flow_rate > 10.0 && pinchValve.position > -6) {
+      pinchValve.down = true;
+    }
+    else if (bucket.flow_rate < 2.0 && pinchValve.position < 6){
+      pinchValve.up = true;
     }
 
     return last_publish_time;

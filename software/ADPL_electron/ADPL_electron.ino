@@ -14,7 +14,7 @@ SYSTEM_THREAD(ENABLED);  // parallel user and system threads
 
 unsigned long SYS_VERSION;
 
-#define PUBLISH_DELAY 10000 // 30 sec for testing //150000  // 2.5 min b/w variable publish
+#define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
 
 #include "pin_mapping.h"
 

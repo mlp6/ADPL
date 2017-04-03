@@ -8,14 +8,14 @@ class Bucket {
         Bucket(int pin);
         void tipped();
         unsigned int tip_count;
+        bool tip;
         void publish();
-        void updateFlow(bool was_successful, int publish_delay);
+        void updateFlow(int currentTime);
         double flow_rate;
-        bool was_successful;
     private:
-        int bucket_array[6];
+        double bucket_array[5];
         int iter;
-        double sum;
+        double time_diff;
 };
 
 #endif

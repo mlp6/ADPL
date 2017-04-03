@@ -40,6 +40,9 @@ Pump pump(PUMP);
 
 #include "Bucket.h"
 Bucket bucket(BUCKET);
+#define MAX_POSITION 6.0 // will have to adapt
+#define MIN_POSITION -6.0
+
 
 #include "PinchValve.h"
 PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RES);
@@ -109,6 +112,18 @@ void loop() {
     if(pinchValve.up) {
         pinchValve.shiftUp();
     }
+
+    if(bucket.tip) {
+      currentTime = millis();
+      bucket.updateFlow(currentTime);
+        if (bucket.flow_rate > 10.0 && pinchValve.position > MIN_POSITION) {
+          pinchValve.down = true;
+        }
+        else if (bucket.flow_rate < 6.0 && pinchValve.position < MAX_POSITION){
+          pinchValve.up = true;
+        }
+    }
+
 }
 
 int read_temp(int temp_count) {
@@ -140,6 +155,7 @@ int read_temp(int temp_count) {
 
 void bucket_tipped() {
     bucket.tipped();
+    bucket.tip = true;
 }
 
 int publish_data(int last_publish_time) {
@@ -155,9 +171,7 @@ int publish_data(int last_publish_time) {
             tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
             int(valve.gasOn), int(bucket.tip_count));
 
-    bucket.updateFlow(bucket.was_successful, PUBLISH_DELAY);
     publish_success = Particle.publish("DATA",data_str);
-    bucket.was_successful = publish_success;
 
     if (publish_success) {
         last_publish_time = currentTime;
@@ -165,14 +179,6 @@ int publish_data(int last_publish_time) {
         // (webserver will accumulate count)
         bucket.tip_count = 0;
     }
-
-    if (bucket.flow_rate > 10.0 && pinchValve.position > -6) {
-      pinchValve.down = true;
-    }
-    else if (bucket.flow_rate < 2.0 && pinchValve.position < 6){
-      pinchValve.up = true;
-    }
-
     return last_publish_time;
 }
 

@@ -11,35 +11,28 @@ Bucket::Bucket(int pin) {
     Particle.variable("bucket", (int) tip_count);
 
     int iter = 0;
-    int bucket_array[6] = {0, 0, 0, 0, 0, 0};
+    double bucket_array[5] = {0, 0, 0, 0, 0};
     double flow_rate = 0.0;
-    bool was_successful = true;
+    double time_diff = 0.000;
 }
 
 void Bucket::tipped() {
     tip_count++;
 }
 
-void Bucket::updateFlow(bool was_successful, int publish_delay){
+void Bucket::updateFlow(int currentTime){
     iter++;
+    int count = iter%5;
+    bucket_array[count] = currentTime/60000.0;
 
-    // if the last publish was a success, simply populate the new tip_count
-    // otherwise take the difference between that now and last time
-    if (was_successful){
-      bucket_array[iter%6] = tip_count;
+    if (iter%5!=4){
+      time_diff = bucket_array[count] - bucket_array[count+1];
     }
-    else {
-      bucket_array[iter%6] = tip_count - bucket_array[(iter-1)%6];
+    else{
+      time_diff = bucket_array[4] - bucket_array[0];
     }
-
-    // take sum of total tips in the given period to calculate tips/min
-    double sum = 0;
-    for (int i=0; i < 6; i++){
-      sum += bucket_array[i];
-    }
-
-    int bucket_time = ((6*publish_delay)/60000);
-    flow_rate = ((double)sum)/bucket_time;
+    flow_rate = (4.0/time_diff);
+    tip = false;
 }
 
 void Bucket::publish() {

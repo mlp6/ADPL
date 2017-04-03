@@ -37,6 +37,7 @@ function handleStream(deviceUrl, io){
     es.onerror = function (err) {
         console.log("ERROR (Likely Event Source)");
         console.log(err);
+		es.close()
 		setTimeout(handleStream, EventSourceRestartTime, deviceUrl, io); // Manual reinit of eventsource in error cases
     };
 } 

@@ -5,15 +5,17 @@
 #include "application.h"
 #include "Bucket.h"
 
-Bucket::Bucket(int pin) {
+Bucket::Bucket(int pin, double optimal_flow, int bucket_volume) {
     pinMode(pin, INPUT_PULLDOWN);
     unsigned int tip_count = 0;
     Particle.variable("bucket", (int) tip_count);
 
-    int iter = 0;
-    double bucket_array[5] = {0, 0, 0, 0, 0};
-    double flow_rate = 0.0;
-    double time_diff = 0.000;
+    // sec/bucket tip
+    double baseFlow = (1/(optimal_flow*1000*(1/bucket_volume)*(1/3600)));
+    double lowFlow = baseFlow-_OPTIMALBOUND;
+    double highFlow = baseFlow+_OPTIMALBOUND;
+    double tipTime = 0.0;
+    double lastTime = 0.0;
 }
 
 void Bucket::tipped() {
@@ -21,17 +23,8 @@ void Bucket::tipped() {
 }
 
 void Bucket::updateFlow(int currentTime){
-    iter++;
-    int count = iter%5;
-    bucket_array[count] = currentTime/60000.0;
-
-    if (iter%5!=4){
-      time_diff = bucket_array[count] - bucket_array[count+1];
-    }
-    else{
-      time_diff = bucket_array[4] - bucket_array[0];
-    }
-    flow_rate = (4.0/time_diff);
+    tipTime = currentTime/(1000)-lastTime;
+    lastTime = currentTime/(1000);
     tip = false;
 }
 

@@ -21,37 +21,36 @@ PinchValve::PinchValve(int dir_pin, int step_pin, int sleep_pin, int up_pin, int
     digitalWrite(_sleep_pin, LOW);
     bool up = false;
     bool down = false;
-    int position = 0;
+    double position = 0.0;
     Particle.variable("position", position);
-
 }
 
-void PinchValve::shiftDown() {
-    // shifts the linear step motor a full quarter turn up, opening valve
+void PinchValve::shiftDown(double res) {
+    int turn_count = res*(1600/2); // 1600 steps/2mm movement
     digitalWrite(_dir_pin, LOW);
     digitalWrite(_sleep_pin, HIGH);
-    for (int i = 0; i < _QUARTERTURN; i++) {
+    for (int i = 0; i < turn_count; i++) {
         digitalWrite(_step_pin, HIGH);
         delay(_DELAY);
         digitalWrite(_step_pin, LOW);
         delay(_DELAY);
     };
     down = false;
-    position -= 1;
+    position -= turn_count/1600;
     digitalWrite(_sleep_pin, LOW);
 };
 
-void PinchValve::shiftUp() {
-    // shifts the linear step motor a full quarter turn down, closing valve
+void PinchValve::shiftUp(double res) {
+    int turn_count = res*(1600/2); // 1600 steps/2mm movement
     digitalWrite(_dir_pin, HIGH);
     digitalWrite(_sleep_pin, HIGH);
-    for (int i = 0; i < _QUARTERTURN; i++) {
+    for (int i = 0; i < turn_count; i++) {
         digitalWrite(_step_pin, HIGH);
         delay(_DELAY);
         digitalWrite(_step_pin, LOW);
         delay(_DELAY);
     };
     up = false;
-    position += 1;
+    position += turn_count/1600;
     digitalWrite(_sleep_pin, LOW);
 };

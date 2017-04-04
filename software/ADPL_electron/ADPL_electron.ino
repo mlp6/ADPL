@@ -39,13 +39,15 @@ Pump pump(PUMP);
 #define KEEP_PUMP_OFF_TIME 1790000   // 30min-10s off time (29 min 50s)
 
 #include "Bucket.h"
-Bucket bucket(BUCKET);
+#define VOLUME 300 //300 mL
+#define OPTIMAL_FLOW 5.0 //5.0 L/hr
+Bucket bucket(BUCKET, OPTIMAL_FLOW, VOLUME);
 #define MAX_POSITION 6.0 // will have to adapt
-#define MIN_POSITION -6.0
 
 
 #include "PinchValve.h"
-PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RES);
+PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
+#define RESOLUTION 0.125;
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -107,20 +109,22 @@ void loop() {
 
     // flag variables changed in attachInterrupt function
     if(pinchValve.down) {
-        pinchValve.shiftDown();
+        pinchValve.shiftDown(pinchValve.resolution);
     }
     if(pinchValve.up) {
-        pinchValve.shiftUp();
+        pinchValve.shiftUp(pinchValve.resolution);
     }
 
     if(bucket.tip) {
       currentTime = millis();
       bucket.updateFlow(currentTime);
-        if (bucket.flow_rate > 10.0 && pinchValve.position > MIN_POSITION) {
+        if (bucket.tipTime < bucket.highFlow) {
           pinchValve.down = true;
+          pinchValve.resolution = RESOLUTION;
         }
-        else if (bucket.flow_rate < 6.0 && pinchValve.position < MAX_POSITION){
+        else if (bucket.tipTime < bucket.baseFlow && pinchValve.position < MAX_POSITION){
           pinchValve.up = true;
+          pinchValve.resolution = RESOLUTION;
         }
     }
 
@@ -188,8 +192,10 @@ void res_pushed(){
 
 void up_pushed() {
   pinchValve.up = true;
+  pinchValve.resolution = 1.0;
 }
 
 void down_pushed(){
   pinchValve.down = true;
+  pinchValve.resolution = 1.0;
 }

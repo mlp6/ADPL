@@ -122,7 +122,7 @@ void loop() {
           pinchValve.down = true;
           pinchValve.resolution = RESOLUTION;
         }
-        else if (bucket.tipTime < bucket.baseFlow && pinchValve.position < MAX_POSITION){
+        else if (bucket.tipTime > bucket.lowFlow && pinchValve.position < MAX_POSITION){
           pinchValve.up = true;
           pinchValve.resolution = RESOLUTION;
         }

@@ -12,8 +12,8 @@ Bucket::Bucket(int pin, double optimal_flow, int bucket_volume) {
 
     // sec/bucket tip
     double baseFlow = (1/(optimal_flow*1000*(1/bucket_volume)*(1/3600)));
-    double lowFlow = baseFlow-_OPTIMALBOUND;
-    double highFlow = baseFlow+_OPTIMALBOUND;
+    double highFlow = baseFlow-_OPTIMALBOUND;
+    double lowFlow = baseFlow+_OPTIMALBOUND;
     double tipTime = 0.0;
     double lastTime = 0.0;
 }

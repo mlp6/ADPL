@@ -36,7 +36,7 @@ void PinchValve::shiftDown(double res) {
         delay(_DELAY);
     };
     down = false;
-    position -= turn_count/1600;
+    position -= (double) turn_count/800;
     digitalWrite(_sleep_pin, LOW);
 };
 
@@ -51,6 +51,6 @@ void PinchValve::shiftUp(double res) {
         delay(_DELAY);
     };
     up = false;
-    position += turn_count/1600;
+    position += (double) turn_count/800;
     digitalWrite(_sleep_pin, LOW);
 };

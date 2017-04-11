@@ -42,12 +42,13 @@ Pump pump(PUMP);
 #define VOLUME 300.0 //300 mL, varies by location
 #define OPTIMAL_FLOW 5.0 //5.0 L/hr, varies by location
 Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
-#define MAX_POSITION 6.0 // will have to adapt
+#define MAX_POSITION 0.50 // in mm
+#define MIN_POSITION -0.50 // in mm
 
 
 #include "PinchValve.h"
 PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
-#define RESOLUTION 0.125;
+#define RESOLUTION 0.125; // mm of movement 16/turn
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -116,11 +117,11 @@ void loop() {
 
     if(bucket.tip) {
         bucket.updateFlow();
-        if (bucket.tipTime < bucket.highFlow) {
+        if (bucket.tipTime < bucket.highFlow && pinchValve.position > MIN_POSITION) {
           pinchValve.down = true;
           pinchValve.resolution = RESOLUTION;
         }
-        else if (bucket.tipTime > bucket.lowFlow){
+        else if (bucket.tipTime > bucket.lowFlow && pinchValve.position < MAX_POSITION){
           pinchValve.up = true;
           pinchValve.resolution = RESOLUTION;
         }

@@ -48,7 +48,8 @@ Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
 
 #include "PinchValve.h"
 PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
-#define RESOLUTION 0.125; // mm of movement 16/turn
+#define FEEDBACK_RESOLUTION 0.125; // mm of movement 16/turn
+#define PUSH_BUTTON_RESOLUTION 1.0; // mm of movement
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -119,11 +120,11 @@ void loop() {
         bucket.updateFlow();
         if (bucket.tipTime < bucket.highFlow && pinchValve.position > MIN_POSITION) {
           pinchValve.down = true;
-          pinchValve.resolution = RESOLUTION;
+          pinchValve.resolution = FEEDBACK_RESOLUTION;
         }
         else if (bucket.tipTime > bucket.lowFlow && pinchValve.position < MAX_POSITION){
           pinchValve.up = true;
-          pinchValve.resolution = RESOLUTION;
+          pinchValve.resolution = FEEDBACK_RESOLUTION;
         }
     }
 
@@ -191,10 +192,10 @@ void res_pushed(){
 
 void up_pushed() {
   pinchValve.up = true;
-  pinchValve.resolution = 1.0;
+  pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
 }
 
 void down_pushed(){
   pinchValve.down = true;
-  pinchValve.resolution = 1.0;
+  pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
 }

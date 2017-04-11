@@ -13,6 +13,7 @@
     "cors": "^2.8.1",
     "eventsource": "^0.2.1",
     "express": "^4.13.4",
+    "express-csv": "^0.6.0",
     "mongoose": "^4.4.12",
     "morgan": "^1.7.0",
     "request": "^2.72.0",

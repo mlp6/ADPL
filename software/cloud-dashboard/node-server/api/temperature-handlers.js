@@ -6,8 +6,7 @@
  */ 
 var TemperatureEvent = require('../models/temperature-event');
 
-module.exports = {
-
+module.exports = { 
 	list: function(req, res){
 		TemperatureEvent.find({}, function(err, records){
 			if(err) res.send(err);
@@ -30,15 +29,34 @@ module.exports = {
 		});	
 	},
 	listLastNDays: function(req, res) { 
-		const currentDate = new Date();
-		//TODO: add validation on req.params.days
-		currentDate.setDate(currentDate.getDate() - parseInt(req.params.days));
-		TemperatureEvent.find({loc: req.params.loc, time: {'$gte': currentDate}})
-		.sort({time: -1})
-		.exec((err, records) => {
-			if(err) res.send(err);
+		const daysToFetch = parseInt(req.params.days);
+
+		// Basic validation:
+		if (daysToFetch < 0) {
+			res.status(400).send("Days to fetch must be positive");
+		}
+
+		fetchLastNDays(req, res, daysToFetch, req.params.loc, (err, records) => {
+			if(err) res.status(500).send(err);
 			res.json(records);
-		});
-	}
+		}); 
+	},
+	fetchLastNDays: fetchLastNDays, // export this utility function
 
 }
+
+function fetchLastNDays(req, res, daysToFetch, loc, callback) { 
+		const currentDate = new Date();
+		currentDate.setDate(currentDate.getDate() - daysToFetch);
+
+		const queryObject = {
+			time: {'$gte': currentDate}
+		} 
+
+		if (loc) queryObject.loc = loc; 
+
+		TemperatureEvent.find(queryObject)
+		.sort({time: -1})
+		.exec(callback); // call supplied callback
+}
+

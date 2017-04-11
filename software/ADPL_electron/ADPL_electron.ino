@@ -39,9 +39,9 @@ Pump pump(PUMP);
 #define KEEP_PUMP_OFF_TIME 1790000   // 30min-10s off time (29 min 50s)
 
 #include "Bucket.h"
-#define VOLUME 300 //300 mL
-#define OPTIMAL_FLOW 5.0 //5.0 L/hr
-Bucket bucket(BUCKET, OPTIMAL_FLOW, VOLUME);
+#define VOLUME 300.0 //300 mL, varies by location
+#define OPTIMAL_FLOW 5.0 //5.0 L/hr, varies by location
+Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
 #define MAX_POSITION 6.0 // will have to adapt
 
 
@@ -53,7 +53,6 @@ PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 unsigned long currentTime = 0;
 unsigned long last_publish_time = 0;
 int temp_count = 1;
-
 
 void setup() {
     Serial.begin(9600);
@@ -116,13 +115,12 @@ void loop() {
     }
 
     if(bucket.tip) {
-      currentTime = millis();
-      bucket.updateFlow(currentTime);
+        bucket.updateFlow();
         if (bucket.tipTime < bucket.highFlow) {
           pinchValve.down = true;
           pinchValve.resolution = RESOLUTION;
         }
-        else if (bucket.tipTime > bucket.lowFlow && pinchValve.position < MAX_POSITION){
+        else if (bucket.tipTime > bucket.lowFlow){
           pinchValve.up = true;
           pinchValve.resolution = RESOLUTION;
         }

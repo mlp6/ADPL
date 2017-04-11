@@ -5,20 +5,23 @@
 
 class Bucket {
     public:
-        Bucket(int pin, double optimal_flow, int bucket_volume);
+        Bucket(int pin, double volume, double optimal_flow);
         void tipped();
         unsigned int tip_count;
         bool tip;
         void publish();
-        void updateFlow(int currentTime);
-        double tipTime;
-        double baseFlow;
-        double highFlow;
-        double lowFlow;
+        void updateFlow();
+        void setup();
+        unsigned long tipTime;
+        unsigned long baseFlow;
+        unsigned long highFlow;
+        unsigned long lowFlow;
+        unsigned long timeRead;
+        unsigned long lastTime;
     private:
-        double lastTime;
-        double _OPTIMALBOUND = 90; // +/- 90 seconds
-
+        static constexpr unsigned long _OPTIMALBOUND = 90000; // +/- 90 seconds
+        double _VOLUME;
+        double _OPTIMAL_FLOW; 
 };
 
 #endif

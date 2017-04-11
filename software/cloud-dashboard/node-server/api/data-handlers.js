@@ -36,13 +36,14 @@ function fetchAndSendTemperatureData(req, res) {
 			]
 		});
 		data.unshift(temperatureHeaders); // Insert headers at front of data array 
+		
+		// Prepare response
 		res.set({
 			"Content-Disposition": 'attachment; filename="data.csv"'
 		});
 		res.csv(data);
 	});
 }
-
 
 module.exports = {
 	handleDataExport: fetchAndSendTemperatureData 

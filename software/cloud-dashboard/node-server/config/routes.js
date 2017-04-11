@@ -10,6 +10,7 @@ var bucketHandlers = require('../api/bucket-handlers');
 var message = require('../api/message'); 
 var sites = require('../api/sites');
 var ondemand = require('../api/ondemand');
+var dataHandlers = require('../api/data-handlers');
 
 module.exports = function(app) { 
 	// TODO: change temp endpoints to api/temp/list*
@@ -25,4 +26,10 @@ module.exports = function(app) {
 	app.get('/api/bucket/list', bucketHandlers.list);
 	app.get('/api/bucket/list/:loc', bucketHandlers.listLoc);
 	app.get('/api/bucket/list/:loc/:days', bucketHandlers.listLastNDays);
+
+	// Download Data
+	app.get('/api/data/:type/:days', dataHandlers.handleDataExport); // type is either "temp" or "bucket"
+	app.get('/api/data/:type/:loc/:days', dataHandlers.handleDataExport); // type is either "temp" or "bucket"
+
+
 };

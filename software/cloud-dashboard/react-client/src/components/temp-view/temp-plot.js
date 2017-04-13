@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Button, IconButton} from 'react-toolbox/lib/button'; 
-import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts' 
+import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer} from 'recharts' 
 import { Layout, NavDrawer, Panel, Sidebar } from 'react-toolbox'; 
 import Slider from 'react-toolbox/lib/slider'; 
 import constants from '../../constants';
@@ -43,7 +43,7 @@ class TempPlot extends Component {
 		const dateObj = new Date(date);
 		const getMinutes = minuteString => (minuteString.length > 1) ? minuteString : "0" + minuteString;
 		
-		return `${dateObj.getMonth()+1}/${dateObj.getDate()+1} ${dateObj.getHours()}:${getMinutes(dateObj.getMinutes().toString())}`
+		return `${dateObj.getMonth()+1}/${dateObj.getDate()} ${dateObj.getHours()}:${getMinutes(dateObj.getMinutes().toString())}`
 	}
 
 	handleSliderChange = (slider, value) => {
@@ -74,27 +74,29 @@ class TempPlot extends Component {
 		const dataToShow = this.filterDatesToShow(this.downsampleArray(data, this.state.downsampleFactor)).reverse();
 		const tickInterval = Math.floor(dataToShow.length / 5);
 		return (
-			<LineChart width={700} height={300} data={dataToShow}>
-				<XAxis dataKey="time" label="Date" interval={tickInterval} tickFormatter={this.formatDate} />
-				<YAxis />
-				{
-					// Draw a line for each temperature probe:
-					Object.keys(data[0]).map((currentItem, index) => {
-						if (currentItem === 'time') return null;
-						return (
-							<Line 
-								type="monotone"
-								dataKey={currentItem} 
-								key={currentItem} 
-								animationDuration={500}
-								stroke={LINE_COLORS[index]}/>
-						);
-					})
-				}
-				<Tooltip labelFormatter={this.formatDate}/>
-				<Legend />
-				<CartesianGrid strokeDasharray="3 3" />
-			</LineChart> 
+			<ResponsiveContainer width="94%" height={300}>
+				<LineChart data={dataToShow}>
+					<XAxis dataKey="time" label="Date" interval={tickInterval} tickFormatter={this.formatDate} />
+					<YAxis />
+					{
+						// Draw a line for each temperature probe:
+						Object.keys(data[0]).map((currentItem, index) => {
+							if (currentItem === 'time') return null;
+							return (
+								<Line 
+									type="monotone"
+									dataKey={currentItem} 
+									key={currentItem} 
+									animationDuration={500}
+									stroke={LINE_COLORS[index]}/>
+							);
+						})
+					}
+					<Tooltip labelFormatter={this.formatDate}/>
+					<Legend />
+					<CartesianGrid strokeDasharray="3 3" />
+				</LineChart> 
+			</ResponsiveContainer>
 		); 
 	}
 

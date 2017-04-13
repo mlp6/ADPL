@@ -8,6 +8,10 @@
 var EventSource = require('eventsource'); // Pull in event source
 var MessageUtil = require('./handle-device/message-util');
 
+var EventSourceRestartTime = 10000; // in ms
+
+var es; // Instance of EventSource
+
 function handleDataMessage(message, io) { 
 	try {
 		const parsedData = MessageUtil.parseMessage(message); 
@@ -18,7 +22,7 @@ function handleDataMessage(message, io) {
 }
 
 function handleStream(deviceUrl, io){
-	var es = new EventSource(deviceUrl); // Listen to the stream
+	es = new EventSource(deviceUrl); // Listen to the stream
 
 	// Add temperature event listener (DATA event on devices with latest firmware)
     es.addEventListener("TEMPS", (message) => {
@@ -33,6 +37,8 @@ function handleStream(deviceUrl, io){
     es.onerror = function (err) {
         console.log("ERROR (Likely Event Source)");
         console.log(err);
+		es.close()
+		setTimeout(handleStream, EventSourceRestartTime, deviceUrl, io); // Manual reinit of eventsource in error cases
     };
 } 
 

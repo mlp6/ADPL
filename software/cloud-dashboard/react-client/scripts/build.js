@@ -222,5 +222,5 @@ function copyPublicFolder() {
 }
 
 function copyToServer() {
-	fs.copySync('build', '../node-server/public/new', {}, err => console.log(err)); 
+	fs.copySync('build', '../node-server/public', {}, err => console.log(err)); 
 }

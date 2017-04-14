@@ -16,6 +16,7 @@ class Bucket {
         unsigned long highestFlow;
         unsigned long lowFlow;
         unsigned long timeRead;
+        unsigned long tipTime;
         unsigned long lastTime;
     private:
         static constexpr unsigned long _OPTIMALBOUND = 45000; // +/- 45 seconds

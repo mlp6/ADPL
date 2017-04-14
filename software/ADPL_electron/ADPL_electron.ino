@@ -48,8 +48,9 @@ Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
 
 #include "PinchValve.h"
 PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
-#define FEEDBACK_RESOLUTION 0.125; // mm of movement 16/turn
-#define PUSH_BUTTON_RESOLUTION 1.0; // mm of movement
+#define FEEDBACK_RESOLUTION 0.125 // mm of movement 16/turn
+#define PUSH_BUTTON_RESOLUTION 1.0 // mm of movement
+#define UNCLOG_RESOLUTION 4.0 //mm of movment
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -116,6 +117,12 @@ void loop() {
         pinchValve.shiftUp(pinchValve.resolution);
     }
 
+    currentTime = millis(); // clog handle, if there hasn't been a tip in a long while open all the way up and come back to optimum
+    if ((currentTime-bucket.lastTime)>(2*bucket.lowFlow)) {
+      pinchValve.shiftUp(UNCLOG_RESOLUTION);
+      pinchValve.shiftDown(UNCLOG_RESOLUTION);
+    }
+
     if(bucket.tip) {
         bucket.updateFlow();
         if (bucket.tipTime < bucket.highFlow && bucket.tipTime > bucket.highestFlow && pinchValve.position > MIN_POSITION) {
@@ -127,7 +134,7 @@ void loop() {
           pinchValve.resolution = FEEDBACK_RESOLUTION;
         }
         else if (bucket.tipTime < bucket.highestFlow){
-          pinchValve.down = true;
+          pinchValve.down = true; // handles sudden large flow
           pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
         }
     }

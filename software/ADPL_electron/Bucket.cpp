@@ -24,7 +24,7 @@ void Bucket::updateFlow(){
     highestFlow = (unsigned long) _VOLUME*3600*(1/_HIGHESTFLOW);
 
     timeRead = millis();
-    tipTime = (unsigned long)(timeRead-lastTime);
+    tipTime = timeRead-lastTime;
     lastTime = timeRead;
     tip = false;
 }

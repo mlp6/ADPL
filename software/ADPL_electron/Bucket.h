@@ -11,17 +11,17 @@ class Bucket {
         bool tip;
         void publish();
         void updateFlow();
-        void setup();
-        unsigned long tipTime;
         unsigned long baseFlow;
         unsigned long highFlow;
+        unsigned long highestFlow;
         unsigned long lowFlow;
         unsigned long timeRead;
         unsigned long lastTime;
     private:
-        static constexpr unsigned long _OPTIMALBOUND = 90000; // +/- 90 seconds
+        static constexpr unsigned long _OPTIMALBOUND = 45000; // +/- 45 seconds
+        static constexpr double _HIGHESTFLOW = 15.0;
         double _VOLUME;
-        double _OPTIMAL_FLOW; 
+        double _OPTIMAL_FLOW;
 };
 
 #endif

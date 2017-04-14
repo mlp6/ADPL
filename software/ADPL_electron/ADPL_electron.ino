@@ -39,11 +39,11 @@ Pump pump(PUMP);
 #define KEEP_PUMP_OFF_TIME 1790000   // 30min-10s off time (29 min 50s)
 
 #include "Bucket.h"
-#define VOLUME 300.0 //300 mL, varies by location
+#define VOLUME 250.0 //300 mL, varies by location
 #define OPTIMAL_FLOW 5.0 //5.0 L/hr, varies by location
 Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
-#define MAX_POSITION 0.50 // in mm
-#define MIN_POSITION -0.50 // in mm
+#define MAX_POSITION 5.0 // in mm
+#define MIN_POSITION 0.0 // in mm
 
 
 #include "PinchValve.h"
@@ -67,7 +67,7 @@ void setup() {
     // sense buttons
     attachInterrupt(UP, up_pushed, FALLING);
     attachInterrupt(DOWN, down_pushed, FALLING);
-    //attachInterrupt(RES, res_pushed, FALLING);
+    //attachInterrupt(RESET, res_pushed, FALLING);
 }
 
 void loop() {
@@ -118,13 +118,17 @@ void loop() {
 
     if(bucket.tip) {
         bucket.updateFlow();
-        if (bucket.tipTime < bucket.highFlow && pinchValve.position > MIN_POSITION) {
+        if (bucket.tipTime < bucket.highFlow && bucket.tipTime > bucket.highestFlow && pinchValve.position > MIN_POSITION) {
           pinchValve.down = true;
           pinchValve.resolution = FEEDBACK_RESOLUTION;
         }
         else if (bucket.tipTime > bucket.lowFlow && pinchValve.position < MAX_POSITION){
           pinchValve.up = true;
           pinchValve.resolution = FEEDBACK_RESOLUTION;
+        }
+        else if (bucket.tipTime < bucket.highestFlow){
+          pinchValve.down = true;
+          pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
         }
     }
 

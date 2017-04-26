@@ -17,6 +17,8 @@ class PinchValve{
         int _step_pin;
         int _sleep_pin;
         static constexpr float _DELAY = 500;
+        static constexpr int _MICROSTEP = 8; // Easy Driver has microstepping feature default of 8, could be adjusted with M1, M2, for now constant
+        static constexpr int _STEPSPERMM = 800; // in this motor case 2mm per revolution, microstep of 8, 200 full steps per rotation, so 1600 for 2mm
         int turn_count;
 
 };

@@ -26,7 +26,7 @@ PinchValve::PinchValve(int dir_pin, int step_pin, int sleep_pin, int up_pin, int
 }
 
 void PinchValve::shiftDown(double res) {
-    int turn_count = res*(1600/2); // 1600 steps/2mm movement
+    int turn_count = res*(200*_MICROSTEP/2); // 1600 steps/2mm movement
     digitalWrite(_dir_pin, LOW);
     digitalWrite(_sleep_pin, HIGH);
     for (int i = 0; i < turn_count; i++) {
@@ -36,12 +36,12 @@ void PinchValve::shiftDown(double res) {
         delayMicroseconds(_DELAY);
     };
     down = false;
-    position -= (double) turn_count/800;
+    position -= (double) turn_count/_STEPSPERMM;
     digitalWrite(_sleep_pin, LOW);
 };
 
 void PinchValve::shiftUp(double res) {
-    int turn_count = res*(1600/2); // 1600 steps/2mm movement
+    int turn_count = res*(200*_MICROSTEP/2); // 1600 steps/2mm movement
     digitalWrite(_dir_pin, HIGH);
     digitalWrite(_sleep_pin, HIGH);
     for (int i = 0; i < turn_count; i++) {
@@ -51,6 +51,6 @@ void PinchValve::shiftUp(double res) {
         delayMicroseconds(_DELAY);
     };
     up = false;
-    position += (double) turn_count/800;
+    position += (double) turn_count/_STEPSPERMM;
     digitalWrite(_sleep_pin, LOW);
 };

@@ -31,9 +31,9 @@ void PinchValve::shiftDown(double res) {
     digitalWrite(_sleep_pin, HIGH);
     for (int i = 0; i < turn_count; i++) {
         digitalWrite(_step_pin, HIGH);
-        delay(_DELAY);
+        delayMicroseconds(_DELAY);
         digitalWrite(_step_pin, LOW);
-        delay(_DELAY);
+        delayMicroseconds(_DELAY);
     };
     down = false;
     position -= (double) turn_count/800;
@@ -46,9 +46,9 @@ void PinchValve::shiftUp(double res) {
     digitalWrite(_sleep_pin, HIGH);
     for (int i = 0; i < turn_count; i++) {
         digitalWrite(_step_pin, HIGH);
-        delay(_DELAY);
+        delayMicroseconds(_DELAY);
         digitalWrite(_step_pin, LOW);
-        delay(_DELAY);
+        delayMicroseconds(_DELAY);
     };
     up = false;
     position += (double) turn_count/800;

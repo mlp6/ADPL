@@ -121,6 +121,9 @@ void loop() {
     if ((currentTime-bucket.lastTime)>(2*bucket.lowFlow)) {
       pinchValve.shiftUp(UNCLOG_RESOLUTION);
       pinchValve.shiftDown(UNCLOG_RESOLUTION);
+      pinchValve.shiftUp(UNCLOG_RESOLUTION);
+      pinchValve.shiftDown(UNCLOG_RESOLUTION);
+      bucket.lastTime = currentTime;
     }
 
     if(bucket.tip) {

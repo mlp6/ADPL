@@ -16,7 +16,7 @@ class PinchValve{
         int _dir_pin;
         int _step_pin;
         int _sleep_pin;
-        static constexpr float _DELAY = 1.0;
+        static constexpr float _DELAY = 500;
         int turn_count;
 
 };

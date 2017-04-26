@@ -201,7 +201,9 @@ int publish_data(int last_publish_time) {
 }
 
 void res_pushed(){
-  pinchValve.position = 0;
+  pinchValve.position = 0.0;
+  pinchValve.up = true;
+  pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
 }
 
 void up_pushed() {

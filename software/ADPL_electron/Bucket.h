@@ -21,8 +21,6 @@ class Bucket {
     private:
         static constexpr unsigned long _OPTIMALBOUND = 60000; // +/- 60 seconds
         static constexpr double _HIGHESTFLOW = 15.0;
-        double _VOLUME;
-        double _OPTIMAL_FLOW;
 };
 
 #endif

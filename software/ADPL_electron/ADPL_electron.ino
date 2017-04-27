@@ -42,8 +42,6 @@ Pump pump(PUMP);
 #define VOLUME 250.0 //300 mL, varies by location
 #define OPTIMAL_FLOW 5.0 //5.0 L/hr, varies by location
 Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
-#define MAX_POSITION 5.0 // in mm
-#define MIN_POSITION 0.0 // in mm
 
 
 #include "PinchValve.h"
@@ -51,6 +49,8 @@ PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 #define FEEDBACK_RESOLUTION 0.125 // mm of movement 16/turn
 #define PUSH_BUTTON_RESOLUTION 1.0 // mm of movement
 #define UNCLOG_RESOLUTION 4.0 //mm of movment
+#define MAX_POSITION 5.0 // in mm
+#define MIN_POSITION 0.0 // in mm
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -129,7 +129,7 @@ void loop() {
       if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION){
         pinchValve.shiftUp(PUSH_BUTTON_RESOLUTION);
       }
-      
+
     }
 
     if(bucket.tip) {

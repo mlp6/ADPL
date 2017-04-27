@@ -68,7 +68,7 @@ void setup() {
     // sense buttons
     attachInterrupt(UP, up_pushed, FALLING);
     attachInterrupt(DOWN, down_pushed, FALLING);
-    //attachInterrupt(RESET, res_pushed, FALLING);
+    attachInterrupt(RESET, res_pushed, FALLING);
 }
 
 void loop() {
@@ -124,9 +124,16 @@ void loop() {
       pinchValve.shiftUp(UNCLOG_RESOLUTION);
       pinchValve.shiftDown(UNCLOG_RESOLUTION);
       bucket.lastTime = currentTime;
+      pinchValve.clogCounting += 1;
+
+      if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION){
+        pinchValve.shiftUp(PUSH_BUTTON_RESOLUTION);
+      }
+      
     }
 
     if(bucket.tip) {
+        pinchValve.clogCounting = 0;
         bucket.updateFlow();
         if (bucket.tipTime < bucket.highFlow && bucket.tipTime > bucket.highestFlow && pinchValve.position > MIN_POSITION) {
           pinchValve.down = true;
@@ -204,6 +211,7 @@ void res_pushed(){
   pinchValve.position = 0.0;
   pinchValve.up = true;
   pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+  bucket.lastTime = millis();
 }
 
 void up_pushed() {

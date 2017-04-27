@@ -11,7 +11,7 @@ class PinchValve{
         volatile bool down;
         volatile double position;
         double resolution;
-
+        int clogCounting;
     private:
         int _dir_pin;
         int _step_pin;

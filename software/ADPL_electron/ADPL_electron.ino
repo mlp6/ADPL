@@ -48,6 +48,7 @@ Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
 PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 #define FEEDBACK_RESOLUTION 0.125 // mm of movement 16/turn
 #define PUSH_BUTTON_RESOLUTION 1.0 // mm of movement
+#define HALF_RESOLUTION 0.5
 #define UNCLOG_RESOLUTION 4.0 //mm of movment
 #define MAX_POSITION 5.0 // in mm
 #define MIN_POSITION 0.0 // in mm
@@ -56,9 +57,11 @@ PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 unsigned long currentTime = 0;
 unsigned long last_publish_time = 0;
 int temp_count = 1;
+int write_address = 0;
 
 void setup() {
     Serial.begin(9600);
+    pinchValve.position = EEPROM.get(write_address, pinchValve.position);
     Particle.variable("currentTime", currentTime);
     // count bucket tips on one-shot rise
     attachInterrupt(BUCKET, bucket_tipped, RISING);
@@ -112,9 +115,11 @@ void loop() {
     // flag variables changed in attachInterrupt function
     if(pinchValve.down) {
         pinchValve.shiftDown(pinchValve.resolution);
+        EEPROM.put(write_address, pinchValve.position);
     }
     if(pinchValve.up) {
         pinchValve.shiftUp(pinchValve.resolution);
+        EEPROM.put(write_address, pinchValve.position);
     }
 
     currentTime = millis(); // clog handle, if there hasn't been a tip in a long while open all the way up and come back to optimum
@@ -127,7 +132,8 @@ void loop() {
       pinchValve.clogCounting += 1;
 
       if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION){
-        pinchValve.shiftUp(PUSH_BUTTON_RESOLUTION);
+        pinchValve.up = true;
+        pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
       }
 
     }
@@ -145,7 +151,7 @@ void loop() {
         }
         else if (bucket.tipTime < bucket.highestFlow){
           pinchValve.down = true; // handles sudden large flow
-          pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+          pinchValve.resolution = HALF_RESOLUTION;
         }
     }
 

@@ -23,7 +23,7 @@ void Bucket::tipped() {
 }
 
 void Bucket::updateFlow(){
-    timeRead = millis();
+    timeRead = millis(); // make private
     tipTime = timeRead-lastTime;
     lastTime = timeRead;
     tip = false;

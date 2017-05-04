@@ -48,8 +48,8 @@ Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
 PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 #define FEEDBACK_RESOLUTION 0.125 // mm of movement 16/turn
 #define PUSH_BUTTON_RESOLUTION 1.0 // mm of movement
-#define HALF_RESOLUTION 0.5
-#define UNCLOG_RESOLUTION 4.0 //mm of movment
+#define HALF_RESOLUTION 0.5 // mm of movement
+#define UNCLOG_RESOLUTION 4.0 // mm of movment
 #define MAX_POSITION 5.0 // in mm
 #define MIN_POSITION 0.0 // in mm
 

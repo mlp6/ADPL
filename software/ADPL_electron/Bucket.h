@@ -20,7 +20,7 @@ class Bucket {
         unsigned long lastTime;
     private:
         static constexpr unsigned long _OPTIMALBOUND = 60000; // +/- 60 seconds
-        static constexpr double _HIGHESTFLOW = 15.0;
+        static constexpr double _HIGHESTFLOW = 15.0; // in L/hr
 };
 
 #endif

@@ -10,7 +10,7 @@ class Bucket {
         unsigned int tip_count;
         bool tip;
         void publish();
-        void updateFlow();
+        void updateFlow(); // Calculates time differential
         unsigned long baseFlow;
         unsigned long highFlow;
         unsigned long highestFlow;

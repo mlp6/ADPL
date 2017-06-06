@@ -12,6 +12,7 @@ class PinchValve{
         double position;
         double resolution;
         int clogCounting; // counts length of attempts to unclog
+        void unclog(float unclog_resolution);
     private:
         int _dir_pin;
         int _step_pin;
@@ -22,7 +23,6 @@ class PinchValve{
         static constexpr int _MMPERTURN = 2; // constant for present motor
         static constexpr int _FULLSTEPSPERTURN = 200; // constant for present motor
         int turn_count;
-
 };
 
 #endif //ADPL_PINCHVALVE_H

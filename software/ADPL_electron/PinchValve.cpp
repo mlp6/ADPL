@@ -58,3 +58,11 @@ void PinchValve::shiftUp(double res) {
     position += res;
     digitalWrite(_sleep_pin, LOW);
 };
+
+void PinchValve::unclog(float unclog_resolution) {
+    shiftUp(unclog_resolution);
+    shiftDown(unclog_resolution);
+    shiftUp(unclog_resolution);
+    shiftDown(unclog_resolution);
+    clogCounting++;
+}

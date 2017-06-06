@@ -122,19 +122,17 @@ void loop() {
         EEPROM.put(write_address, pinchValve.position);
     }
 
-    currentTime = millis(); // clog handle, if there hasn't been a tip in a long while open all the way up and come back to optimum
-    if ((currentTime-bucket.lastTime)>(2*bucket.lowFlow)) {
-      pinchValve.shiftUp(UNCLOG_RESOLUTION);
-      pinchValve.shiftDown(UNCLOG_RESOLUTION);
-      pinchValve.shiftUp(UNCLOG_RESOLUTION);
-      pinchValve.shiftDown(UNCLOG_RESOLUTION);
-      bucket.lastTime = currentTime;
-      pinchValve.clogCounting += 1;
+    // unclog if no tip in a long while
+    // open all the way up and come back to optimum
+    currentTime = millis();
+    if ((currentTime - bucket.lastTime) > (2 * bucket.lowFlow)) {
+        pinchValve.unclog(UNCLOG_RESOLUTION);
+        bucket.lastTime = currentTime;
 
-      if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION){
-        pinchValve.up = true;
-        pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-      }
+        if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION){
+            pinchValve.up = true;
+            pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+        }
 
     }
 

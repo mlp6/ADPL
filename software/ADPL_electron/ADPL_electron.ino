@@ -18,7 +18,7 @@ unsigned long SYS_VERSION;
 #define SDCARD true  // true/false depending on writing data to SD card
 
 #if SDCARD
-#include <SD.h>
+#include "SD/SD.h"
 File sdFile;
 #define SD_CS_PIN = 10  // TODO: update
 #endif

@@ -20,7 +20,6 @@ unsigned long SYS_VERSION;
 #if SDCARD
 #include "SD/SD.h"
 File sdFile;
-#define SD_CS_PIN 10  // TODO: update
 #endif
 
 #include "pin_mapping.h"

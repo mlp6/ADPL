@@ -16,3 +16,4 @@
 #define UP B5
 #define DOWN B4
 #define RESET C2
+#define SD_CS_PIN B3

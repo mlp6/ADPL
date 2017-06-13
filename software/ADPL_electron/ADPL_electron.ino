@@ -207,17 +207,12 @@ int publish_data(int last_publish_time) {
     // allow for data str to be created that doesn't update bucket if count = 0
     const char* fmt_string = "HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d";
     const char* fmt_string_no_bucket = "HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d";
-    
+
     // bucket.tip_count will be ignored if not needed by sprintf
-    if(SDCARD) {
-        sprintf(data_str, millis(), (bucket.tip_count > 0) ? fmt_string : fmt_string_no_bucket,
-                tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
-                int(valve.gasOn), int(bucket.tip_count));
-    } else {
-        sprintf(data_str, (bucket.tip_count > 0) ? fmt_string : fmt_string_no_bucket,
-                tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
-                int(valve.gasOn), int(bucket.tip_count));
-    }
+
+    sprintf(data_str, SDCARD ? ((const char*)millis()) : "", (bucket.tip_count > 0) ? fmt_string : fmt_string_no_bucket,
+            tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
+            int(valve.gasOn), int(bucket.tip_count));
 
     if (sdFile) {
         sdFile.println(data_str);

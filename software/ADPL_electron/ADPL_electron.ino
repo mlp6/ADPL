@@ -22,9 +22,12 @@ unsigned long SYS_VERSION;
 File sdFile;
 #endif
 
-#include "pin_mapping.h"
+#include "Publish_data.h"
+Publish_data dataPublisher;
 
+#include "pin_mapping.h"
 #include "TempProbe.h"
+TempProbe tempHXCI("HXCI", HXCI);
 TempProbe tempHXCI("HXCI", HXCI);
 TempProbe tempHXCO("HXCO", HXCO);
 TempProbe tempHTR("HTR", HTR);
@@ -89,11 +92,15 @@ void setup() {
 void loop() {
     // read the push buttons
     currentTime = millis();
-
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
     temp_count = read_temp(temp_count);
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
-        last_publish_time = publish_data(last_publish_time);
+        if(dataPublisher.publish(SDCARD ? (formatData(), sdFile) : (formatData(), nullptr))){
+            // reset the bucket tip count after every successful publish
+            // (webserver will accumulate count)
+            last_publish_time = millis();
+            bucket.tip_count = 0;
+        }
     }
 
     // measure temp, determine if light gas
@@ -199,44 +206,25 @@ void bucket_tipped() {
     bucket.tip = true;
 }
 
-int publish_data(int last_publish_time) {
-    bool sdcard_publish_success = false;
-    bool cell_publish_success = false;
-    char data_str [69];
-
+char* formatData(){
     // allow for data str to be created that doesn't update bucket if count = 0
-    const char* fmt_string = "HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d";
-    const char* fmt_string_no_bucket = "HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d";
+    fmt_string = "HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d";
+    fmt_string_no_bucket = "HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d";
     // allow for time-stamping functionality if data is being saved to an SD card
-    const char* fmt_string_SD = "time:%d,HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d";
-    const char* fmt_string_no_bucket_SD = "time:%d,HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d";
+    fmt_string_SD = "time:%d,HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d";
+    fmt_string_no_bucket_SD = "time:%d,HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d";
 
     // bucket.tip_count will be ignored if not needed by sprintf
+    //TODO: implement currentTime (and format it)
     if (SDCARD){
-        sprintf(data_str, (bucket.tip_count > 0) ? fmt_string_SD : fmt_string_no_bucket_SD,
+        return sprintf(data_str, (bucket.tip_count > 0) ? fmt_string_SD : fmt_string_no_bucket_SD,
                 millis(), tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
                 int(valve.gasOn), int(bucket.tip_count));
     } else {
-        sprintf(data_str, (bucket.tip_count > 0) ? fmt_string : fmt_string_no_bucket,
+        return sprintf(data_str, (bucket.tip_count > 0) ? fmt_string : fmt_string_no_bucket,
                 tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
                 int(valve.gasOn), int(bucket.tip_count));
     }
-
-
-    if (sdFile) {
-        sdFile.println(data_str);
-        sdcard_publish_success = true;
-    }
-
-    cell_publish_success = Particle.publish("DATA",data_str);
-
-    if (sdcard_publish_success || cell_publish_success) {
-        last_publish_time = currentTime;
-        // reset the bucket tip count after every successful publish
-        // (webserver will accumulate count)
-        bucket.tip_count = 0;
-    }
-    return last_publish_time;
 }
 
 void res_pushed(){

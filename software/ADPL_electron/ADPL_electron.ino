@@ -19,11 +19,13 @@ unsigned long SYS_VERSION;
 
 #if SDCARD
 #include "SD/SD.h"
+#include "PublishDataSD.h"
+PublishDataSD sDPublisher;
 File sdFile;
 #endif
 
-#include "Publish_data.h"
-Publish_data dataPublisher;
+#include "PublishDataCell.h"
+PublishDataCell cellPublisher;
 
 #include "pin_mapping.h"
 #include "TempProbe.h"
@@ -95,7 +97,14 @@ void loop() {
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
     temp_count = read_temp(temp_count);
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
-        if(dataPublisher.publish(SDCARD ? (formatData(), sdFile) : (formatData(), nullptr))){
+        bool dataSaved = false;
+        if(Particle.ready()){ //Returns true if the device is connected to the network and has an IP address
+            dataSaved = cellPublisher.publish();
+        }
+        if(SDCARD){
+            dataSaved = sDPublisher.publish(sdFile);
+        }
+        if(dataSaved){
             // reset the bucket tip count after every successful publish
             // (webserver will accumulate count)
             last_publish_time = millis();
@@ -204,27 +213,6 @@ int read_temp(int temp_count) {
 void bucket_tipped() {
     bucket.tipped();
     bucket.tip = true;
-}
-
-char* formatData(){
-    // allow for data str to be created that doesn't update bucket if count = 0
-    fmt_string = "HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d";
-    fmt_string_no_bucket = "HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d";
-    // allow for time-stamping functionality if data is being saved to an SD card
-    fmt_string_SD = "time:%d,HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d";
-    fmt_string_no_bucket_SD = "time:%d,HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d";
-
-    // bucket.tip_count will be ignored if not needed by sprintf
-    //TODO: implement currentTime (and format it)
-    if (SDCARD){
-        return sprintf(data_str, (bucket.tip_count > 0) ? fmt_string_SD : fmt_string_no_bucket_SD,
-                millis(), tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
-                int(valve.gasOn), int(bucket.tip_count));
-    } else {
-        return sprintf(data_str, (bucket.tip_count > 0) ? fmt_string : fmt_string_no_bucket,
-                tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
-                int(valve.gasOn), int(bucket.tip_count));
-    }
 }
 
 void res_pushed(){

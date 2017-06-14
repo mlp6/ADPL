@@ -29,15 +29,9 @@ PublishDataCell cellPublisher;
 
 #include "pin_mapping.h"
 #include "TempProbe.h"
-TempProbe tempHXCI("HXCI", HXCI);
-TempProbe tempHXCI("HXCI", HXCI);
-TempProbe tempHXCO("HXCO", HXCO);
-TempProbe tempHTR("HTR", HTR);
-TempProbe tempHXHI("HXHI", HXHI);
-TempProbe tempHXHO("HXHO", HXHO);
+#include "PublishVars.h"
 
 #include "Valve.h"
-Valve valve(VALVE);
 #include "Ignitor.h"
 Ignitor ignitor(IGNITOR);
 #define INCINERATE_LOW_TEMP 68  // will be 68 in field
@@ -50,10 +44,6 @@ Pump pump(PUMP);
 #define KEEP_PUMP_OFF_TIME 1790000   // 30min-10s off time (29 min 50s)
 
 #include "Bucket.h"
-#define VOLUME 250.0 //300 mL, varies by location
-#define OPTIMAL_FLOW 5.0 //5.0 L/hr, varies by location
-Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
-
 
 #include "PinchValve.h"
 PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
@@ -98,7 +88,7 @@ void loop() {
     temp_count = read_temp(temp_count);
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
         bool dataSaved = false;
-        if(Particle.ready()){ //Returns true if the device is connected to the network and has an IP address
+        if(Particle.connected()){ //Returns true if the device is connected to the network and has an IP address
             dataSaved = cellPublisher.publish();
         }
         if(SDCARD){

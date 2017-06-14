@@ -2,6 +2,7 @@
 #define TempProbe_h
 
 #include "application.h"
+#include "pin_mapping.h"
 
 class TempProbe {
     public:
@@ -10,6 +11,7 @@ class TempProbe {
         double temp = 0;
         unsigned long timeRead;
         void publish();
+
     private:
         int _pin;
         String _name;

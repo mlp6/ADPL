@@ -6,4 +6,4 @@ software/logging/api/twilio_auth.js
 .idea
 CMakeLists.txt
 __Previews
-clion-log.txt
+cmake-build-debug/

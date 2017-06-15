@@ -17,7 +17,6 @@ unsigned long SYS_VERSION;
 #define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
 #define SDCARD true  // true/false depending on writing data to SD card
 
-#include "PublishVars.h"
 
 #if SDCARD
 #include "SD/SD.h"
@@ -52,7 +51,11 @@ Pump pump(PUMP);
 #define KEEP_PUMP_ON_TIME 10000     // 10s on every 30min
 #define KEEP_PUMP_OFF_TIME 1790000   // 30min-10s off time (29 min 50s)
 
-//#include "Bucket.h"
+#include "Bucket.h"
+#define VOLUME 250.0 //300 mL, varies by location
+#define OPTIMAL_FLOW 5.0 //5.0 L/hr, varies by location
+Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
+
 
 #include "PinchValve.h"
 PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
@@ -99,10 +102,11 @@ void loop() {
         bool dataSaved = false;
         if(Particle.connected()){ //Returns true if the device is connected to the network and has an IP address
             dataSaved = cellPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
-                                              tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count) );
+                                              tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count));
         }
         if(SDCARD){
-            dataSaved = sDPublisher.publish(sdFile);
+            dataSaved = sDPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
+                                            tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count), sdFile);
         }
         if(dataSaved){
             // reset the bucket tip count after every successful publish

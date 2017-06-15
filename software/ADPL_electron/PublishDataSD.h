@@ -6,11 +6,12 @@
 
 class PublishDataSD {
 public:
-    bool publish(File sdFile);
+    bool publish(double HXCI, double HXCO, double HTR, double HXHI, double HXHO,
+                 int gasOn, int bucket_tip_count, File sdFile);
     //TODO: implement formatting within publishing class
 private:
-    char* fmt_string;
-    char* fmt_string_no_bucket;
+    char* fmt_string_SD;
+    char* fmt_string_no_bucket_SD;
 };
 
 #endif

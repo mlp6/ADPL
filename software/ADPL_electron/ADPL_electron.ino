@@ -30,7 +30,6 @@ PublishDataCell cellPublisher;
 #include "pin_mapping.h"
 #include "TempProbe.h"
 TempProbe tempHXCI("HXCI", HXCI);
-TempProbe tempHXCI("HXCI", HXCI);
 TempProbe tempHXCO("HXCO", HXCO);
 TempProbe tempHTR("HTR", HTR);
 TempProbe tempHXHI("HXHI", HXHI);
@@ -98,8 +97,9 @@ void loop() {
     temp_count = read_temp(temp_count);
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
         bool dataSaved = false;
-        if(Particle.ready()){ //Returns true if the device is connected to the network and has an IP address
-            dataSaved = cellPublisher.publish();
+        if(Particle.connected()){ //Returns true if the device is connected to the network and has an IP address
+            dataSaved = cellPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
+                                              tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count) );
         }
         if(SDCARD){
             dataSaved = sDPublisher.publish(sdFile);

@@ -99,16 +99,17 @@ void loop() {
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
     temp_count = read_temp(temp_count);
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
-        bool dataSaved = false;
+        bool publishedCell = false;
+        bool publishedSD = false;
         if(Particle.connected()){ //Returns true if the device is connected to the network and has an IP address
-            dataSaved = cellPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
+            publishedCell = cellPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
                                               tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count));
         }
         if(SDCARD){
-            dataSaved = sDPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
+            publishedSD = sDPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
                                             tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count), sdFile);
         }
-        if(dataSaved){
+        if(publishedCell || publishedSD){
             // reset the bucket tip count after every successful publish
             // (webserver will accumulate count)
             last_publish_time = millis();

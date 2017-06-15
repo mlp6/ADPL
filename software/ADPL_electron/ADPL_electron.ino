@@ -30,9 +30,17 @@ File sdFile;
 PublishDataCell cellPublisher;
 
 #include "pin_mapping.h"
-//#include "TempProbe.h"
 
-//#include "Valve.h"
+#include "TempProbe.h"
+TempProbe tempHXCI("HXCI", HXCI);
+TempProbe tempHXCO("HXCO", HXCO);
+TempProbe tempHTR("HTR", HTR);
+TempProbe tempHXHI("HXHI", HXHI);
+TempProbe tempHXHO("HXHO", HXHO);
+
+#include "Valve.h"
+Valve valve(VALVE);
+
 #include "Ignitor.h"
 Ignitor ignitor(IGNITOR);
 #define INCINERATE_LOW_TEMP 68  // will be 68 in field
@@ -90,7 +98,8 @@ void loop() {
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
         bool dataSaved = false;
         if(Particle.connected()){ //Returns true if the device is connected to the network and has an IP address
-            dataSaved = cellPublisher.publish();
+            dataSaved = cellPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
+                                              tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count) );
         }
         if(SDCARD){
             dataSaved = sDPublisher.publish(sdFile);

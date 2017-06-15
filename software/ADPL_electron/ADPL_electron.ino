@@ -17,6 +17,8 @@ unsigned long SYS_VERSION;
 #define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
 #define SDCARD true  // true/false depending on writing data to SD card
 
+#include "PublishVars.h"
+
 #if SDCARD
 #include "SD/SD.h"
 #include "PublishDataSD.h"
@@ -28,6 +30,7 @@ File sdFile;
 PublishDataCell cellPublisher;
 
 #include "pin_mapping.h"
+
 #include "TempProbe.h"
 TempProbe tempHXCI("HXCI", HXCI);
 TempProbe tempHXCO("HXCO", HXCO);
@@ -37,6 +40,7 @@ TempProbe tempHXHO("HXHO", HXHO);
 
 #include "Valve.h"
 Valve valve(VALVE);
+
 #include "Ignitor.h"
 Ignitor ignitor(IGNITOR);
 #define INCINERATE_LOW_TEMP 68  // will be 68 in field
@@ -48,11 +52,7 @@ Pump pump(PUMP);
 #define KEEP_PUMP_ON_TIME 10000     // 10s on every 30min
 #define KEEP_PUMP_OFF_TIME 1790000   // 30min-10s off time (29 min 50s)
 
-#include "Bucket.h"
-#define VOLUME 250.0 //300 mL, varies by location
-#define OPTIMAL_FLOW 5.0 //5.0 L/hr, varies by location
-Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
-
+//#include "Bucket.h"
 
 #include "PinchValve.h"
 PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);

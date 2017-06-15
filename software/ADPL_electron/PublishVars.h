@@ -1,6 +1,7 @@
 #include "TempProbe.h"
 #include "Valve.h"
 #include "Bucket.h"
+#include "application.h"
 #define VOLUME 250.0 //300 mL, varies by location
 #define OPTIMAL_FLOW 5.0 //5.0 L/hr, varies by location
 

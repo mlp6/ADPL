@@ -3,9 +3,6 @@
 #endif
 
 #include "application.h"
-#include "TempProbe.h"
-#include "Valve.h"
-#include "Bucket.h"
 
 class PublishDataCell {
 public:

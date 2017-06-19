@@ -19,10 +19,13 @@ unsigned long SYS_VERSION;
 
 
 #if SDCARD
-#include "SD/SD.h"
+//#include "SD/SD.h"
+#include "SD/SdFat/FatFile.h"
+#include "SD/SdFat/SdFat.h"
 #include "PublishDataSD.h"
 PublishDataSD sDPublisher;
-File sdFile;
+FatFile sdFile;
+SdFat card;
 #endif
 
 #include "PublishDataCell.h"
@@ -72,6 +75,9 @@ unsigned long last_publish_time = 0;
 int temp_count = 1;
 int write_address = 0;
 
+//TEST VAR
+bool sDSuccess = false;
+
 void setup() {
     Serial.begin(9600);
     pinchValve.position = EEPROM.get(write_address, pinchValve.position);
@@ -86,14 +92,16 @@ void setup() {
     attachInterrupt(DOWN, down_pushed, FALLING);
     attachInterrupt(RESET, res_pushed, FALLING);
 
-    if (SDCARD) {
+    if(SDCARD){
         pinMode(SD_CS_PIN, OUTPUT);
-        SD.begin(SD_CS_PIN);
-        sdFile = SD.open("adpl_data.txt", FILE_WRITE);  // FILE_WRITE should append existing file
     }
 }
 
 void loop() {
+    //initialize directory on SD Card if necessary
+    if(!sdFile.exists("adpl_data.txt")){
+        card.mkdir("adpl_data.txt");
+    }
     // read the push buttons
     currentTime = millis();
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
@@ -101,13 +109,21 @@ void loop() {
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
         bool publishedCell = false;
         bool publishedSD = false;
-        if(Particle.connected()){ //Returns true if the device is connected to the network and has an IP address
+
+        if(Particle.connected()){ //Returns true if the device is connected to the cellular network
             publishedCell = cellPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
                                               tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count));
+            //Particle.publish("DATA", sDSuccess);
         }
         if(SDCARD){
+            digitalWrite(C0, HIGH); //gives power to the card as needed
+            sDSuccess = card.begin(SD_CS_PIN, SPI_HALF_SPEED);
+            sdFile.open("adpl_data.txt", O_CREAT);
             publishedSD = sDPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
                                             tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count), sdFile);
+            sdFile.close();
+            Particle.publish("DATA", sdFile.exists("adpl_data.txt"));
+            digitalWrite(C0, LOW);
         }
         if(publishedCell || publishedSD){
             // reset the bucket tip count after every successful publish

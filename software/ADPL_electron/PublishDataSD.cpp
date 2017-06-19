@@ -1,9 +1,10 @@
 #include "application.h"
 #include "PublishDataSD.h"
-#include "SD/SD.h"
+#include "SD/SdFat/FatFile.h"
+#include "SD/SdFat/SdFat.h"
 
 bool PublishDataSD::publish(double HXCI, double HXCO, double HTR, double HXHI, double HXHO,
-                            int gasOn, int bucket_tip_count, File sdFile){
+                            int gasOn, int bucket_tip_count, FatFile sdFile){
 
     char data_str [69];
     // bucket.tip_count will be ignored if not needed by sprintf
@@ -14,7 +15,12 @@ bool PublishDataSD::publish(double HXCI, double HXCO, double HTR, double HXHI, d
     sprintf(data_str, (bucket_tip_count > 0) ? fmt_string_SD : fmt_string_no_bucket_SD,
             millis(), HXCI, HXCO, HTR, HXHI, HXHO, gasOn, bucket_tip_count);
 
-    sdFile.println(data_str);
+    int success = sdFile.write(data_str);
     //Indicates publishing success
-    return true;
+    if(success > -1){
+        return true;
+    } else {
+        return false;
+    }
+
 }

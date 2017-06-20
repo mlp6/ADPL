@@ -24,8 +24,9 @@ unsigned long SYS_VERSION;
 #include "SD/SdFat/SdFat.h"
 #include "PublishDataSD.h"
 PublishDataSD sDPublisher;
-FatFile sdFile;
+File sdFile;
 SdFat card;
+SdFatSoftSpi<D2, D3, D4> sd;
 #endif
 
 #include "PublishDataCell.h"
@@ -116,14 +117,14 @@ void loop() {
             //Particle.publish("DATA", sDSuccess);
         }
         if(SDCARD){
-            digitalWrite(C0, HIGH); //gives power to the card as needed
-            sDSuccess = card.begin(SD_CS_PIN, SPI_HALF_SPEED);
-            sdFile.open("adpl_data.txt", O_CREAT);
+            sDSuccess = sd.begin(SD_CS_PIN, SPI_HALF_SPEED);
+            if (!sdFile.open("adpl_data.txt", O_RDWR | O_CREAT | O_AT_END)) {
+                Particle.publish("ERROR", "Opening SD failed");
+            }
             publishedSD = sDPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
                                             tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count), sdFile);
             sdFile.close();
             Particle.publish("DATA", sdFile.exists("adpl_data.txt"));
-            digitalWrite(C0, LOW);
         }
         if(publishedCell || publishedSD){
             // reset the bucket tip count after every successful publish

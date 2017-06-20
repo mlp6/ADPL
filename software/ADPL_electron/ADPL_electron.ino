@@ -24,9 +24,10 @@ unsigned long SYS_VERSION;
 #include "SD/SdFat/SdFat.h"
 #include "PublishDataSD.h"
 PublishDataSD sDPublisher;
-File sdFile;
+const uint8_t chipSelect = SS;
 SdFat card;
-SdFatSoftSpi<D2, D3, D4> sd;
+FatFile sdFile;
+//SdFatSoftSpi<D2, D3, D4> sd;
 #endif
 
 #include "PublishDataCell.h"
@@ -95,14 +96,12 @@ void setup() {
 
     if(SDCARD){
         pinMode(SD_CS_PIN, OUTPUT);
+        SPI.begin(SPI_MODE_MASTER);
+        sDSuccess = card.begin(SD_CS_PIN);
     }
 }
 
 void loop() {
-    //initialize directory on SD Card if necessary
-    if(!sdFile.exists("adpl_data.txt")){
-        card.mkdir("adpl_data.txt");
-    }
     // read the push buttons
     currentTime = millis();
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
@@ -117,14 +116,12 @@ void loop() {
             //Particle.publish("DATA", sDSuccess);
         }
         if(SDCARD){
-            sDSuccess = sd.begin(SD_CS_PIN, SPI_HALF_SPEED);
             if (!sdFile.open("adpl_data.txt", O_RDWR | O_CREAT | O_AT_END)) {
                 Particle.publish("ERROR", "Opening SD failed");
             }
             publishedSD = sDPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
                                             tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count), sdFile);
             sdFile.close();
-            Particle.publish("DATA", sdFile.exists("adpl_data.txt"));
         }
         if(publishedCell || publishedSD){
             // reset the bucket tip count after every successful publish

@@ -4,5 +4,6 @@
 software/logging/node_modules
 software/logging/api/twilio_auth.js
 .idea
+cmake-build-debug
 CMakeLists.txt
 __Previews

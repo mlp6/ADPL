@@ -80,6 +80,9 @@ int write_address = 0;
 //TEST VAR
 bool sDSuccess = false;
 
+//initialize the loghandler
+SerialLogHandler logHandler;
+
 void setup() {
     Log.info("Starting setup...");
     Serial.begin(9600);

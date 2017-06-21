@@ -235,18 +235,24 @@ void bucket_tipped() {
 }
 
 void res_pushed(){
-  pinchValve.position = 0.0;
-  pinchValve.up = true;
-  pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-  bucket.lastTime = millis();
+    Log.info("Moving pinch valve...");
+    pinchValve.position = 0.0;
+    pinchValve.up = true;
+    pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+    bucket.lastTime = millis();
+    Log.info("Pinch valve moved.");
 }
 
-void up_pushed() {
-  pinchValve.up = true;
-  pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+void up_pushed(){
+    Log.info("Moving pinch valve up...");
+    pinchValve.up = true;
+    pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+    Log.info("Pinch valve moved.");
 }
 
 void down_pushed(){
-  pinchValve.down = true;
-  pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+    Log.info("Moving pinch valve down...");
+    pinchValve.down = true;
+    pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+    Log.info("Pinch valve moved.");
 }

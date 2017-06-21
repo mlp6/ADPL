@@ -43,7 +43,6 @@ Pump pump(PUMP);
 #define OPTIMAL_FLOW 5.0 //5.0 L/hr, varies by location
 Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
 
-
 #include "PinchValve.h"
 PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 #define FEEDBACK_RESOLUTION 0.125 // mm of movement 16/turn
@@ -154,9 +153,10 @@ void loop() {
 
         if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION){
             Log.warn("%s", pinchValve.clogCounting, " unclogging attempts made.");
-            //TODO: figure out what this is
+            Log.warn("Attempting to unclog - moving pinch valve up...");
             pinchValve.up = true;
             pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+            Log.warn("Pinch valve moved.");
         }
 
     }
@@ -166,14 +166,16 @@ void loop() {
         pinchValve.clogCounting = 0;
         bucket.updateFlow();
         if (bucket.tipTime < bucket.highFlow && bucket.tipTime > bucket.highestFlow && pinchValve.position > MIN_POSITION) {
-            //TODO: figure out what this is
+            Log.info("Moving pinch valve down...");
             pinchValve.down = true;
             pinchValve.resolution = FEEDBACK_RESOLUTION;
+            Log.info("Pinch valve moved.");
         }
         else if (bucket.tipTime > bucket.lowFlow && pinchValve.position < MAX_POSITION){
-            //TODO: figure out what this is
+            Log.info("Moving pinch valve up...");
             pinchValve.up = true;
             pinchValve.resolution = FEEDBACK_RESOLUTION;
+            Log.info("Pinch valve moved.");
         }
         else if (bucket.tipTime < bucket.highestFlow){
             Log.warn("Sudden large flow detected. Handling...");
@@ -246,7 +248,7 @@ int publish_data(int last_publish_time) {
 
     publish_success = Particle.publish("DATA",data_str);
 
-    if (publish_success) {
+    if (publish_success){
         last_publish_time = currentTime;
         // reset the bucket tip count after every successful publish
         // (webserver will accumulate count)
@@ -259,21 +261,24 @@ int publish_data(int last_publish_time) {
 }
 
 void res_pushed(){
-    //TODO: figure out what this does
+    Log.info("Moving pinch valve...");
     pinchValve.position = 0.0;
     pinchValve.up = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
     bucket.lastTime = millis();
+    Log.info("Pinch valve moved.");
 }
 
-void up_pushed() {
-    //TODO: figure out what this does
+void up_pushed(){
+    Log.info("Moving pinch valve up...");
     pinchValve.up = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+    Log.info("Pinch valve moved.");
 }
 
 void down_pushed(){
-    //TODO: figure out what this does
+    Log.info("Moving pinch valve down...");
     pinchValve.down = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+    Log.info("Pinch valve moved.");
 }

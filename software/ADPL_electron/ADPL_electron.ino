@@ -81,6 +81,7 @@ int write_address = 0;
 bool sDSuccess = false;
 
 void setup() {
+    Log.info("Starting setup...");
     Serial.begin(9600);
     pinchValve.position = EEPROM.get(write_address, pinchValve.position);
     Particle.variable("currentTime", currentTime);
@@ -95,10 +96,13 @@ void setup() {
     attachInterrupt(RESET, res_pushed, FALLING);
 
     if(SDCARD){
+        Log.info("SD card detected. Initializing...");
         pinMode(SD_CS_PIN, OUTPUT);
         SPI.begin(SPI_MODE_MASTER);
         sDSuccess = card.begin(SD_CS_PIN);
+        Log.info("Initialization complete.");
     }
+    Log.info("Setup complete!");
 }
 
 void loop() {
@@ -110,24 +114,41 @@ void loop() {
         bool publishedCell = false;
         bool publishedSD = false;
 
+        Log.info("Testing whether particle is connected...");
         if(Particle.connected()){ //Returns true if the device is connected to the cellular network
-            publishedCell = cellPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
-                                              tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count));
-            //Particle.publish("DATA", sDSuccess);
+            Log.info("Particle is connected. Publishing over cell...");
+            if(cellPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
+                                     tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count))){
+                Log.info("Cell publish successful.");
+                publishedCell = true;
+            } else {
+                Log.error("Cell publish failed.");
+                publishedCell = false;
+            }
+
+        } else {
+            Log.warn("Particle is not connected.");
         }
         if(SDCARD){
+            Log.info("SD card detected. Publishing to SD card...");
             if (!sdFile.open("adpl_data.txt", O_RDWR | O_CREAT | O_AT_END)) {
-                Particle.publish("ERROR", "Opening SD failed");
+                Log.error("Failed to open SD file.");
             }
-            publishedSD = sDPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
-                                            tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count), sdFile);
+            if(sDPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
+                                   tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count), sdFile)){
+                Log.info("SD publish successful.");
+            } else {
+                Log.error("SD publish failed.");
+            }
             sdFile.close();
         }
         if(publishedCell || publishedSD){
+            Log.info("At least one publishing method was successful. Adjusting variables accordingly...");
             // reset the bucket tip count after every successful publish
             // (webserver will accumulate count)
             last_publish_time = millis();
             bucket.tip_count = 0;
+            Log.info("Variables adjusted.");
         }
     }
 

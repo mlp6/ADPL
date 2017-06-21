@@ -188,7 +188,7 @@ void loop() {
 }
 
 int read_temp(int temp_count) {
-    Log.info("Reading temperatures...");
+    Log.trace("Reading temperatures...");
     switch (temp_count) {
         case 1:
             Log.trace("Reading temp: heat exchanger cold inlet...");
@@ -221,7 +221,7 @@ int read_temp(int temp_count) {
             Log.trace("Reading complete.");
             break;
     }
-    Log.info("Reading complete.");
+    Log.trace("Reading complete.");
     return temp_count;
 }
 

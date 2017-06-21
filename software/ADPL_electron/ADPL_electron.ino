@@ -98,9 +98,14 @@ void setup() {
     if(SDCARD){
         Log.info("SD card detected. Initializing...");
         pinMode(SD_CS_PIN, OUTPUT);
-        SPI.begin(SPI_MODE_MASTER);
-        sDSuccess = card.begin(SD_CS_PIN);
-        Log.info("Initialization complete.");
+        SPI.begin(A2);
+        if(card.begin(SD_CS_PIN)){
+            Log.info("SD initialization complete.");
+            Particle.publish("SD", "initialized");
+        } else {
+            Log.error("SD initialization failed.");
+            Particle.publish("SD", "initialization failed");
+        }
     }
     Log.info("Setup complete!");
 }
@@ -133,12 +138,15 @@ void loop() {
             Log.info("SD card detected. Publishing to SD card...");
             if (!sdFile.open("adpl_data.txt", O_RDWR | O_CREAT | O_AT_END)) {
                 Log.error("Failed to open SD file.");
+                Particle.publish("SD", "Failed to open file");
             }
             if(sDPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
                                    tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count), sdFile)){
                 Log.info("SD publish successful.");
+                Particle.publish("SD", "success");
             } else {
                 Log.error("SD publish failed.");
+                Log.info("SD", "failure");
             }
             sdFile.close();
         }

@@ -105,7 +105,7 @@ void loop() {
     // read the push buttons
     currentTime = millis();
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
-    //temp_count = read_temp(temp_count);
+    temp_count = read_temp(temp_count);
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
         bool publishedCell = false;
         bool publishedSD = false;

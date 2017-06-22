@@ -102,6 +102,38 @@ void setup() {
 
 void loop() {
 
+    // read the push buttons
+    currentTime = millis();
+    // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
+    //temp_count = read_temp(temp_count);
+    if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
+        bool publishedCell = false;
+        bool publishedSD = false;
+
+        Log.info("Testing whether particle is connected...");
+        if (Particle.connected()) { //Returns true if the device is connected to the cellular network
+            Log.info("Particle is connected. Publishing over cell...");
+            if (cellPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
+                                      tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count))) {
+                Log.info("Cell publish successful.");
+                publishedCell = true;
+            } else {
+                Log.error("Cell publish failed.");
+                publishedCell = false;
+            }
+
+        } else {
+            Log.warn("Particle is not connected.");
+        }
+        if (publishedCell || publishedSD) {
+            Log.info("At least one publishing method was successful. Adjusting variables accordingly...");
+            // reset the bucket tip count after every successful publish
+            // (webserver will accumulate count)
+            last_publish_time = millis();
+            bucket.tip_count = 0;
+            Log.info("Variables adjusted.");
+        }
+    }
     //******************************SD CARD****************************************
     // open the file for write at end like the "Native SD library"
     if (!myFile.open("test.txt", O_RDWR | O_CREAT | O_AT_END)) {

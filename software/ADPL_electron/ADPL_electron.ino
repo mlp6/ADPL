@@ -229,3 +229,69 @@ void publishSD(){
 
     myFile.println(data_str);
 }
+
+int read_temp(int temp_count) {
+    Log.trace("Reading temperatures...");
+    switch (temp_count) {
+        case 1:
+            Log.trace("Reading temp: heat exchanger cold inlet...");
+            tempHXCI.read();
+            temp_count++;
+            Log.trace("Reading complete.");
+            break;
+        case 2:
+            Log.trace("Reading temp: heat exchanger cold outlet...");
+            tempHXCO.read();
+            temp_count++;
+            Log.trace("Reading complete");
+            break;
+        case 3:
+            Log.trace("Reading temp: heater...");
+            tempHTR.read();
+            temp_count++;
+            Log.trace("Reading complete.");
+            break;
+        case 4:
+            Log.trace("Reading temp: heat exchanger hot inlet...");
+            tempHXHI.read();
+            temp_count++;
+            Log.trace("Reading complete.");
+            break;
+        case 5:
+            Log.trace("Reading temp: heat exchanger hot outlet...");
+            tempHXHO.read();
+            temp_count = 1;
+            Log.trace("Reading complete.");
+            break;
+    }
+    Log.trace("Reading complete.");
+    return temp_count;
+}
+
+void bucket_tipped() {
+    bucket.tipped();
+    bucket.tip = true;
+}
+
+void res_pushed(){
+    Log.info("Moving pinch valve...");
+    pinchValve.position = 0.0;
+    pinchValve.up = true;
+    pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+    bucket.lastTime = millis();
+    Log.info("Pinch valve moved.");
+}
+
+void up_pushed(){
+    Log.info("Moving pinch valve up...");
+    pinchValve.up = true;
+    pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+    Log.info("Pinch valve moved.");
+}
+
+void down_pushed(){
+    Log.info("Moving pinch valve down...");
+    pinchValve.down = true;
+    pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+    Log.info("Pinch valve moved.");
+}

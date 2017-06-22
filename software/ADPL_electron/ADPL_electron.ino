@@ -20,10 +20,10 @@ unsigned long SYS_VERSION;
 
 #if SDCARD
 #include "SD/SdFat.h"
-// Primary SPI with DMA
-// SCK => A3, MISO => A4, MOSI => A5, SS => A2 (default)
-SdFat sd;
-const uint8_t chipSelect = SS;
+// Software SPI.  Use any digital pins.
+// MISO => D2, MOSI => D3, SCK => D4, SS => D0
+SdFatSoftSpi<D2, D3, D4> sd;
+const uint8_t chipSelect = D0;
 File myFile;
 #endif
 

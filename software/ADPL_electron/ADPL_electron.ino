@@ -83,23 +83,33 @@ bool sDSuccess = false;
 SerialLogHandler logHandler;
 
 void setup() {
-    Serial.begin(9600);
-    // Wait for USB Serial
-    while (!Serial) {
-        SysCall::yield();
-    }
 
-    Serial.println("Type any character to start");
-    while (Serial.read() <= 0) {
-        SysCall::yield();
-    }
+    Log.info("Starting setup...");
+    Serial.begin(9600);
+    pinchValve.position = EEPROM.get(write_address, pinchValve.position);
+    Particle.variable("currentTime", currentTime);
+    // count bucket tips on one-shot rise
+    attachInterrupt(BUCKET, bucket_tipped, RISING);
+    // collect the system firmware version to fetch OTA
+    SYS_VERSION = System.versionNumber();
+    Particle.variable("SYS_VERSION", SYS_VERSION);
+    // sense buttons
+    attachInterrupt(UP, up_pushed, FALLING);
+    attachInterrupt(DOWN, down_pushed, FALLING);
+    attachInterrupt(RESET, res_pushed, FALLING);
 
     // Initialize SdFat or print a detailed error message and halt
     // Use half speed like the native library.
     // Change to SPI_FULL_SPEED for more performance.
-    if (!sd.begin(chipSelect, SPI_HALF_SPEED)) {
-        sd.initErrorHalt();
+    if(SDCARD){
+        Log.info("SD card detected. Initializing...");
+        if (!sd.begin(chipSelect, SPI_HALF_SPEED)) {
+            Log.error("SD card initialization failed.");
+        } else {
+            Log.info("SD card initialization successful.");
+        }
     }
+
 }
 
 void loop() {

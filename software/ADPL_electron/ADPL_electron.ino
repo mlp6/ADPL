@@ -152,6 +152,7 @@ void loop() {
             }
         } else {
             Log.info("SD card is not present. Skipping SD publish.");
+            publishedSD = false;
         }
         if (publishedCell || publishedSD) {
             Log.info("At least one publishing method was successful. Adjusting variables accordingly...");

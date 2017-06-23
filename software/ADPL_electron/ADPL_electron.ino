@@ -15,10 +15,10 @@ SYSTEM_THREAD(ENABLED);  // parallel user and system threads
 unsigned long SYS_VERSION;
 
 #define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
-#define SDCARD true  // true/false depending on writing data to SD card
+#define sdIsInstalled true  // Determines existence of SD card - reevaluated in setup()
 
-#
-#if SDCARD
+
+#if sdIsInstalled
 #include "SD/SdFat.h"
 #include "PublishDataSD.h"
 // Software SPI.  Use any digital pins.
@@ -79,6 +79,9 @@ int write_address = 0;
 //TEST VAR
 bool sDSuccess = false;
 
+// Determine existence of SD card via the CD pin
+bool SDCARD = digitalRead(SD_CD_PIN);
+
 //initialize the loghandler
 SerialLogHandler logHandler;
 
@@ -108,12 +111,13 @@ void setup() {
         } else {
             Log.info("SD card initialization successful.");
         }
+    } else {
+        Log.info("No SD card detected.");
     }
 
 }
 
 void loop() {
-
     // read the push buttons
     currentTime = millis();
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
@@ -136,9 +140,8 @@ void loop() {
         } else {
             Log.warn("Particle is not connected.");
         }
-        //******************************SD CARD****************************************
         if(SDCARD){
-            Log.info("SD card detected. Publishing data to SD card...");
+            Log.info("SD card present. Publishing data to SD card...");
             if(sdPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
                                    int(valve.gasOn), int(bucket.tip_count), sdFile)){
                 Log.info("SD publish successful.");
@@ -147,9 +150,9 @@ void loop() {
                 Log.error("SD publish failed.");
                 publishedSD = false;
             }
+        } else {
+            Log.info("SD card is not present. Skipping SD publish.");
         }
-        //******************************SD CARD****************************************
-
         if (publishedCell || publishedSD) {
             Log.info("At least one publishing method was successful. Adjusting variables accordingly...");
             // reset the bucket tip count after every successful publish
@@ -221,7 +224,7 @@ void loop() {
         Log.info("Unclogging complete.");
 
         if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION){
-            Log.warn("%s", pinchValve.clogCounting, " unclogging attempts made.");
+            Log.warn("Many unclogging attempts made.");
             Log.warn("Attempting to unclog - moving pinch valve up...");
             pinchValve.up = true;
             pinchValve.resolution = PUSH_BUTTON_RESOLUTION;

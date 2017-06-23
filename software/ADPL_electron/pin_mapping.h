@@ -16,6 +16,7 @@
 #define UP B5
 #define DOWN C1
 #define RESET C2
+#define SD_CD_PIN B4
 
 // SD pins do not need definitions;
 // they are initialized via the SdFatSoftSpi<> command in ADPL_electron.ino

@@ -15,8 +15,15 @@ bool PublishDataSD::publish(double HXCI, double HXCO, double HTR, double HXHI, d
     sprintf(data_str, (bucket_tip_count > 0) ? fmt_string_SD : fmt_string_no_bucket_SD,
             millis(), HXCI, HXCO, HTR, HXHI, HXHO, gasOn, bucket_tip_count);
 
-    success = sdFile.println(data_str);
+    // open the file for write at end like the "Native SD library"
+    if (!sdFile.open("test.txt", O_RDWR | O_CREAT | O_AT_END)) {
+        //sd.errorHalt("opening test.txt for write failed");
+        Log.error("opening file for write failed.");
+    }
+    // if the file opened okay, write to it:
+    sdFile.println(data_str);
 
+    sdFile.close();
     //Indicates publishing success
     if(success > -1){
         return true;

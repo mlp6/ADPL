@@ -20,11 +20,13 @@ unsigned long SYS_VERSION;
 
 #if SDCARD
 #include "SD/SdFat.h"
+#include "PublishDataSD.h"
 // Software SPI.  Use any digital pins.
 // MISO => B1, MOSI => B2, SCK => B3, SS => B0
 SdFatSoftSpi<B1, B2, B3> sd;
 const uint8_t chipSelect = B0;
 File myFile;
+PublishDataSD sdPublisher;
 #endif
 
 #include "PublishDataCell.h"
@@ -136,16 +138,18 @@ void loop() {
     }
     //******************************SD CARD****************************************
     // open the file for write at end like the "Native SD library"
-    if (!myFile.open("test.txt", O_RDWR | O_CREAT | O_AT_END)) {
-        sd.errorHalt("opening test.txt for write failed");
-    }
+    //if (!myFile.open("test.txt", O_RDWR | O_CREAT | O_AT_END)) {
+      //  sd.errorHalt("opening test.txt for write failed");
+    //}
     // if the file opened okay, write to it:
 
     Serial.print("Writing to test.txt...");
-    publishSD();
+    //publishSD();
+    sdPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
+            int(valve.gasOn), int(bucket.tip_count), myFile);
 
     // close the file:
-    myFile.close();
+    //myFile.close();
     Serial.println("done.");
     delay(1000);
     //******************************SD CARD****************************************

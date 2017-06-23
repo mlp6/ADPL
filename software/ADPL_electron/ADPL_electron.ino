@@ -21,9 +21,9 @@ unsigned long SYS_VERSION;
 #if SDCARD
 #include "SD/SdFat.h"
 // Software SPI.  Use any digital pins.
-// MISO => D2, MOSI => D3, SCK => D4, SS => D0
-SdFatSoftSpi<D2, D3, D4> sd;
-const uint8_t chipSelect = D0;
+// MISO => B1, MOSI => B2, SCK => B3, SS => B0
+SdFatSoftSpi<B1, B2, B3> sd;
+const uint8_t chipSelect = B0;
 File myFile;
 #endif
 

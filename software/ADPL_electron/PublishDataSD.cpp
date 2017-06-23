@@ -6,7 +6,7 @@ bool PublishDataSD::publish(double HXCI, double HXCO, double HTR, double HXHI, d
                             int gasOn, int bucket_tip_count, File sdFile){
 
     char data_str [69];
-    int success = -1;
+    int bitsWritten = -1;
     // bucket.tip_count will be ignored if not needed by sprintf
     //TODO: implement currentTime (and format it)
     fmt_string_SD = "time:%d,HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d";
@@ -16,16 +16,15 @@ bool PublishDataSD::publish(double HXCI, double HXCO, double HTR, double HXHI, d
             millis(), HXCI, HXCO, HTR, HXHI, HXHO, gasOn, bucket_tip_count);
 
     // open the file for write at end like the "Native SD library"
-    if (!sdFile.open("test.txt", O_RDWR | O_CREAT | O_AT_END)) {
-        //sd.errorHalt("opening test.txt for write failed");
+    if (!sdFile.open("adpl_data.txt", O_RDWR | O_CREAT | O_AT_END)) {
         Log.error("opening file for write failed.");
     }
     // if the file opened okay, write to it:
-    sdFile.println(data_str);
+    bitsWritten = sdFile.println(data_str);
 
     sdFile.close();
     //Indicates publishing success
-    if(success > -1){
+    if(bitsWritten > -1){
         return true;
     } else {
         return false;

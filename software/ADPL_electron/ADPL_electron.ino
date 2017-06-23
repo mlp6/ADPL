@@ -17,7 +17,7 @@ unsigned long SYS_VERSION;
 #define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
 #define SDCARD true  // true/false depending on writing data to SD card
 
-
+#
 #if SDCARD
 #include "SD/SdFat.h"
 #include "PublishDataSD.h"
@@ -25,7 +25,7 @@ unsigned long SYS_VERSION;
 // MISO => B1, MOSI => B2, SCK => B3, SS => B0
 SdFatSoftSpi<B1, B2, B3> sd;
 const uint8_t chipSelect = B0;
-File myFile;
+File sdFile;
 PublishDataSD sdPublisher;
 #endif
 
@@ -109,8 +109,8 @@ void loop() {
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
     temp_count = read_temp(temp_count);
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
-        bool publishedCell = false;
-        bool publishedSD = false;
+        bool publishedCell;
+        bool publishedSD;
 
         Log.info("Testing whether particle is connected...");
         if (Particle.connected()) { //Returns true if the device is connected to the cellular network
@@ -123,10 +123,23 @@ void loop() {
                 Log.error("Cell publish failed.");
                 publishedCell = false;
             }
-
         } else {
             Log.warn("Particle is not connected.");
         }
+        //******************************SD CARD****************************************
+        if(SDCARD){
+            Log.info("SD card detected. Publishing data to SD card...");
+            if(sdPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
+                                   int(valve.gasOn), int(bucket.tip_count), sdFile)){
+                Log.info("SD publish successful.");
+                publishedSD = true;
+            } else {
+                Log.error("SD publish failed.");
+                publishedSD = false;
+            }
+        }
+        //******************************SD CARD****************************************
+
         if (publishedCell || publishedSD) {
             Log.info("At least one publishing method was successful. Adjusting variables accordingly...");
             // reset the bucket tip count after every successful publish
@@ -136,24 +149,6 @@ void loop() {
             Log.info("Variables adjusted.");
         }
     }
-    //******************************SD CARD****************************************
-    // open the file for write at end like the "Native SD library"
-    //if (!myFile.open("test.txt", O_RDWR | O_CREAT | O_AT_END)) {
-      //  sd.errorHalt("opening test.txt for write failed");
-    //}
-    // if the file opened okay, write to it:
-
-    Serial.print("Writing to test.txt...");
-    //publishSD();
-    sdPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
-            int(valve.gasOn), int(bucket.tip_count), myFile);
-
-    // close the file:
-    //myFile.close();
-    Serial.println("done.");
-    delay(1000);
-    //******************************SD CARD****************************************
-
     // measure temp, determine if light gas
     if (tempHTR.temp <= INCINERATE_LOW_TEMP && !valve.gasOn) {
         Log.info("Temperature is too low. Igniting gas...");
@@ -248,22 +243,6 @@ void loop() {
             Log.warn("Large flow handled.");
         }
     }
-}
-
-void publishSD(){
-    //TEMPORARY FOR TESTING
-    int gasOn = 1;
-    int bucket_tip_count = 2;
-
-    char data_str[69];
-    char* fmt_string_SD = "time:%d,HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d";
-    char* fmt_string_no_bucket_SD = "time:%d,HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d";
-
-    sprintf(data_str, (bucket_tip_count > 0) ? fmt_string_SD : fmt_string_no_bucket_SD,
-            millis(), tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
-            gasOn, bucket_tip_count);
-
-    myFile.println(data_str);
 }
 
 int read_temp(int temp_count) {

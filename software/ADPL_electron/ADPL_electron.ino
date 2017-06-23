@@ -80,7 +80,7 @@ int write_address = 0;
 bool sDSuccess = false;
 
 // Determine existence of SD card via the CD pin
-bool SDCARD = digitalRead(SD_CD_PIN);
+bool SDCARD = (bool)digitalRead(SD_CD_PIN);
 
 //initialize the loghandler
 SerialLogHandler logHandler;

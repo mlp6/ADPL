@@ -34,6 +34,7 @@ TempProbe tempHXCO("HXCO", HXCO);
 TempProbe tempHTR("HTR", HTR);
 TempProbe tempHXHI("HXHI", HXHI);
 TempProbe tempHXHO("HXHO", HXHO);
+TempProbe tempExhaust("Exhaust", EXHAUST);
 
 #include "Valve.h"
 Valve valve(VALVE);
@@ -42,7 +43,7 @@ Valve valve(VALVE);
 Ignitor ignitor(IGNITOR);
 #define INCINERATE_LOW_TEMP 68  // will be 68 in field
 #define INCINERATE_HIGH_TEMP 72 // will be 72 in field
-#define IGNITE_DELAY 900000     // 15 min between ignitor fires with open valve
+#define EXHAUST_TEMP_THRESHOLD 85     // the exhaust temp dropping below this indicates that the ignitor has gone out
 
 #include "Pump.h"
 Pump pump(PUMP);
@@ -185,8 +186,9 @@ void loop() {
         if (tempHTR.temp >= INCINERATE_HIGH_TEMP) {
             valve.close();
         }
-            // if 15 min have elapsed since last ignitor fire, then fire again
-        else if((currentTime - ignitor.timeLastFired) > IGNITE_DELAY) {
+        // if the exhaust temperature is below the threshold (85 degrees),
+	// assume the fire has gone out and fire again
+        else if(tempExhaust.temp < EXHAUST_TEMP_THRESHOLD) {
             ignitor.fire();
         }
     }
@@ -251,6 +253,10 @@ int read_temp(int temp_count) {
             break;
         case 5:
             tempHXHO.read();
+            temp_count++;
+            break;
+        case 6:
+            tempExhaust.read();
             temp_count = 1;
             break;
     }

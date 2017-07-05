@@ -76,9 +76,6 @@ unsigned long last_publish_time = 0;
 int temp_count = 1;
 int write_address = 0;
 
-//TEST VAR
-bool sDSuccess = false;
-
 // Determine existence of SD card via the CD pin
 bool SDCARD = (bool)digitalRead(SD_CD_PIN);
 

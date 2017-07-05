@@ -14,6 +14,9 @@ SYSTEM_THREAD(ENABLED);  // parallel user and system threads
 
 unsigned long SYS_VERSION;
 
+#include "PublishDataCell.h"
+PublishDataCell cellPublisher;
+
 #define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
 #define sdIsInstalled true  // Determines existence of SD card - reevaluated in setup()
 
@@ -21,17 +24,15 @@ unsigned long SYS_VERSION;
 #if sdIsInstalled
 #include "SD/SdFat.h"
 #include "PublishDataSD.h"
+#include "pin_mapping.h"
 // Software SPI.  Use any digital pins.
 // MISO => B1, MOSI => B2, SCK => B3, SS => B0
-SdFatSoftSpi<B1, B2, B3> sd;
+SdFatSoftSpi<SD_DO_PIN, SD_DI_PIN, SD_CLK_PIN> sd;
 File sdFile;
 PublishDataSD sdPublisher;
-#endif
-
-#include "PublishDataCell.h"
-PublishDataCell cellPublisher;
-
+#else
 #include "pin_mapping.h"
+#endif
 
 #include "TempProbe.h"
 TempProbe tempHXCI("HXCI", HXCI);

@@ -24,7 +24,6 @@ unsigned long SYS_VERSION;
 // Software SPI.  Use any digital pins.
 // MISO => B1, MOSI => B2, SCK => B3, SS => B0
 SdFatSoftSpi<B1, B2, B3> sd;
-const uint8_t chipSelect = B0;
 File sdFile;
 PublishDataSD sdPublisher;
 #endif
@@ -106,7 +105,7 @@ void setup() {
     // Change to SPI_FULL_SPEED for more performance.
     if(SDCARD){
         Log.info("SD card detected. Initializing...");
-        if (!sd.begin(chipSelect, SPI_HALF_SPEED)) {
+        if (!sd.begin(SD_CS_PIN, SPI_HALF_SPEED)) {
             Log.error("SD card initialization failed.");
         } else {
             Log.info("SD card initialization successful.");

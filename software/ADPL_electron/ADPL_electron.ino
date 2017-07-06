@@ -132,18 +132,23 @@ void loop() {
         // if the difference between current and wait times > the volume of the bucket ((L*s)/h) *
         // the inverse of the optimal flow (hrs/L) (units cancel, leaving a number in seconds) AND
         // the pinch valve is down
-      pinchValve.up = true;
-      pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable
-      pinchValve.wait_time = currentTime;
+        Log.info("Raising pinch valve...");
+        pinchValve.up = true;
+        pinchValve.resolution = BATCH_MOVEMENT;
+        pinchValve.wait_time = currentTime;
+        Log.info("Pinch valve raised");
     }
 
     // handle bucket tip
     if (bucket.tip) {
+        Log.info("Bucket has tipped.");
         // if bucket is tipped
         if(pinchValve.up){
+            Log.info("Pinch valve is up. Lowering...");
             // if the pinch valve is up
             pinchValve.down = true;
             pinchValve.resolution = BATCH_MOVEMENT;
+            Log.info("Pinch valve lowered.");
         }
         // tip handled; set tip bool to false
         bucket.tip = false;

@@ -79,6 +79,7 @@ void setup() {
 }
 
 void loop() {
+    Log.trace("Starting loop...");
     // read the push buttons
     currentTime = millis();
 
@@ -93,8 +94,11 @@ void loop() {
     // measure temp, determine if light gas
     if (tempHTR.temp <= INCINERATE_LOW_TEMP && !valve.gasOn) {
         Log.info("Temperature is too low. Igniting gas...");
+        Log.trace("Opening valve...");
         valve.open();
+        Log.trace("Valve opened.");
         delay(100);
+        Log.trace("Firing ignitor...");
         ignitor.fire();
         Log.info("Ignition complete.");
     }

@@ -135,19 +135,13 @@ void loop() {
       WAIT_TIME = currentTime;
     }
 
-    if (bucket.tip) {
-        if (pinchValve.up) {
-            // if bucket is tipped AND pinch valve is up
-            pinchValve.down = true;
-            pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
-            WAIT_TIME = millis();
-        }
-        else {
-            // pinch valve must be down
-            WAIT_TIME = millis();
-        }
+    if (bucket.tip && pinchValve.up) {
+        // if bucket is tipped AND pinch valve is up
+        pinchValve.down = true;
+        pinchValve.resolution = BATCH_MOVEMENT;
         // tip handled; set tip bool to false
         bucket.tip = false;
+        WAIT_TIME = millis();
     }
 }
 

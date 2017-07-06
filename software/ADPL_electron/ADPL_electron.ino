@@ -52,6 +52,8 @@ PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 #define UNCLOG_RESOLUTION 4.0 // mm of movment
 #define MAX_POSITION 5.0 // in mm
 #define MIN_POSITION 0.0 // in mm
+#define BATCH_MOVEMENT 3.0 // in mm
+#define WAIT_TIME 0
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -124,30 +126,29 @@ void loop() {
 
 
     currentTime = millis();
-    if((currentTime - WAIT_TIME) > ((3600 * VOLUME) *  (1 / OPTIMAL_FLOW)) && (ISITUP == 0)) {
+    if ((currentTime - WAIT_TIME) > ((3600 * VOLUME) *  (1 / OPTIMAL_FLOW)) && (pinchValve.down)) {
         // if the difference between current and wait times > the volume of the bucket ((L*s)/h) *
         // the inverse of the optimal flow (hrs/L) (units cancel, leaving a number in seconds) AND
         // the pinch valve is down
       pinchValve.up = true;
       pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable
       WAIT_TIME = currentTime;
-      ISITUP = 1;
-      }
-
-    if((bucket.tip) && (ISITUP == 1)){
-        pinchValve.down = true;
-        pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
-        bucket.tip = false;
-        ISITUP = 0;
-        WAIT_TIME = millis();
     }
 
-    if((bucket.tip) && (ISITUP == 0)){
+    if (bucket.tip) {
+        if (pinchValve.up) {
+            // if bucket is tipped AND pinch valve is up
+            pinchValve.down = true;
+            pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
+            WAIT_TIME = millis();
+        }
+        else {
+            // pinch valve must be down
+            WAIT_TIME = millis();
+        }
+        // tip handled; set tip bool to false
         bucket.tip = false;
-        ISITUP = 0;
-        WAIT_TIME = millis();
     }
-
 }
 
 int read_temp(int temp_count) {

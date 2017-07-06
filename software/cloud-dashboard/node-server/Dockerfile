@@ -28,6 +28,7 @@ COPY    . /src
 WORKDIR /src
 
 RUN     npm install --production
+RUN     touch api/twilio_auth.js
 
 EXPOSE  9000
 

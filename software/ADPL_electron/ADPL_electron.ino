@@ -53,7 +53,6 @@ PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 #define MAX_POSITION 5.0 // in mm
 #define MIN_POSITION 0.0 // in mm
 #define BATCH_MOVEMENT 3.0 // in mm
-#define WAIT_TIME 0
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -74,6 +73,9 @@ void setup() {
     attachInterrupt(UP, up_pushed, FALLING);
     attachInterrupt(DOWN, down_pushed, FALLING);
     attachInterrupt(RESET, res_pushed, FALLING);
+
+    //initialize pinch valve time attribute
+    pinchValve.wait_time = 0;
 }
 
 void loop() {
@@ -126,15 +128,16 @@ void loop() {
 
 
     currentTime = millis();
-    if ((currentTime - WAIT_TIME) > ((3600 * VOLUME) *  (1 / OPTIMAL_FLOW)) && (pinchValve.down)) {
+    if ((currentTime - pinchValve.wait_time) > ((3600 * VOLUME) *  (1 / OPTIMAL_FLOW)) && (pinchValve.down)) {
         // if the difference between current and wait times > the volume of the bucket ((L*s)/h) *
         // the inverse of the optimal flow (hrs/L) (units cancel, leaving a number in seconds) AND
         // the pinch valve is down
       pinchValve.up = true;
       pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable
-      WAIT_TIME = currentTime;
+      pinchValve.wait_time = currentTime;
     }
 
+    // handle bucket tip
     if (bucket.tip) {
         // if bucket is tipped
         if(pinchValve.up){
@@ -144,7 +147,7 @@ void loop() {
         }
         // tip handled; set tip bool to false
         bucket.tip = false;
-        WAIT_TIME = millis();
+        pinchValve.wait_time = millis();
     }
 }
 

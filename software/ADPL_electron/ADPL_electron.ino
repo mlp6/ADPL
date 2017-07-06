@@ -18,10 +18,7 @@ unsigned long SYS_VERSION;
 PublishDataCell cellPublisher;
 
 #define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
-#define sdIsInstalled true  // Determines existence of SD card - reevaluated in setup()
 
-
-#if sdIsInstalled
 #include "SD/SdFat.h"
 #include "PublishDataSD.h"
 #include "pin_mapping.h"
@@ -30,9 +27,6 @@ PublishDataCell cellPublisher;
 SdFatSoftSpi<SD_DO_PIN, SD_DI_PIN, SD_CLK_PIN> sd;
 File sdFile;
 PublishDataSD sdPublisher;
-#else
-#include "pin_mapping.h"
-#endif
 
 #include "TempProbe.h"
 TempProbe tempHXCI("HXCI", HXCI);
@@ -133,6 +127,11 @@ void loop() {
             } else {
                 Log.error("Cell publish failed.");
                 publishedCell = false;
+            }
+
+            if (SDCARD) {
+                Log.info("SD card is present. Pushing existing data to server...");
+                sdPublisher.pushToCell(sdFile);
             }
         } else {
             Log.warn("Particle is not connected.");

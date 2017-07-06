@@ -30,3 +30,29 @@ bool PublishDataSD::publish(double HXCI, double HXCO, double HTR, double HXHI, d
     }
 
 }
+
+bool PublishDataSD::pushToCell(File sdFile){
+    // open the file for write at end like the "Native SD library"
+    if (!sdFile.open("adpl_data.txt", O_RDWR)) {
+        Log.error("opening file for write failed.");
+        return false;
+    }
+    // read from the file until there's nothing else in it:
+    char data_str [69];
+    int index = 0;
+    char data;
+    while ((data = sdFile.read()) >= 0) {
+        //determine if reading the end of a line
+        if(data == '\n'){
+            break;
+        } else {
+            //place the read character into the string
+            data_str[index] = data;
+            index++;
+        }
+    }
+    // close the file:
+    sdFile.close();
+    //publish the string
+    return Particle.publish("SD DATA", data_str);
+}

@@ -8,6 +8,7 @@ class PublishDataSD {
 public:
     bool publish(double HXCI, double HXCO, double HTR, double HXHI, double HXHO,
                  int gasOn, int bucket_tip_count, File sdFile);
+    bool pushToCell(File sdFile);
 private:
     char* fmt_string_SD;
     char* fmt_string_no_bucket_SD;

@@ -15,6 +15,12 @@ SYSTEM_THREAD(ENABLED);  // parallel user and system threads
 unsigned long SYS_VERSION;
 
 #define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
+#define SDCARD true  // true/false depending on writing data to SD card
+
+#if SDCARD
+#include "SD/SD.h"
+File sdFile;
+#endif
 
 #include "pin_mapping.h"
 
@@ -72,6 +78,12 @@ void setup() {
     attachInterrupt(UP, up_pushed, FALLING);
     attachInterrupt(DOWN, down_pushed, FALLING);
     attachInterrupt(RESET, res_pushed, FALLING);
+
+    if (SDCARD) {
+        pinMode(SD_CS_PIN, OUTPUT);
+        SD.begin(SD_CS_PIN);
+        sdFile = SD.open("adpl_data.txt", FILE_WRITE);  // FILE_WRITE should append existing file
+    }
 }
 
 void loop() {
@@ -188,7 +200,8 @@ void bucket_tipped() {
 }
 
 int publish_data(int last_publish_time) {
-    bool publish_success;
+    bool sdcard_publish_success = false;
+    bool cell_publish_success = false;
     char data_str [69];
 
     // allow for data str to be created that doesn't update bucket if count = 0
@@ -200,9 +213,14 @@ int publish_data(int last_publish_time) {
             tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
             int(valve.gasOn), int(bucket.tip_count));
 
-    publish_success = Particle.publish("DATA",data_str);
+    if (sdFile) {
+        sdFile.println(data_str);
+        sdcard_publish_success = true;
+    }
 
-    if (publish_success) {
+    cell_publish_success = Particle.publish("DATA",data_str);
+
+    if (sdcard_publish_success || cell_publish_success) {
         last_publish_time = currentTime;
         // reset the bucket tip count after every successful publish
         // (webserver will accumulate count)

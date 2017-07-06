@@ -125,6 +125,9 @@ void loop() {
 
     currentTime = millis();
     if((currentTime - WAIT_TIME) > ((3600 * VOLUME) *  (1 / OPTIMAL_FLOW)) && (ISITUP == 0)) {
+        // if the difference between current and wait times > the volume of the bucket ((L*s)/h) *
+        // the inverse of the optimal flow (hrs/L) (units cancel, leaving a number in seconds) AND
+        // the pinch valve is down
       pinchValve.up = true;
       pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable
       WAIT_TIME = currentTime;

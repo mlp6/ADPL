@@ -122,35 +122,27 @@ void loop() {
         EEPROM.put(write_address, pinchValve.position);
     }
 
-    // unclog if no tip in a long while
-    // open all the way up and come back to optimum
+
     currentTime = millis();
-    if ((currentTime - bucket.lastTime) > (2 * bucket.lowFlow)) {
-        pinchValve.unclog(UNCLOG_RESOLUTION);
-        bucket.lastTime = currentTime;
+    if((currentTime - WAIT_TIME) > ((3600 * VOLUME) *  (1 / OPTIMAL_FLOW)) && (ISITUP == 0)) {
+      pinchValve.up = true;
+      pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable
+      WAIT_TIME = currentTime;
+      ISITUP = 1;
+      }
 
-        if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION){
-            pinchValve.up = true;
-            pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-        }
-
+    if((bucket.tip) && (ISITUP == 1)){
+        pinchValve.down = true;
+        pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
+        bucket.tip = false;
+        ISITUP = 0;
+        WAIT_TIME = millis();
     }
 
-    if(bucket.tip) {
-        pinchValve.clogCounting = 0;
-        bucket.updateFlow();
-        if (bucket.tipTime < bucket.highFlow && bucket.tipTime > bucket.highestFlow && pinchValve.position > MIN_POSITION) {
-          pinchValve.down = true;
-          pinchValve.resolution = FEEDBACK_RESOLUTION;
-        }
-        else if (bucket.tipTime > bucket.lowFlow && pinchValve.position < MAX_POSITION){
-          pinchValve.up = true;
-          pinchValve.resolution = FEEDBACK_RESOLUTION;
-        }
-        else if (bucket.tipTime < bucket.highestFlow){
-          pinchValve.down = true; // handles sudden large flow
-          pinchValve.resolution = HALF_RESOLUTION;
-        }
+    if((bucket.tip) && (ISITUP == 0)){
+        bucket.tip = false;
+        ISITUP = 0;
+        WAIT_TIME = millis();
     }
 
 }

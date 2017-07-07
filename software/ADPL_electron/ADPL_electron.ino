@@ -155,7 +155,7 @@ void loop() {
         bucket.lastTime = currentTime;
         Log.info("Unclogging complete.");
 
-        if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION){
+        if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION) {
             Log.warn("%s", pinchValve.clogCounting, " unclogging attempts made.");
             Log.warn("Attempting to unclog - moving pinch valve up...");
             pinchValve.up = true;
@@ -252,7 +252,7 @@ int publish_data(int last_publish_time) {
 
     publish_success = Particle.publish("DATA",data_str);
 
-    if (publish_success){
+    if (publish_success) {
         last_publish_time = currentTime;
         // reset the bucket tip count after every successful publish
         // (webserver will accumulate count)
@@ -264,7 +264,7 @@ int publish_data(int last_publish_time) {
     return last_publish_time;
 }
 
-void res_pushed(){
+void res_pushed() {
     Log.info("Moving pinch valve...");
     pinchValve.position = 0.0;
     pinchValve.up = true;
@@ -273,14 +273,14 @@ void res_pushed(){
     Log.info("Pinch valve moved.");
 }
 
-void up_pushed(){
+void up_pushed() {
     Log.info("Moving pinch valve up...");
     pinchValve.up = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
     Log.info("Pinch valve moved.");
 }
 
-void down_pushed(){
+void down_pushed() {
     Log.info("Moving pinch valve down...");
     pinchValve.down = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;

@@ -156,7 +156,7 @@ void loop() {
         Log.info("Unclogging complete.");
 
         if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION) {
-            Log.warn("%s", pinchValve.clogCounting, " unclogging attempts made.");
+            Log.warn("Many unclogging attempts made.");
             Log.warn("Attempting to unclog - moving pinch valve up...");
             pinchValve.up = true;
             pinchValve.resolution = PUSH_BUTTON_RESOLUTION;

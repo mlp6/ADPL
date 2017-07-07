@@ -129,9 +129,26 @@ void loop() {
                 publishedCell = false;
             }
 
-            if (SDCARD) {
-                Log.info("SD card is present. Pushing existing data to server...");
-                sdPublisher.pushToCell(sdFile);
+            if (SDCARD && sdFile.open("adpl_data.txt", O_READ) && sdFile.peek() != -1) {
+                // if an sd card is present AND the file is opened for reading successfully AND there is data in it
+                Log.info("SD card with cached data is present. Pushing cached data to server...");
+                // close the file so as not to interfere with the pushToCell function
+                sdFile.close();
+                if (sdPublisher.pushToCell(sdFile)) {
+                    // if the data push was successful
+                    Log.info("SD data push successful. Deleting data file...");
+                    if (sd.remove("adpl_data.txt")) {
+                        // if the file was removed
+                        Log.info("Data file removed.");
+                    } else {
+                        // if the file failed to be removed
+                        Log.error("Failed to remove data file.");
+                    }
+                } else {
+                    // if the data push failed
+                    Log.error("SD data push failed.");
+                }
+
             }
         } else {
             Log.warn("Particle is not connected.");

@@ -37,6 +37,8 @@ bool PublishDataSD::pushToCell(File sdFile) {
         Log.error("opening file for write failed.");
         return false;
     }
+    // initialize a bool to determine success
+    bool success = true;
     // read from the file until there's nothing else in it:
     char data_str[69];
     size_t n;
@@ -44,9 +46,15 @@ bool PublishDataSD::pushToCell(File sdFile) {
         //determine if reading the end of a line
         if (data_str[n - 1] != '\n') {
             Log.error("Line in data file did not end with newline character.");
+            return false;
         }
-        Particle.publish("SD DATA", data_str);
+        if(!Particle.publish("SD DATA", data_str)){
+            // if publish failed
+            success = false;
+        }
     }
     // close the file:
     sdFile.close();
+    // return the success bool
+    return success;
 }

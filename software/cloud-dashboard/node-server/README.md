@@ -32,25 +32,24 @@ sudo -iu bitnami /usr/bin/screen -dmS server /bin/bash /home/bitnami/ADPL/softwa
 ## Docker Container
 We also have a working Docker image that can be used to start a server
 container.  Right now the image is hosted on Docker Hub at ``mlp6/adpl``.  The
-image can be built in the ``software/logging/`` directory using:
+image can be built in the ``software/cloud-dashboard/node-server`` directory using:
 ```
-docker build mlp6/adpl .
+docker build -t mlp6/adpl .
 ```
 This will read the ``Dockerfile`` in that directory to set everything up.  The
-supervisord.conf file is used to concurrently run the ``mongod`` and ``nodejs``
+`supervisord.conf` file is used to concurrently run the MongoDB and Node JS 
 services.
 
 Once the image is built, you can push this to Docker Hub using:
 ```
 docker push mlp6/adpl
 ```
-NOTE - you can use your own account on Docker Hub.  You will, of course, need
-to have a Docker Hub account setup.
 
-Once on the server VM, you can pull the image:
+On the server VM, you can pull the image:
 ```
 docker pull mlp6/adpl
 ```
+
 Finally, you can run the container as follows:
 ```
 docker run -p 80:9000 -d mlp6/adpl

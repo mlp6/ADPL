@@ -8,7 +8,6 @@ class PinchValve{
         void shiftUp(double res);
         void shiftDown(double res);
         volatile bool up;
-        volatile bool down;
         double position;
         double resolution;
         unsigned long lastTime;

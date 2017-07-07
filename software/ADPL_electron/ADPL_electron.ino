@@ -115,22 +115,24 @@ void loop() {
     }
 
     // flag variables changed in attachInterrupt function
-    if(pinchValve.down) {
-        pinchValve.shiftDown(pinchValve.resolution);
-        EEPROM.put(write_address, pinchValve.position);
-    }
     if(pinchValve.up) {
+        // if the pinch valve var is set to up, move it up
         pinchValve.shiftUp(pinchValve.resolution);
         EEPROM.put(write_address, pinchValve.position);
     }
-
+    else {
+        // if the pinch valve var is set to down, move it down
+        pinchValve.shiftDown(pinchValve.resolution);
+        EEPROM.put(write_address, pinchValve.position);
+    }
 
     currentTime = millis();
-    if ((currentTime - pinchValve.lastTime) > ((3600 * VOLUME) *  (1 / OPTIMAL_FLOW)) && (pinchValve.down)) {
+    if ((currentTime - pinchValve.lastTime) > ((3600 * VOLUME) *  (1 / OPTIMAL_FLOW)) && (!pinchValve.up)) {
         // if the difference between current and wait times > the volume of the bucket ((L*s)/h) *
         // the inverse of the optimal flow (hrs/L) (units cancel, leaving a number in seconds) AND
         // the pinch valve is down
         Log.info("Raising pinch valve...");
+        // raise the pinch valve
         pinchValve.up = true;
         pinchValve.resolution = BATCH_MOVEMENT;
         pinchValve.lastTime = currentTime;
@@ -143,8 +145,8 @@ void loop() {
         // if bucket is tipped
         if(pinchValve.up){
             Log.info("Pinch valve is up. Lowering...");
-            // if the pinch valve is up
-            pinchValve.down = true;
+            // if the pinch valve is up, lower it
+            pinchValve.up = false;
             pinchValve.resolution = BATCH_MOVEMENT;
             Log.info("Pinch valve lowered.");
         }
@@ -223,6 +225,6 @@ void up_pushed() {
 }
 
 void down_pushed(){
-  pinchValve.down = true;
+  pinchValve.up = false;
   pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
 }

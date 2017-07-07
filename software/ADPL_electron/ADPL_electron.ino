@@ -73,7 +73,7 @@ void setup() {
     attachInterrupt(RESET, res_pushed, FALLING);
 
     //initialize pinch valve time attribute
-    pinchValve.wait_time = 0;
+    pinchValve.lastTime = 0;
 }
 
 void loop() {
@@ -126,14 +126,14 @@ void loop() {
 
 
     currentTime = millis();
-    if ((currentTime - pinchValve.wait_time) > ((3600 * VOLUME) *  (1 / OPTIMAL_FLOW)) && (pinchValve.down)) {
+    if ((currentTime - pinchValve.lastTime) > ((3600 * VOLUME) *  (1 / OPTIMAL_FLOW)) && (pinchValve.down)) {
         // if the difference between current and wait times > the volume of the bucket ((L*s)/h) *
         // the inverse of the optimal flow (hrs/L) (units cancel, leaving a number in seconds) AND
         // the pinch valve is down
         Log.info("Raising pinch valve...");
         pinchValve.up = true;
         pinchValve.resolution = BATCH_MOVEMENT;
-        pinchValve.wait_time = currentTime;
+        pinchValve.lastTime = currentTime;
         Log.info("Pinch valve raised");
     }
 
@@ -150,7 +150,7 @@ void loop() {
         }
         // tip handled; set tip bool to false
         bucket.tip = false;
-        pinchValve.wait_time = millis();
+        pinchValve.lastTime = millis();
     }
 }
 

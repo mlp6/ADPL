@@ -11,7 +11,7 @@ class PinchValve{
         volatile bool down;
         double position;
         double resolution;
-        unsigned long wait_time;
+        unsigned long lastTime;
         int clogCounting; // counts length of attempts to unclog
         void unclog(float unclog_resolution);
     private:

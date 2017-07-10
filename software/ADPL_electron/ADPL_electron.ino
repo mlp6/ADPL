@@ -213,10 +213,9 @@ int publish_data(int last_publish_time) {
 }
 
 void res_pushed(){
-  pinchValve.position = 0.0;
-  pinchValve.up = true;
-  pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-  bucket.lastTime = millis();
+    pinchValve.position = 0.0;
+    pinchValve.lastTime = millis();
+    pinchValve.up = false;
 }
 
 void up_pushed() {

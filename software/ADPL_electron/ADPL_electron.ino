@@ -127,7 +127,7 @@ void loop() {
     }
 
     currentTime = millis();
-    if ((currentTime - pinchValve.lastTime) > ((3600 * VOLUME) *  (1 / OPTIMAL_FLOW)) && (!pinchValve.up)) {
+    if ((currentTime - pinchValve.lastTime) > ((3600 * VOLUME) / OPTIMAL_FLOW) && (!pinchValve.up)) {
         // if the difference between current and wait times > the volume of the bucket ((L*s)/h) *
         // the inverse of the optimal flow (hrs/L) (units cancel, leaving a number in seconds) AND
         // the pinch valve is down

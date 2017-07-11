@@ -49,8 +49,7 @@ PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 #define PUSH_BUTTON_RESOLUTION 1.0 // mm of movement
 #define HALF_RESOLUTION 0.5 // mm of movement
 #define UNCLOG_RESOLUTION 4.0 // mm of movment
-#define MAX_POSITION 5.0 // in mm
-#define MIN_POSITION 0.0 // in mm
+#define BATCH_MOVEMENT 3.0 // in mm
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -76,6 +75,9 @@ void setup() {
     attachInterrupt(DOWN, down_pushed, FALLING);
     attachInterrupt(RESET, res_pushed, FALLING);
     Log.info("Setup complete! System is running version %s", (const char*)SYS_VERSION);
+
+    //initialize pinch valve time attribute
+    pinchValve.lastTime = 0;
 }
 
 void loop() {
@@ -133,62 +135,50 @@ void loop() {
     }
 
     // flag variables changed in attachInterrupt function
-    if(pinchValve.down) {
-        Log.info("Shifting pinch valve down...");
-        pinchValve.shiftDown(pinchValve.resolution);
-        EEPROM.put(write_address, pinchValve.position);
-        Log.info("Pinch valve shifted down.");
-    }
     if(pinchValve.up) {
+        // if the pinch valve var is set to up, move it up
         Log.info("Shifting pinch valve up...");
         pinchValve.shiftUp(pinchValve.resolution);
         EEPROM.put(write_address, pinchValve.position);
         Log.info("Pinch valve shifted up.");
     }
+    else {
+        // if the pinch valve var is set to down, move it down
+        Log.info("Shifting pinch valve down...");
+        pinchValve.shiftDown(pinchValve.resolution);
+        EEPROM.put(write_address, pinchValve.position);
+        Log.info("Pinch valve shifted down.");
+    }
 
-    // unclog if no tip in a long while
-    // open all the way up and come back to optimum
     currentTime = millis();
-    if ((currentTime - bucket.lastTime) > (2 * bucket.lowFlow)) {
-        Log.info("No tip for awhile. Unclogging...");
-        pinchValve.unclog(UNCLOG_RESOLUTION);
-        bucket.lastTime = currentTime;
-        Log.info("Unclogging complete.");
-
-        if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION) {
-            Log.warn("Many unclogging attempts made.");
-            Log.warn("Attempting to unclog - moving pinch valve up...");
-            pinchValve.up = true;
-            pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-            Log.warn("Pinch valve moved.");
-        }
-
+    if ((currentTime - pinchValve.lastTime) > ((3600 * VOLUME) / OPTIMAL_FLOW) && (!pinchValve.up)) {
+        // if the difference between current and wait times > the volume of the bucket ((L*s)/h) *
+        // the inverse of the optimal flow (hrs/L) (units cancel, leaving a number in seconds) AND
+        // the pinch valve is down
+        Log.info("Raising pinch valve...");
+        // raise the pinch valve
+        pinchValve.up = true;
+        pinchValve.resolution = BATCH_MOVEMENT;
+        pinchValve.lastTime = currentTime;
+        Log.info("Pinch valve raised");
     }
 
-    if(bucket.tip) {
-        Log.info("Bucket tipped.");
-        pinchValve.clogCounting = 0;
-        bucket.updateFlow();
-        if (bucket.tipTime < bucket.highFlow && bucket.tipTime > bucket.highestFlow && pinchValve.position > MIN_POSITION) {
-            Log.info("Moving pinch valve down...");
-            pinchValve.down = true;
-            pinchValve.resolution = FEEDBACK_RESOLUTION;
-            Log.info("Pinch valve moved.");
+    // handle bucket tip
+    if (bucket.tip) {
+        Log.info("Bucket has tipped.");
+        // if bucket is tipped
+        if(pinchValve.up){
+            Log.info("Pinch valve is up. Lowering...");
+            // if the pinch valve is up, lower it
+            pinchValve.up = false;
+            pinchValve.resolution = BATCH_MOVEMENT;
+            Log.info("Pinch valve lowered.");
         }
-        else if (bucket.tipTime > bucket.lowFlow && pinchValve.position < MAX_POSITION){
-            Log.info("Moving pinch valve up...");
-            pinchValve.up = true;
-            pinchValve.resolution = FEEDBACK_RESOLUTION;
-            Log.info("Pinch valve moved.");
-        }
-        else if (bucket.tipTime < bucket.highestFlow){
-            Log.warn("Sudden large flow detected. Handling...");
-            pinchValve.down = true; // handles sudden large flow
-            pinchValve.resolution = HALF_RESOLUTION;
-            Log.warn("Large flow handled.");
-        }
+        // tip handled; set tip bool to false
+        bucket.tip = false;
+        pinchValve.lastTime = millis();
+        Log.info("Pinch valve is already down. No action needed.");
     }
-
 }
 
 int read_temp(int temp_count) {
@@ -264,25 +254,21 @@ int publish_data(int last_publish_time) {
     return last_publish_time;
 }
 
-void res_pushed() {
-    Log.info("Moving pinch valve...");
+void res_pushed(){
+    Log.info("Reset button pushed.");
     pinchValve.position = 0.0;
-    pinchValve.up = true;
-    pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-    bucket.lastTime = millis();
-    Log.info("Pinch valve moved.");
+    pinchValve.lastTime = millis();
+    pinchValve.up = false;
 }
 
 void up_pushed() {
-    Log.info("Moving pinch valve up...");
+    Log.info("Up button pushed....");
     pinchValve.up = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-    Log.info("Pinch valve moved.");
 }
 
-void down_pushed() {
-    Log.info("Moving pinch valve down...");
-    pinchValve.down = true;
-    pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-    Log.info("Pinch valve moved.");
+void down_pushed(){
+  Log.info("Down button pushed.");
+  pinchValve.up = false;
+  pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
 }

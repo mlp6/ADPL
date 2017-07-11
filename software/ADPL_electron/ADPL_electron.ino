@@ -23,7 +23,7 @@ PublishDataCell cellPublisher;
 #include "PublishDataSD.h"
 #include "pin_mapping.h"
 // Software SPI.  Use any digital pins.
-// MISO => B1, MOSI => B2, SCK => B3, SS => B0
+// MISO => B1, MOSI => B2, SCK => B0, CS => B4
 SdFatSoftSpi<SD_DO_PIN, SD_DI_PIN, SD_CLK_PIN> sd;
 File sdFile;
 PublishDataSD sdPublisher;

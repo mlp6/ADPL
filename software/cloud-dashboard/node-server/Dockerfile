@@ -1,15 +1,15 @@
-FROM    ubuntu:14.04
+FROM    debian:jessie
 
 RUN     apt-get update
 
-### Install proper repos for nodejs and install
 RUN     apt-get install -y curl
-RUN     curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-RUN     apt-get install -y nodejs
+RUN     curl -sL https://deb.nodesource.com/setup_6.x | bash -
+RUN     apt-get install -y nodejs 
+RUN     apt-get install -y build-essential
 
 ### Install proper repos for Mongodb and install
-RUN     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
-RUN     echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | tee /etc/apt/sources.list.d/mongodb.list
+RUN     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+RUN     echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/3.4 main" | tee /etc/apt/sources.list.d/mongodb-org-3.4.list
 RUN     apt-get update
 RUN     apt-get install -y mongodb-org
 

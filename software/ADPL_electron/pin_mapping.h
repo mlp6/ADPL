@@ -13,6 +13,6 @@
 #define STEP D3
 #define DIR D5
 #define SLEEP D6
-#define UP B5
-#define DOWN B4
+#define DOWN C1
 #define RESET C2
+#define UP C3

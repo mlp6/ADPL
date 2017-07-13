@@ -21,11 +21,7 @@ RUN     mkdir -p /var/log/supervisor
 # clone the ADPL repository
 WORKDIR /src
 RUN	git clone https://github.com/mlp6/ADPL.git
-### THESE LINES ARE TEMPORARY 
-WORKDIR /src/ADPL
-RUN	git checkout docker-react-build
-###
-RUN    cp /src/ADPL/software/cloud-dashboard/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN     cp /src/ADPL/software/cloud-dashboard/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # setup & build the reactjs client
 WORKDIR /src/ADPL/software/cloud-dashboard/react-client

@@ -17,14 +17,15 @@ RUN     mkdir -p /data/db
 # install supervisor to run mongodb and nodejs
 RUN     apt-get -y install supervisor
 RUN     mkdir -p /var/log/supervisor
-COPY    supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # clone the ADPL repository
 WORKDIR /src
 RUN	git clone https://github.com/mlp6/ADPL.git
-### THESE LINES ARE TEMPORARY ###
+### THESE LINES ARE TEMPORARY 
 WORKDIR /src/ADPL
 RUN	git checkout docker-react-build
+###
+COPY    /src/ADPL/software/cloud-dashboard/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # setup & build the reactjs client
 WORKDIR /src/ADPL/software/cloud-dashboard/react-client

@@ -150,10 +150,8 @@ void loop() {
                 }
 
             }
-        } else {
+        } else if (SDCARD){ //only publish to SD card if there is no cell connection
             Log.warn("Particle is not connected.");
-        }
-        if(SDCARD){
             Log.info("SD card present. Publishing data to SD card...");
             if(sdPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
                                    int(valve.gasOn), int(bucket.tip_count), sdFile)){
@@ -164,8 +162,7 @@ void loop() {
                 publishedSD = false;
             }
         } else {
-            Log.info("SD card is not present. Skipping SD publish.");
-            publishedSD = false;
+            Log.error("All publishing methods failed.");
         }
         if (publishedCell || publishedSD) {
             Log.info("At least one publishing method was successful. Adjusting variables accordingly...");

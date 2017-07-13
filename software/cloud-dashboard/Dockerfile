@@ -26,7 +26,7 @@ COPY    supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY    . /src
 
 WORKDIR /src/react-client
-RUN     npm install --production
+RUN     npm install
 RUN	npm run build
 
 WORKDIR /src/node-server

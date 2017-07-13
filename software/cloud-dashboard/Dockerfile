@@ -25,8 +25,11 @@ COPY    supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY    . /src
 
-WORKDIR /src
+WORKDIR /src/react-client
+RUN     npm install --production
+RUN	npm run build
 
+WORKDIR /src/node-server
 RUN     npm install --production
 
 EXPOSE  9000

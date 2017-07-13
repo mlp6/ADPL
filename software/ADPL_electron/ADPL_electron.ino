@@ -265,7 +265,7 @@ void up_pushed() {
 }
 
 void down_pushed(){
-  Log.info("Down button pushed.");
-  pinchValve.up = false;
-  pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+    Log.info("Down button pushed.");
+    pinchValve.up = false;
+    pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
 }

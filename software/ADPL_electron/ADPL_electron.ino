@@ -101,14 +101,13 @@ void setup() {
     if(SDCARD){
         Log.info("SD card detected. Initializing...");
         if (!sd.begin(SD_CS_PIN, SPI_HALF_SPEED)) {
-            Log.error("SD card initialization failed.");
+            logError(SD_INIT_FAIL);
         } else {
             Log.info("SD card initialization successful.");
         }
     } else {
         Log.info("No SD card detected.");
     }
-
 }
 
 void loop() {
@@ -129,7 +128,7 @@ void loop() {
                 Log.info("Cell publish successful.");
                 publishedCell = true;
             } else {
-                Log.error("Cell publish failed.");
+                logError(CELL_PUB_FAIL);
                 publishedCell = false;
             }
 
@@ -146,11 +145,11 @@ void loop() {
                         Log.info("Data file removed.");
                     } else {
                         // if the file failed to be removed
-                        Log.error("Failed to remove data file.");
+                        logError(SD_FILE_REMOVE_FAIL);
                     }
                 } else {
                     // if the data push failed
-                    Log.error("SD data push failed.");
+                    logError(SD_DATA_PUSH_FAIL);
                 }
 
             }
@@ -162,11 +161,11 @@ void loop() {
                 Log.info("SD publish successful.");
                 publishedSD = true;
             } else {
-                Log.error("SD publish failed.");
+                logError(SD_PUB_FAIL);
                 publishedSD = false;
             }
         } else {
-            Log.error("All publishing methods failed.");
+            logError(TOTAL_PUB_FAIL);
         }
         if (publishedCell || publishedSD) {
             Log.info("At least one publishing method was successful. Adjusting variables accordingly...");

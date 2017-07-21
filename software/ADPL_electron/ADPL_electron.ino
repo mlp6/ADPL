@@ -54,6 +54,7 @@ Pump pump(PUMP);
 #define OPTIMAL_FLOW 5.0 //5.0 L/hr, varies by location
 Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
 
+#include "error_codes.h"
 
 #include "PinchValve.h"
 PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
@@ -70,6 +71,7 @@ unsigned long last_publish_time = 0;
 int temp_count = 1;
 int write_address = 0;
 
+
 // Determine existence of SD card via the CD pin
 bool SDCARD = (bool)digitalRead(SD_CD_PIN);
 
@@ -77,7 +79,7 @@ bool SDCARD = (bool)digitalRead(SD_CD_PIN);
 SerialLogHandler logHandler;
 
 void setup() {
-
+  
     Log.info("Starting setup...");
     Serial.begin(9600);
     pinchValve.position = EEPROM.get(write_address, pinchValve.position);
@@ -91,6 +93,7 @@ void setup() {
     attachInterrupt(UP, up_pushed, FALLING);
     attachInterrupt(DOWN, down_pushed, FALLING);
     attachInterrupt(RESET, res_pushed, FALLING);
+    Log.info("Setup complete! System is running version %s", (const char*)SYS_VERSION);
 
     // Initialize SdFat or print a detailed error message and halt
     // Use half speed like the native library.
@@ -109,6 +112,7 @@ void setup() {
 }
 
 void loop() {
+    Log.trace("Starting loop...");
     // read the push buttons
     currentTime = millis();
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
@@ -176,8 +180,11 @@ void loop() {
     // measure temp, determine if light gas
     if (tempHTR.temp <= INCINERATE_LOW_TEMP && !valve.gasOn) {
         Log.info("Temperature is too low. Igniting gas...");
+        Log.trace("Opening valve...");
         valve.open();
+        Log.trace("Valve opened.");
         delay(100);
+        Log.trace("Firing ignitor...");
         ignitor.fire();
         Log.info("Ignition complete.");
     }
@@ -233,6 +240,7 @@ void loop() {
         pinchValve.unclog(UNCLOG_RESOLUTION);
         bucket.lastTime = currentTime;
         Log.info("Unclogging complete.");
+
 
         if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION){
             Log.warn("Many unclogging attempts made.");
@@ -312,7 +320,7 @@ void bucket_tipped() {
     bucket.tip = true;
 }
 
-void res_pushed(){
+void res_pushed() {
     Log.info("Moving pinch valve...");
     pinchValve.position = 0.0;
     pinchValve.up = true;
@@ -321,16 +329,21 @@ void res_pushed(){
     Log.info("Pinch valve moved.");
 }
 
-void up_pushed(){
+void up_pushed() {
     Log.info("Moving pinch valve up...");
     pinchValve.up = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
     Log.info("Pinch valve moved.");
 }
 
-void down_pushed(){
+void down_pushed() {
     Log.info("Moving pinch valve down...");
     pinchValve.down = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
     Log.info("Pinch valve moved.");
+}
+
+void logError(int errorCode) {
+    Log.error("Returned error code: " + errorCode);
+    Particle.publish("ERROR", errorCode);
 }

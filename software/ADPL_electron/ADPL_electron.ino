@@ -344,5 +344,8 @@ void down_pushed() {
 
 void logError(int errorCode) {
     Log.error("Returned error code: " + errorCode);
-    Particle.publish("ERROR", errorCode);
+    sdPublisher.logError(errorCode);
+    if(Particle.connected()){
+        Particle.publish("ERROR", errorCode);
+    }
 }

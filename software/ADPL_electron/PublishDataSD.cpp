@@ -41,7 +41,7 @@ bool PublishDataSD::publish(double HXCI, double HXCO, double HTR, double HXHI, d
 
 bool PublishDataSD::pushToCell(File sdFile) {
     // open the file for write at end like the "Native SD library"
-    if (!sdFile.open("adpl_data.txt", O_RDWR)) {
+    if (!sdFile.open("adpl_data.txt", O_RDWR | O_CREAT)) {
         Log.error("opening file for write failed.");
         return false;
     }
@@ -65,4 +65,33 @@ bool PublishDataSD::pushToCell(File sdFile) {
     sdFile.close();
     // return the success bool
     return success;
+}
+
+bool PublishDataSD::logError(int errorCode) {
+    File errorFile;
+    int bitsWritten = -1;
+
+    if(!errorFile.open("error_log.txt", O_WRITE | O_CREAT)){
+        // if the file doesn't open
+        return false;
+    }
+    // if the file opened okay, write to it:
+    // print time
+    errorFile.print("[");
+    errorFile.print(Time.hour());
+    errorFile.print(":");
+    errorFile.print(Time.minute());
+    errorFile.print(":");
+    errorFile.print(Time.second());
+    errorFile.print("]");
+    // print data
+    bitsWritten = errorFile.println(errorCode);
+
+    errorFile.close();
+    //Indicates publishing success
+    if(bitsWritten > -1){
+        return true;
+    } else {
+        return false;
+    }
 }

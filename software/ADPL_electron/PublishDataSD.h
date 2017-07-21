@@ -13,6 +13,7 @@ public:
 private:
     char* fmt_string_SD;
     char* fmt_string_no_bucket_SD;
+    void printTime(File file);
 };
 
 #endif

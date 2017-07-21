@@ -19,13 +19,7 @@ bool PublishDataSD::publish(double HXCI, double HXCO, double HTR, double HXHI, d
     }
     // if the file opened okay, write to it:
     // print time
-    sdFile.print("[");
-    sdFile.print(Time.hour());
-    sdFile.print(":");
-    sdFile.print(Time.minute());
-    sdFile.print(":");
-    sdFile.print(Time.second());
-    sdFile.print("]");
+    printTime(sdFile);
     // print data
     bitsWritten = sdFile.println(data_str);
 
@@ -77,13 +71,7 @@ bool PublishDataSD::logError(int errorCode) {
     }
     // if the file opened okay, write to it:
     // print time
-    errorFile.print("[");
-    errorFile.print(Time.hour());
-    errorFile.print(":");
-    errorFile.print(Time.minute());
-    errorFile.print(":");
-    errorFile.print(Time.second());
-    errorFile.print("]");
+    printTime(errorFile);
     // print data
     bitsWritten = errorFile.println(errorCode);
 
@@ -94,4 +82,10 @@ bool PublishDataSD::logError(int errorCode) {
     } else {
         return false;
     }
+}
+
+void PublishDataSD::printTime(File file) { // Prints a UTC timestamp
+    file.print("[");
+    file.print(Time.now());
+    file.print("]");
 }

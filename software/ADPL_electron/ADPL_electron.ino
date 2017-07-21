@@ -10,13 +10,23 @@
  */
 
 SYSTEM_THREAD(ENABLED);  // parallel user and system threads
-                         // to allow function w/o cell connectivity
+// to allow function w/o cell connectivity
 
 unsigned long SYS_VERSION;
 
+#include "PublishDataCell.h"
+PublishDataCell cellPublisher;
+
 #define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
 
+#include "SD/SdFat.h"
+#include "PublishDataSD.h"
 #include "pin_mapping.h"
+// Software SPI.  Use any digital pins.
+// MISO => B1, MOSI => B2, SCK => B0, CS => B4
+SdFatSoftSpi<SD_DO_PIN, SD_DI_PIN, SD_CLK_PIN> sd;
+File sdFile;
+PublishDataSD sdPublisher;
 
 #include "TempProbe.h"
 TempProbe tempHXCI("HXCI", HXCI);
@@ -27,6 +37,7 @@ TempProbe tempHXHO("HXHO", HXHO);
 
 #include "Valve.h"
 Valve valve(VALVE);
+
 #include "Ignitor.h"
 Ignitor ignitor(IGNITOR);
 #define INCINERATE_LOW_TEMP 68  // will be 68 in field
@@ -60,10 +71,15 @@ unsigned long last_publish_time = 0;
 int temp_count = 1;
 int write_address = 0;
 
+
+// Determine existence of SD card via the CD pin
+bool SDCARD = (bool)digitalRead(SD_CD_PIN);
+
 //initialize the loghandler
 SerialLogHandler logHandler;
 
 void setup() {
+  
     Log.info("Starting setup...");
     Serial.begin(9600);
     pinchValve.position = EEPROM.get(write_address, pinchValve.position);
@@ -78,21 +94,89 @@ void setup() {
     attachInterrupt(DOWN, down_pushed, FALLING);
     attachInterrupt(RESET, res_pushed, FALLING);
     Log.info("Setup complete! System is running version %s", (const char*)SYS_VERSION);
+
+    // Initialize SdFat or print a detailed error message and halt
+    // Use half speed like the native library.
+    // Change to SPI_FULL_SPEED for more performance.
+    if(SDCARD){
+        Log.info("SD card detected. Initializing...");
+        if (!sd.begin(SD_CS_PIN, SPI_HALF_SPEED)) {
+            Log.error("SD card initialization failed.");
+        } else {
+            Log.info("SD card initialization successful.");
+        }
+    } else {
+        Log.info("No SD card detected.");
+    }
+
 }
 
 void loop() {
     Log.trace("Starting loop...");
     // read the push buttons
     currentTime = millis();
-
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
     temp_count = read_temp(temp_count);
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
-        Log.info("Publishing data...");
-        last_publish_time = publish_data(last_publish_time);
-        Log.info("Publish complete!");
-    }
+        bool publishedCell;
+        bool publishedSD;
 
+        Log.info("Testing whether particle is connected...");
+        if (Particle.connected()) { //Returns true if the device is connected to the cellular network
+            Log.info("Particle is connected. Publishing over cell...");
+            if (cellPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
+                                      tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count))) {
+                Log.info("Cell publish successful.");
+                publishedCell = true;
+            } else {
+                Log.error("Cell publish failed.");
+                publishedCell = false;
+            }
+
+            if (SDCARD && sdFile.open("adpl_data.txt", O_READ) && sdFile.peek() != -1) {
+                // if an sd card is present AND the file is opened for reading successfully AND there is data in it
+                Log.info("SD card with cached data is present. Pushing cached data to server...");
+                // close the file so as not to interfere with the pushToCell function
+                sdFile.close();
+                if (sdPublisher.pushToCell(sdFile)) {
+                    // if the data push was successful
+                    Log.info("SD data push successful. Deleting data file...");
+                    if (sd.remove("adpl_data.txt")) {
+                        // if the file was removed
+                        Log.info("Data file removed.");
+                    } else {
+                        // if the file failed to be removed
+                        Log.error("Failed to remove data file.");
+                    }
+                } else {
+                    // if the data push failed
+                    Log.error("SD data push failed.");
+                }
+
+            }
+        } else if (SDCARD){ //only publish to SD card if there is no cell connection
+            Log.warn("Particle is not connected.");
+            Log.info("SD card present. Publishing data to SD card...");
+            if(sdPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
+                                   int(valve.gasOn), int(bucket.tip_count), sdFile)){
+                Log.info("SD publish successful.");
+                publishedSD = true;
+            } else {
+                Log.error("SD publish failed.");
+                publishedSD = false;
+            }
+        } else {
+            Log.error("All publishing methods failed.");
+        }
+        if (publishedCell || publishedSD) {
+            Log.info("At least one publishing method was successful. Adjusting variables accordingly...");
+            // reset the bucket tip count after every successful publish
+            // (webserver will accumulate count)
+            last_publish_time = millis();
+            bucket.tip_count = 0;
+            Log.info("Variables adjusted.");
+        }
+    }
     // measure temp, determine if light gas
     if (tempHTR.temp <= INCINERATE_LOW_TEMP && !valve.gasOn) {
         Log.info("Temperature is too low. Igniting gas...");
@@ -112,7 +196,7 @@ void loop() {
             valve.close();
             Log.info("Valve closed.");
         }
-        // if 15 min have elapsed since last ignitor fire, then fire again
+            // if 15 min have elapsed since last ignitor fire, then fire again
         else if((currentTime - ignitor.timeLastFired) > IGNITE_DELAY) {
             Log.info("Designated amount of time has passed since last fire. Igniting...");
             ignitor.fire();
@@ -157,7 +241,8 @@ void loop() {
         bucket.lastTime = currentTime;
         Log.info("Unclogging complete.");
 
-        if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION) {
+
+        if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION){
             Log.warn("Many unclogging attempts made.");
             Log.warn("Attempting to unclog - moving pinch valve up...");
             pinchValve.up = true;
@@ -190,7 +275,6 @@ void loop() {
             Log.warn("Large flow handled.");
         }
     }
-
 }
 
 int read_temp(int temp_count) {
@@ -234,36 +318,6 @@ int read_temp(int temp_count) {
 void bucket_tipped() {
     bucket.tipped();
     bucket.tip = true;
-}
-
-int publish_data(int last_publish_time) {
-    Log.info("Publishing data...");
-    bool publish_success;
-    char data_str [69];
-
-    // allow for data str to be created that doesn't update bucket if count = 0
-    const char* fmt_string = "HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d";
-    const char* fmt_string_no_bucket = "HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d";
-
-    // bucket.tip_count will be ignored if not needed by sprintf
-    Log.trace("Formatting data string...");
-    sprintf(data_str, (bucket.tip_count > 0) ? fmt_string : fmt_string_no_bucket,
-            tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
-            int(valve.gasOn), int(bucket.tip_count));
-    Log.trace("String formatted.");
-
-    publish_success = Particle.publish("DATA",data_str);
-
-    if (publish_success) {
-        last_publish_time = currentTime;
-        // reset the bucket tip count after every successful publish
-        // (webserver will accumulate count)
-        bucket.tip_count = 0;
-        Log.info("Publishing complete.");
-    } else {
-        logError(PUBLISH_FAIL);
-    }
-    return last_publish_time;
 }
 
 void res_pushed() {

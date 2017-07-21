@@ -7,3 +7,4 @@ software/logging/api/twilio_auth.js
 cmake-build-debug
 CMakeLists.txt
 __Previews
+cmake-build-debug/

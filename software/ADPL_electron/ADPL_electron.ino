@@ -43,6 +43,8 @@ Pump pump(PUMP);
 #define OPTIMAL_FLOW 5.0 //5.0 L/hr, varies by location
 Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
 
+#include "error_codes.h"
+
 #include "PinchValve.h"
 PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 #define FEEDBACK_RESOLUTION 0.125 // mm of movement 16/turn
@@ -259,7 +261,7 @@ int publish_data(int last_publish_time) {
         bucket.tip_count = 0;
         Log.info("Publishing complete.");
     } else {
-        Log.error("Publishing failed.");
+        logError(PUBLISH_FAIL);
     }
     return last_publish_time;
 }

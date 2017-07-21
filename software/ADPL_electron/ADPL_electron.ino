@@ -286,3 +286,8 @@ void down_pushed() {
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
     Log.info("Pinch valve moved.");
 }
+
+void logError(int errorCode) {
+    Log.error("Returned error code: " + errorCode);
+    Particle.publish("ERROR", errorCode);
+}

@@ -38,7 +38,7 @@ void PinchValve::shiftDown(double res) {
         digitalWrite(_step_pin, LOW);
         delayMicroseconds(_DELAY);
     };
-    up = true;
+    down = true;
     position -= res;
     digitalWrite(_sleep_pin, LOW);
 };

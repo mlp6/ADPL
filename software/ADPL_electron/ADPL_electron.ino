@@ -132,19 +132,15 @@ void loop() {
     }
 
     // flag variables changed in attachInterrupt function
-    if(pinchValve.up) {
-        // if the pinch valve var is set to up, move it up
-        Log.info("Shifting pinch valve up...");
-        pinchValve.shiftUp(pinchValve.resolution);
-        EEPROM.put(write_address, pinchValve.position);
-        Log.info("Pinch valve shifted up.");
-    }
-    else {
-        // if the pinch valve var is set to down, move it down
-        Log.info("Shifting pinch valve down...");
+    if(pinchValve.down) {
+        Log.info("Shifting pinch valve down.");
         pinchValve.shiftDown(pinchValve.resolution);
         EEPROM.put(write_address, pinchValve.position);
-        Log.info("Pinch valve shifted down.");
+    }
+    if(pinchValve.up) {
+        Log.info("Shifting pinch valve up.");
+        pinchValve.shiftUp(pinchValve.resolution);
+        EEPROM.put(write_address, pinchValve.position);
     }
 
     currentTime = millis();
@@ -260,12 +256,12 @@ void res_pushed(){
 
 void up_pushed() {
     Log.info("Up button pushed.");
+    pinchValve.up = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-    pinchValve.shiftUp(pinchValve.resolution);
 }
 
-void down_pushed() {
+void down_pushed(){
     Log.info("Down button pushed.");
+    pinchValve.down = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-    pinchValve.shiftDown(pinchValve.resolution);
 }

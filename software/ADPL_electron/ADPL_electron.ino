@@ -135,14 +135,14 @@ void loop() {
     if(pinchValve.up) {
         // if the pinch valve var is set to up, move it up
         Log.info("Shifting pinch valve up...");
-        //pinchValve.shiftUp(pinchValve.resolution);
+        pinchValve.shiftUp(pinchValve.resolution);
         EEPROM.put(write_address, pinchValve.position);
         Log.info("Pinch valve shifted up.");
     }
     else {
         // if the pinch valve var is set to down, move it down
         Log.info("Shifting pinch valve down...");
-        //pinchValve.shiftDown(pinchValve.resolution);
+        pinchValve.shiftDown(pinchValve.resolution);
         EEPROM.put(write_address, pinchValve.position);
         Log.info("Pinch valve shifted down.");
     }
@@ -167,8 +167,8 @@ void loop() {
         if(pinchValve.up){
             Log.info("Pinch valve is up. Lowering...");
             // if the pinch valve is up, lower it
-            pinchValve.up = false;
             pinchValve.resolution = BATCH_MOVEMENT;
+            pinchValve.shiftDown(pinchValve.resolution);
             Log.info("Pinch valve lowered.");
         }
         // tip handled; set tip bool to false

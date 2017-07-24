@@ -22,7 +22,6 @@ PinchValve::PinchValve(int dir_pin, int step_pin, int sleep_pin, int up_pin, int
 
     digitalWrite(_sleep_pin, LOW);
     bool up = false;
-    bool down = false;
     double position = 0.0;
     double resolution = 0.0;
     Particle.variable("position", position);
@@ -39,7 +38,7 @@ void PinchValve::shiftDown(double res) {
         digitalWrite(_step_pin, LOW);
         delayMicroseconds(_DELAY);
     };
-    down = false;
+    down = true;
     position -= res;
     digitalWrite(_sleep_pin, LOW);
 };

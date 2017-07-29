@@ -10,7 +10,7 @@ const notesData = {
 	"Duke": "Microcontroller for testing purposes only.",
 	"Philippines-Sagay": "No cellular connectivity in this region. Data transmission under development.",
 	"Philippines-Subayon": "No cellular connectivity in this region. Data transmission under development.", 
-	"India": "Heating system temporarily not it operation. Digester health being monitored.",
+	"India": "Heating system temporarily not in operation. Digester health being monitored.",
 }
 
 export default notesData;

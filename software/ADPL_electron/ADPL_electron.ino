@@ -51,7 +51,7 @@ Pump pump(PUMP);
 
 #include "Bucket.h"
 #define VOLUME 250.0 //300 mL, varies by location
-#define OPTIMAL_FLOW 5.0 //5.0 L/hr, varies by location
+#define OPTIMAL_FLOW 40.0 //5.0 L/hr was previous setting, varies by location
 Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
 
 #include "error_codes.h"
@@ -64,10 +64,13 @@ PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 #define UNCLOG_RESOLUTION 4.0 // mm of movment
 #define MAX_POSITION 5.0 // in mm
 #define MIN_POSITION 0.0 // in mm
+#define BATCH_MOVEMENT 4 // mm of movement, added for batch tests
 
 // initialize some time counters
 unsigned long currentTime = 0;
+unsigned long WAIT_TIME = 0; // for batch testing
 unsigned long last_publish_time = 0;
+unsigned long ISITUP = 0;
 int temp_count = 1;
 int write_address = 0;
 
@@ -183,47 +186,34 @@ void loop() {
     }
 
     // flag variables changed in attachInterrupt function
-    if(pinchValve.down) {
-        pinchValve.shiftDown(pinchValve.resolution);
-        EEPROM.put(write_address, pinchValve.position);
-    }
     if(pinchValve.up) {
         pinchValve.shiftUp(pinchValve.resolution);
+        EEPROM.put(write_address, pinchValve.position);
+    }
+    else {
+        pinchValve.shiftDown(pinchValve.resolution);
         EEPROM.put(write_address, pinchValve.position);
     }
 
     // unclog if no tip in a long while
     // open all the way up and come back to optimum
     currentTime = millis();
-    if ((currentTime - bucket.lastTime) > (2 * bucket.lowFlow)) {
-        pinchValve.unclog(UNCLOG_RESOLUTION);
-        bucket.lastTime = currentTime;
-
-
-        if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION){
-            pinchValve.up = true;
-            pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-        }
-
+    if(((currentTime - WAIT_TIME) > ((3600*VOLUME)/OPTIMAL_FLOW)) && !pinchValve.up) {  // Gives all times in ms
+    //  (3600 * VOLUME) *  (1 / OPTIMAL_FLOW)
+        pinchValve.up = true;
+        pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable
+        WAIT_TIME = millis();
     }
-
     if(bucket.tip) {
-        pinchValve.clogCounting = 0;
-        bucket.updateFlow();
-        if (bucket.tipTime < bucket.highFlow && bucket.tipTime > bucket.highestFlow && pinchValve.position > MIN_POSITION) {
-            pinchValve.down = true;
-            pinchValve.resolution = FEEDBACK_RESOLUTION;
-        }
-        else if (bucket.tipTime > bucket.lowFlow && pinchValve.position < MAX_POSITION){
-            pinchValve.up = true;
-            pinchValve.resolution = FEEDBACK_RESOLUTION;
-        }
-        else if (bucket.tipTime < bucket.highestFlow){
-            pinchValve.down = true; // handles sudden large flow
-            pinchValve.resolution = HALF_RESOLUTION;
+        pinchValve.up = false;
+        bucket.tip = false;
+        WAIT_TIME = millis();
+        if(pinchValve.up) {
+            pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
         }
     }
 }
+
 
 int read_temp(int temp_count) {
     switch (temp_count) {
@@ -269,7 +259,7 @@ void up_pushed() {
 }
 
 void down_pushed() {
-    pinchValve.down = true;
+    pinchValve.up = false;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
 }
 

@@ -70,7 +70,6 @@ PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 unsigned long currentTime = 0;
 unsigned long WAIT_TIME = 0; // for batch testing
 unsigned long last_publish_time = 0;
-unsigned long ISITUP = 0;
 int temp_count = 1;
 int write_address = 0;
 

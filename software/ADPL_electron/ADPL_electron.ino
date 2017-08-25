@@ -68,7 +68,6 @@ PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 
 // initialize some time counters
 unsigned long currentTime = 0;
-unsigned long WAIT_TIME = 0; // for batch testing
 unsigned long last_publish_time = 0;
 int temp_count = 1;
 int write_address = 0;
@@ -215,10 +214,10 @@ void loop() {
     // unclog if no tip in a long while
     // open all the way up and come back to optimum
     currentTime = millis();
-    if(((currentTime - WAIT_TIME) > ((3600 * VOLUME) / OPTIMAL_FLOW)) && !pinchValve.isitup) {  // Gives all times in ms
+    if(((currentTime - pinchValve.wait_time) > ((3600 * VOLUME) / OPTIMAL_FLOW)) && !pinchValve.isitup) {  // Gives all times in ms
         pinchValve.moveup = true;
         pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable
-        WAIT_TIME = millis();
+        pinchValve.wait_time = millis();
     }
     if(bucket.tip) {
         if(pinchValve.isitup) {
@@ -227,7 +226,7 @@ void loop() {
         }
         pinchValve.moveup = false;
         bucket.tip = false;
-        WAIT_TIME = millis();
+        pinchValve.wait_time = millis();
     }
 }
 
@@ -266,7 +265,7 @@ void bucket_tipped() {
 void res_pushed() {
     pinchValve.position = 0.0;
     pinchValve.movedown = true;
-    WAIT_TIME = millis();
+    pinchValve.wait_time = millis();
     pinchValve.isitup = false;
 }
 

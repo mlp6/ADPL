@@ -203,28 +203,29 @@ void loop() {
     }
 
     // flag variables changed in attachInterrupt function
-    if(pinchValve.up) {
-        pinchValve.shiftUp(pinchValve.resolution);
+    if(pinchValve.movedown) {
+        pinchValve.shiftDown(pinchValve.resolution);
         EEPROM.put(write_address, pinchValve.position);
     }
-    else {
-        pinchValve.shiftDown(pinchValve.resolution);
+    if(pinchValve.moveup) {
+        pinchValve.shiftUp(pinchValve.resolution);
         EEPROM.put(write_address, pinchValve.position);
     }
 
     // unclog if no tip in a long while
     // open all the way up and come back to optimum
     currentTime = millis();
-    if(((currentTime - WAIT_TIME) > ((3600 * VOLUME) / OPTIMAL_FLOW)) && !pinchValve.up) {  // Gives all times in ms
-        pinchValve.up = true;
+    if(((currentTime - WAIT_TIME) > ((3600 * VOLUME) / OPTIMAL_FLOW)) && !pinchValve.isitup) {  // Gives all times in ms
+        pinchValve.moveup = true;
         pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable
         WAIT_TIME = millis();
     }
     if(bucket.tip) {
-        if(pinchValve.up) {
+        if(pinchValve.isitup) {
+            pinchValve.movedown = true;
             pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
         }
-        pinchValve.up = false;
+        pinchValve.moveup = false;
         bucket.tip = false;
         WAIT_TIME = millis();
     }
@@ -264,18 +265,18 @@ void bucket_tipped() {
 
 void res_pushed() {
     pinchValve.position = 0.0;
-    pinchValve.up = true;
+    pinchValve.moveup = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
     bucket.lastTime = millis();
 }
 
 void up_pushed() {
-    pinchValve.up = true;
+    pinchValve.moveup = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
 }
 
 void down_pushed() {
-    pinchValve.up = false;
+    pinchValve.movedown = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
 }
 

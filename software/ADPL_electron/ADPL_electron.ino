@@ -64,7 +64,7 @@ PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 #define UNCLOG_RESOLUTION 4.0 // mm of movment
 #define MAX_POSITION 5.0 // in mm
 #define MIN_POSITION 0.0 // in mm
-#define BATCH_MOVEMENT 4 // mm of movement, added for batch tests
+#define BATCH_MOVEMENT 4.0 // mm of movement, added for batch tests
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -197,19 +197,18 @@ void loop() {
     // unclog if no tip in a long while
     // open all the way up and come back to optimum
     currentTime = millis();
-    if(((currentTime - WAIT_TIME) > ((3600*VOLUME)/OPTIMAL_FLOW)) && !pinchValve.up) {  // Gives all times in ms
-    //  (3600 * VOLUME) *  (1 / OPTIMAL_FLOW)
+    if(((currentTime - WAIT_TIME) > ((3600 * VOLUME) / OPTIMAL_FLOW)) && !pinchValve.up) {  // Gives all times in ms
         pinchValve.up = true;
         pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable
         WAIT_TIME = millis();
     }
     if(bucket.tip) {
-        pinchValve.up = false;
-        bucket.tip = false;
-        WAIT_TIME = millis();
         if(pinchValve.up) {
             pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
         }
+        pinchValve.up = false;
+        bucket.tip = false;
+        WAIT_TIME = millis();
     }
 }
 

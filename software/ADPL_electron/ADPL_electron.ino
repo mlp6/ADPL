@@ -99,12 +99,30 @@ void setup() {
         if (!sd.begin(SD_CS_PIN, SPI_HALF_SPEED)) {
             logError(SD_INIT_FAIL);
         } 
+        else {
+            sdPublisher.inserted = true;
+        }
     } 
 }
 
 void loop() {
     // read the push buttons
     currentTime = millis();
+
+    // check if SD card is still present; if not
+    SDCARD = (bool)digitalRead(SD_CD_PIN);
+    if (!SDCARD && sdPublisher.inserted){
+        sdPublisher.inserted = false;
+    }
+    if (SDCARD && !sdPublisher.inserted) {
+        if (!sd.begin(SD_CS_PIN, SPI_HALF_SPEED)) {
+            logError(SD_INIT_FAIL);
+        } 
+        else {
+            sdPublisher.inserted = true;
+        }
+    }
+
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
     temp_count = read_temp(temp_count);
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {

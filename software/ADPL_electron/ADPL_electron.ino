@@ -265,9 +265,9 @@ void bucket_tipped() {
 
 void res_pushed() {
     pinchValve.position = 0.0;
-    pinchValve.moveup = true;
-    pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-    bucket.lastTime = millis();
+    pinchValve.movedown = true;
+    WAIT_TIME = millis();
+    pinchValve.isitup = false;
 }
 
 void up_pushed() {

@@ -14,11 +14,8 @@ bool PublishDataSD::publish(double HXCI, double HXCO, double HTR, double HXHI, d
             HXCI, HXCO, HTR, HXHI, HXHO, gasOn, bucket_tip_count);
 
     // open the file for write at end like the "Native SD library"
-    if (!sdFile.open("adpl_data.txt", O_RDWR | O_CREAT | O_AT_END)) {
-        Log.error("opening file for write failed.");
-    }
+    sdFile.open("adpl_data.txt", O_RDWR | O_CREAT | O_AT_END);
     // if the file opened okay, write to it:
-    // print time
     printTime(sdFile);
     // print data
     bitsWritten = sdFile.println(data_str);
@@ -36,7 +33,6 @@ bool PublishDataSD::publish(double HXCI, double HXCO, double HTR, double HXHI, d
 bool PublishDataSD::pushToCell(File sdFile) {
     // open the file for write at end like the "Native SD library"
     if (!sdFile.open("adpl_data.txt", O_RDWR | O_CREAT)) {
-        Log.error("opening file for write failed.");
         return false;
     }
     // initialize a bool to determine success
@@ -47,11 +43,9 @@ bool PublishDataSD::pushToCell(File sdFile) {
     while ((n = sdFile.fgets(data_str, sizeof(data_str))) > 0) {
         //determine if reading the end of a line
         if (data_str[n - 1] != '\n') {
-            Log.error("Line in data file did not end with newline character.");
             return false;
         }
-        if(!Particle.publish("SD DATA", data_str)){
-            // if publish failed
+        if(!Particle.publish("SD DATA", data_str)) {
             success = false;
         }
     }

@@ -2,7 +2,12 @@
  *
  * LICENSE: Apache v2.0 (see LICENSE file)
  *
- * Copyright (c) 2015-2017 Mark Palmeri, Cal Nightingale (Duke University)
+ * Copyright (c) 2015-2017 Duke University
+ * Mark Palmeri
+ * Aaron Forbis Stokes
+ * Graham Miller
+ * Daniel Hull
+ * Cal Nightingale
  */
 
 SYSTEM_THREAD(ENABLED);  // parallel user and system threads

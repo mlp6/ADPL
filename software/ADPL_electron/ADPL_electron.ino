@@ -1,12 +1,8 @@
 /* ADPL_complete.ino
- * Master MCU code for all components:
- * + temp probes
- * + relays
- * + bucket tip
  *
  * LICENSE: Apache v2.0 (see LICENSE file)
  *
- * Copyright (c) 2015-2016 Mark Palmeri (Duke University)
+ * Copyright (c) 2015-2017 Mark Palmeri, Cal Nightingale (Duke University)
  */
 
 SYSTEM_THREAD(ENABLED);  // parallel user and system threads
@@ -34,7 +30,7 @@ TempProbe tempHXCO("HXCO", HXCO);
 TempProbe tempHTR("HTR", HTR);
 TempProbe tempHXHI("HXHI", HXHI);
 TempProbe tempHXHO("HXHO", HXHO);
-TempProbe tempExhaust("Exhaust", EXHAUST);
+TempProbe tempExhaust("Exhaust", EXH);
 
 #include "Valve.h"
 Valve valve(VALVE);
@@ -44,6 +40,7 @@ Ignitor ignitor(IGNITOR);
 #define INCINERATE_LOW_TEMP 68  // will be 68 in field
 #define INCINERATE_HIGH_TEMP 72 // will be 72 in field
 #define IGNITOR_DELAY 60000 // ignitor firing delay (ms) since last lit
+#define IGNITOR_TEMP_INCREASE_FLOOR 10 // if this amount of temp increase, then don't fire ignitor
 #define EXHAUST_TEMP_THRESHOLD 68     // the exhaust temp dropping below this indicates that the ignitor has gone out
 
 #include "Pump.h"
@@ -74,7 +71,6 @@ unsigned long last_publish_time = 0;
 unsigned long prev_exhaust_temp = 0;
 int temp_count = 1;
 int write_address = 0;
-
 
 // Determine existence of SD card via the CD pin
 bool SDCARD = (bool)digitalRead(SD_CD_PIN);
@@ -189,12 +185,8 @@ void loop() {
             valve.close();
         }
         else if((currentTime - ignitor.timeLastFired) > IGNITOR_DELAY &&
-            tempExhaust.temp < EXHAUST_TEMP_THRESHOLD &&
-	    (tempExhaust.temp - prev_exhaust_temp) < 10) {
-            // if it has been a minute since the ignitor was last fired AND
-            // exhaust temperature is below threshold AND
-	    // temp hasn't risen at least 10 degrees since the last firing,
-            // assume the fire has gone out and fire again
+                tempExhaust.temp < EXHAUST_TEMP_THRESHOLD &&
+	            (tempExhaust.temp - prev_exhaust_temp) < IGNITOR_TEMP_INCREASE_FLOOR) {
             ignitor.fire();
             tempExhaust.read();
             prev_exhaust_temp = tempExhaust.temp;

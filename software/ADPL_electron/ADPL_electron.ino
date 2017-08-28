@@ -180,7 +180,6 @@ void loop() {
     // measure temp, determine if light gas
     if (tempHTR.temp <= INCINERATE_LOW_TEMP && !valve.gasOn) {
         valve.open();
-        delay(100);
         ignitor.fire();
     }
 
@@ -192,9 +191,9 @@ void loop() {
         else if((currentTime - ignitor.timeLastFired) > IGNITOR_DELAY &&
                 tempExhaust.temp < EXHAUST_TEMP_THRESHOLD &&
 	            (tempExhaust.temp - prev_exhaust_temp) < IGNITOR_TEMP_INCREASE_FLOOR) {
-            ignitor.fire();
-            tempExhaust.read();
-            prev_exhaust_temp = tempExhaust.temp;
+                    ignitor.fire();
+                    tempExhaust.read();
+                    prev_exhaust_temp = tempExhaust.temp;
         }
     }
 

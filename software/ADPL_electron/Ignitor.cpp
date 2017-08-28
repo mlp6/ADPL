@@ -1,5 +1,5 @@
 /* 
- * Ignitor.cpp - pump control
+ * Ignitor.cpp - ignitor control
  */
 
 #include "application.h"

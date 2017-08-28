@@ -15,6 +15,7 @@ Valve::Valve(int pin) {
 
 void Valve::open() {
     digitalWrite(_pin, HIGH);
+    delay(_delay_before_ignition);
     gasOn = true;
 }
 

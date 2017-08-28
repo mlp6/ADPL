@@ -12,7 +12,6 @@ Ignitor::Ignitor(int pin) {
 }
 
 void Ignitor::fire() {
-    // turn ignitor on for 5 sec and record time when that occurs
     digitalWrite(_pin, HIGH);
     delay(_ignitor_on_time);
     digitalWrite(_pin, LOW);

@@ -176,23 +176,40 @@ void loop() {
             bucket.tip_count = 0;
         }
     }
+
     // measure temp, determine if light gas
+    currentTime = millis();
     if (tempHTR.temp <= INCINERATE_LOW_TEMP && !valve.gasOn) {
-        valve.open();
-        ignitor.fire();
+        if (ignitor.allow) {
+            valve.open();
+            ignitor.fire();
+        }
+        else {
+            if (ignitor.resumeReignitionTime < currentTime) {
+                ignitor.allow = true;
+            }
+        } 
     }
 
     if(valve.gasOn) {
-        currentTime = millis();
         if (tempHTR.temp >= INCINERATE_HIGH_TEMP) {
             valve.close();
         }
         else if((currentTime - ignitor.timeLastFired) > ignitor.refireDelay &&
                 tempExhaust.temp < EXHAUST_TEMP_THRESHOLD &&
 	            (tempExhaust.temp - prev_exhaust_temp) < IGNITOR_TEMP_INCREASE_FLOOR) {
-                    ignitor.fire();
-                    tempExhaust.read();
-                    prev_exhaust_temp = tempExhaust.temp;
+                    if (ignitor.repeatRefireAttempts <= ignitor.repeatRefireLimit) {
+                        ignitor.fire();
+                        ignitor.repeatRefireAttempts++;
+                        tempExhaust.read();
+                        prev_exhaust_temp = tempExhaust.temp;
+                    }
+                    else {
+                        valve.close();
+                        ignitor.resumeReignitionTime = currentTime + ignitor.resumeReignitionDelay; 
+                        ignitor.allow = false;
+                        logError(IGNITOR_FAIL);
+                    }
         }
     }
 

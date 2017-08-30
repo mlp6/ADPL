@@ -1,22 +1,33 @@
 /* ADPL_complete.ino
- * Master MCU code for all components:
- * + temp probes
- * + relays
- * + bucket tip
  *
  * LICENSE: Apache v2.0 (see LICENSE file)
  *
- * Copyright (c) 2015-2016 Mark Palmeri (Duke University)
+ * Copyright (c) 2015-2017 Duke University
+ * Mark Palmeri
+ * Aaron Forbis Stokes
+ * Graham Miller
+ * Daniel Hull
+ * Cal Nightingale
  */
 
 SYSTEM_THREAD(ENABLED);  // parallel user and system threads
-                         // to allow function w/o cell connectivity
+// to allow function w/o cell connectivity
 
 unsigned long SYS_VERSION;
 
+#include "PublishDataCell.h"
+PublishDataCell cellPublisher;
+
 #define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
 
+#include "SD/SdFat.h"
+#include "PublishDataSD.h"
 #include "pin_mapping.h"
+// Software SPI.  Use any digital pins.
+// MISO => B1, MOSI => B2, SCK => B0, CS => B4
+SdFatSoftSpi<SD_DO_PIN, SD_DI_PIN, SD_CLK_PIN> sd;
+File sdFile;
+PublishDataSD sdPublisher;
 
 #include "TempProbe.h"
 TempProbe tempHXCI("HXCI", HXCI);
@@ -24,14 +35,17 @@ TempProbe tempHXCO("HXCO", HXCO);
 TempProbe tempHTR("HTR", HTR);
 TempProbe tempHXHI("HXHI", HXHI);
 TempProbe tempHXHO("HXHO", HXHO);
+TempProbe tempExhaust("Exhaust", EXH);
 
 #include "Valve.h"
 Valve valve(VALVE);
+
 #include "Ignitor.h"
 Ignitor ignitor(IGNITOR);
 #define INCINERATE_LOW_TEMP 68  // will be 68 in field
 #define INCINERATE_HIGH_TEMP 72 // will be 72 in field
-#define IGNITE_DELAY 900000     // 15 min between ignitor fires with open valve
+#define IGNITOR_TEMP_INCREASE_FLOOR 10 // if this amount of temp increase, then don't fire ignitor
+#define EXHAUST_TEMP_THRESHOLD 68     // the exhaust temp dropping below this indicates that the ignitor has gone out
 
 #include "Pump.h"
 Pump pump(PUMP);
@@ -40,8 +54,10 @@ Pump pump(PUMP);
 
 #include "Bucket.h"
 #define VOLUME 250.0 //300 mL, varies by location
-#define OPTIMAL_FLOW 5.0 //5.0 L/hr, varies by location
+#define OPTIMAL_FLOW 40.0 //5.0 L/hr was previous setting, varies by location
 Bucket bucket(BUCKET, VOLUME, OPTIMAL_FLOW);
+
+#include "error_codes.h"
 
 #include "PinchValve.h"
 PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
@@ -51,18 +67,20 @@ PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 #define UNCLOG_RESOLUTION 4.0 // mm of movment
 #define MAX_POSITION 5.0 // in mm
 #define MIN_POSITION 0.0 // in mm
+#define BATCH_MOVEMENT 4.0 // mm of movement, added for batch tests
 
 // initialize some time counters
 unsigned long currentTime = 0;
 unsigned long last_publish_time = 0;
+unsigned long prev_exhaust_temp = 0;
 int temp_count = 1;
 int write_address = 0;
 
-//initialize the loghandler
-SerialLogHandler logHandler;
+// Determine existence of SD card via the CD pin
+bool SDCARD = (bool)digitalRead(SD_CD_PIN);
 
 void setup() {
-    Log.info("Starting setup...");
+  
     Serial.begin(9600);
     pinchValve.position = EEPROM.get(write_address, pinchValve.position);
     Particle.variable("currentTime", currentTime);
@@ -75,157 +93,194 @@ void setup() {
     attachInterrupt(UP, up_pushed, FALLING);
     attachInterrupt(DOWN, down_pushed, FALLING);
     attachInterrupt(RESET, res_pushed, FALLING);
-    Log.info("Setup complete! System is running version %s", (const char*)SYS_VERSION);
+
+    // Initialize SdFat or print a detailed error message and halt
+    // Use half speed like the native library.
+    // Change to SPI_FULL_SPEED for more performance.
+    if(SDCARD){
+        if (!sd.begin(SD_CS_PIN, SPI_HALF_SPEED)) {
+            logError(SD_INIT_FAIL);
+        } 
+        else {
+            sdPublisher.inserted = true;
+        }
+    } 
 }
 
 void loop() {
-    Log.trace("Starting loop...");
     // read the push buttons
     currentTime = millis();
+
+    // check if SD card is still present; if not
+    SDCARD = (bool)digitalRead(SD_CD_PIN);
+    if (!SDCARD && sdPublisher.inserted){
+        sdPublisher.inserted = false;
+    }
+    if (SDCARD && !sdPublisher.inserted) {
+        if (!sd.begin(SD_CS_PIN, SPI_HALF_SPEED)) {
+            logError(SD_INIT_FAIL);
+        } 
+        else {
+            sdPublisher.inserted = true;
+        }
+    }
 
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
     temp_count = read_temp(temp_count);
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
-        Log.info("Publishing data...");
-        last_publish_time = publish_data(last_publish_time);
-        Log.info("Publish complete!");
+        bool publishedCell;
+        bool publishedSD;
+
+        if (Particle.connected()) { //Returns true if the device is connected to the cellular network
+            if (cellPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
+                                      tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count))) {
+                publishedCell = true;
+            } else {
+                logError(CELL_PUB_FAIL);
+                publishedCell = false;
+            }
+
+            if (SDCARD && sdFile.open("adpl_data.txt", O_READ) && sdFile.peek() != -1) {
+                // if an sd card is present AND the file is opened for reading successfully AND there is data in it
+                // close the file so as not to interfere with the pushToCell function
+                sdFile.close();
+                if (sdPublisher.pushToCell(sdFile)) {
+                    // if the data push was successful
+                    if (sd.remove("adpl_data.txt")) {
+                        // if the file was removed
+                    } else {
+                        // if the file failed to be removed
+                        logError(SD_FILE_REMOVE_FAIL);
+                    }
+                } else {
+                    // if the data push failed
+                    logError(SD_DATA_PUSH_FAIL);
+                }
+
+            }
+        } else if (SDCARD){ //only publish to SD card if there is no cell connection
+            if(sdPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
+                                   int(valve.gasOn), int(bucket.tip_count), sdFile)){
+                publishedSD = true;
+            } else {
+                logError(SD_PUB_FAIL);
+                publishedSD = false;
+            }
+        } else {
+            logError(TOTAL_PUB_FAIL);
+        }
+        if (publishedCell || publishedSD) {
+            // reset the bucket tip count after every successful publish
+            // (webserver will accumulate count)
+            last_publish_time = millis();
+            bucket.tip_count = 0;
+        }
     }
 
     // measure temp, determine if light gas
+    currentTime = millis();
     if (tempHTR.temp <= INCINERATE_LOW_TEMP && !valve.gasOn) {
-        Log.info("Temperature is too low. Igniting gas...");
-        Log.trace("Opening valve...");
-        valve.open();
-        Log.trace("Valve opened.");
-        delay(100);
-        Log.trace("Firing ignitor...");
-        ignitor.fire();
-        Log.info("Ignition complete.");
+        if (ignitor.allow) {
+            valve.open();
+            ignitor.fire();
+        }
+        else {
+            if (ignitor.resumeReignitionTime < currentTime) {
+                ignitor.allow = true;
+                ignitor.repeatRefireAttempts = 0;
+            }
+        } 
     }
 
     if(valve.gasOn) {
-        currentTime = millis();
         if (tempHTR.temp >= INCINERATE_HIGH_TEMP) {
-            Log.info("Temperature is too high. Closing gas valve...");
             valve.close();
-            Log.info("Valve closed.");
         }
-        // if 15 min have elapsed since last ignitor fire, then fire again
-        else if((currentTime - ignitor.timeLastFired) > IGNITE_DELAY) {
-            Log.info("Designated amount of time has passed since last fire. Igniting...");
-            ignitor.fire();
-            Log.info("Ignition complete.");
+        else if((currentTime - ignitor.timeLastFired) > ignitor.refireDelay &&
+                tempExhaust.temp < EXHAUST_TEMP_THRESHOLD &&
+	            (tempExhaust.temp - prev_exhaust_temp) < IGNITOR_TEMP_INCREASE_FLOOR) {
+                    if (ignitor.repeatRefireAttempts <= ignitor.repeatRefireLimit) {
+                        ignitor.fire();
+                        ignitor.repeatRefireAttempts++;
+                        tempExhaust.read();
+                        prev_exhaust_temp = tempExhaust.temp;
+                    }
+                    else {
+                        valve.close();
+                        ignitor.resumeReignitionTime = currentTime + ignitor.resumeReignitionDelay; 
+                        ignitor.allow = false;
+                        logError(IGNITOR_FAIL);
+                    }
         }
     }
 
     currentTime = millis();
     if (!pump.pumping && (currentTime - pump.offTime) > KEEP_PUMP_OFF_TIME) {
-        Log.info("Pump has been OFF for the designated amount of time. Turning pump on...");
         pump.turnOn();
-        Log.info("Pump turned on.");
     }
     else if (pump.pumping) {
         if ((currentTime - pump.onTime) > KEEP_PUMP_ON_TIME) {
-            Log.info("Pump has been ON for the designated amount of time. Turning pump off...");
             pump.turnOff();
-            Log.info("Pump turned off.");
         }
     }
 
     // flag variables changed in attachInterrupt function
-    if(pinchValve.down) {
-        Log.info("Shifting pinch valve down...");
+    if(pinchValve.movedown) {
         pinchValve.shiftDown(pinchValve.resolution);
         EEPROM.put(write_address, pinchValve.position);
-        Log.info("Pinch valve shifted down.");
     }
-    if(pinchValve.up) {
-        Log.info("Shifting pinch valve up...");
+    if(pinchValve.moveup) {
         pinchValve.shiftUp(pinchValve.resolution);
         EEPROM.put(write_address, pinchValve.position);
-        Log.info("Pinch valve shifted up.");
     }
 
     // unclog if no tip in a long while
     // open all the way up and come back to optimum
     currentTime = millis();
-    if ((currentTime - bucket.lastTime) > (2 * bucket.lowFlow)) {
-        Log.info("No tip for awhile. Unclogging...");
-        pinchValve.unclog(UNCLOG_RESOLUTION);
-        bucket.lastTime = currentTime;
-        Log.info("Unclogging complete.");
-
-        if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION) {
-            Log.warn("Many unclogging attempts made.");
-            Log.warn("Attempting to unclog - moving pinch valve up...");
-            pinchValve.up = true;
-            pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-            Log.warn("Pinch valve moved.");
-        }
-
+    if(((currentTime - pinchValve.wait_time) > ((3600 * VOLUME) / OPTIMAL_FLOW)) && !pinchValve.isitup) {  // Gives all times in ms
+        pinchValve.moveup = true;
+        pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable
+        pinchValve.wait_time = millis();
     }
-
     if(bucket.tip) {
-        Log.info("Bucket tipped.");
-        pinchValve.clogCounting = 0;
-        bucket.updateFlow();
-        if (bucket.tipTime < bucket.highFlow && bucket.tipTime > bucket.highestFlow && pinchValve.position > MIN_POSITION) {
-            Log.info("Moving pinch valve down...");
-            pinchValve.down = true;
-            pinchValve.resolution = FEEDBACK_RESOLUTION;
-            Log.info("Pinch valve moved.");
+        if(pinchValve.isitup) {
+            pinchValve.movedown = true;
+            pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
         }
-        else if (bucket.tipTime > bucket.lowFlow && pinchValve.position < MAX_POSITION){
-            Log.info("Moving pinch valve up...");
-            pinchValve.up = true;
-            pinchValve.resolution = FEEDBACK_RESOLUTION;
-            Log.info("Pinch valve moved.");
-        }
-        else if (bucket.tipTime < bucket.highestFlow){
-            Log.warn("Sudden large flow detected. Handling...");
-            pinchValve.down = true; // handles sudden large flow
-            pinchValve.resolution = HALF_RESOLUTION;
-            Log.warn("Large flow handled.");
-        }
+        pinchValve.moveup = false;
+        bucket.tip = false;
+        pinchValve.wait_time = millis();
     }
-
 }
 
+
 int read_temp(int temp_count) {
-    Log.trace("Reading temperatures...");
     switch (temp_count) {
         case 1:
-            Log.trace("Reading temp: heat exchanger cold inlet...");
             tempHXCI.read();
             temp_count++;
-            Log.trace("Reading complete.");
             break;
         case 2:
-            Log.trace("Reading temp: heat exchanger cold outlet...");
             tempHXCO.read();
             temp_count++;
-            Log.trace("Reading complete");
             break;
         case 3:
-            Log.trace("Reading temp: heater...");
             tempHTR.read();
             temp_count++;
-            Log.trace("Reading complete.");
             break;
         case 4:
-            Log.trace("Reading temp: heat exchanger hot inlet...");
             tempHXHI.read();
             temp_count++;
-            Log.trace("Reading complete.");
             break;
         case 5:
-            Log.trace("Reading temp: heat exchanger hot outlet...");
             tempHXHO.read();
+            temp_count++;
+            break;
+        case 6:
+            tempExhaust.read();
             temp_count = 1;
-            Log.trace("Reading complete.");
             break;
     }
-    Log.trace("Reading complete.");
     return temp_count;
 }
 
@@ -234,55 +289,26 @@ void bucket_tipped() {
     bucket.tip = true;
 }
 
-int publish_data(int last_publish_time) {
-    Log.info("Publishing data...");
-    bool publish_success;
-    char data_str [69];
-
-    // allow for data str to be created that doesn't update bucket if count = 0
-    const char* fmt_string = "HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d";
-    const char* fmt_string_no_bucket = "HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d";
-
-    // bucket.tip_count will be ignored if not needed by sprintf
-    Log.trace("Formatting data string...");
-    sprintf(data_str, (bucket.tip_count > 0) ? fmt_string : fmt_string_no_bucket,
-            tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
-            int(valve.gasOn), int(bucket.tip_count));
-    Log.trace("String formatted.");
-
-    publish_success = Particle.publish("DATA",data_str);
-
-    if (publish_success) {
-        last_publish_time = currentTime;
-        // reset the bucket tip count after every successful publish
-        // (webserver will accumulate count)
-        bucket.tip_count = 0;
-        Log.info("Publishing complete.");
-    } else {
-        Log.error("Publishing failed.");
-    }
-    return last_publish_time;
-}
-
 void res_pushed() {
-    Log.info("Moving pinch valve...");
     pinchValve.position = 0.0;
-    pinchValve.up = true;
-    pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-    bucket.lastTime = millis();
-    Log.info("Pinch valve moved.");
+    pinchValve.movedown = true;
+    pinchValve.wait_time = millis();
+    pinchValve.isitup = false;
 }
 
 void up_pushed() {
-    Log.info("Moving pinch valve up...");
-    pinchValve.up = true;
+    pinchValve.moveup = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-    Log.info("Pinch valve moved.");
 }
 
 void down_pushed() {
-    Log.info("Moving pinch valve down...");
-    pinchValve.down = true;
+    pinchValve.movedown = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-    Log.info("Pinch valve moved.");
+}
+
+void logError(int errorCode) {
+    sdPublisher.logError(errorCode);
+    if(Particle.connected()){
+        Particle.publish("ERROR", errorCode);
+    }
 }

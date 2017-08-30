@@ -7,8 +7,10 @@ class PinchValve{
         PinchValve(int dir_pin, int step_pin, int sleep_pin, int up_pin, int down_pin, int reset_pin);
         void shiftUp(double res);
         void shiftDown(double res);
-        volatile bool up;
-        volatile bool down;
+        volatile bool moveup;
+        volatile bool movedown;
+        volatile bool isitup;
+        unsigned long wait_time = 0;
         double position;
         double resolution;
         int clogCounting; // counts length of attempts to unclog

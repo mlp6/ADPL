@@ -5,3 +5,4 @@
 #define SD_DATA_PUSH_FAIL 4
 #define SD_PUB_FAIL 5
 #define TOTAL_PUB_FAIL 6
+#define IGNITOR_FAIL 7

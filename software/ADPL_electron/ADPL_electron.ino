@@ -44,7 +44,6 @@ Valve valve(VALVE);
 Ignitor ignitor(IGNITOR);
 #define INCINERATE_LOW_TEMP 68  // will be 68 in field
 #define INCINERATE_HIGH_TEMP 72 // will be 72 in field
-#define IGNITOR_DELAY 60000 // ignitor firing delay (ms) since last lit
 #define IGNITOR_TEMP_INCREASE_FLOOR 10 // if this amount of temp increase, then don't fire ignitor
 #define EXHAUST_TEMP_THRESHOLD 68     // the exhaust temp dropping below this indicates that the ignitor has gone out
 
@@ -177,24 +176,41 @@ void loop() {
             bucket.tip_count = 0;
         }
     }
+
     // measure temp, determine if light gas
+    currentTime = millis();
     if (tempHTR.temp <= INCINERATE_LOW_TEMP && !valve.gasOn) {
-        valve.open();
-        delay(100);
-        ignitor.fire();
+        if (ignitor.allow) {
+            valve.open();
+            ignitor.fire();
+        }
+        else {
+            if (ignitor.resumeReignitionTime < currentTime) {
+                ignitor.allow = true;
+                ignitor.repeatRefireAttempts = 0;
+            }
+        } 
     }
 
     if(valve.gasOn) {
-        currentTime = millis();
         if (tempHTR.temp >= INCINERATE_HIGH_TEMP) {
             valve.close();
         }
-        else if((currentTime - ignitor.timeLastFired) > IGNITOR_DELAY &&
+        else if((currentTime - ignitor.timeLastFired) > ignitor.refireDelay &&
                 tempExhaust.temp < EXHAUST_TEMP_THRESHOLD &&
 	            (tempExhaust.temp - prev_exhaust_temp) < IGNITOR_TEMP_INCREASE_FLOOR) {
-            ignitor.fire();
-            tempExhaust.read();
-            prev_exhaust_temp = tempExhaust.temp;
+                    if (ignitor.repeatRefireAttempts <= ignitor.repeatRefireLimit) {
+                        ignitor.fire();
+                        ignitor.repeatRefireAttempts++;
+                        tempExhaust.read();
+                        prev_exhaust_temp = tempExhaust.temp;
+                    }
+                    else {
+                        valve.close();
+                        ignitor.resumeReignitionTime = currentTime + ignitor.resumeReignitionDelay; 
+                        ignitor.allow = false;
+                        logError(IGNITOR_FAIL);
+                    }
         }
     }
 

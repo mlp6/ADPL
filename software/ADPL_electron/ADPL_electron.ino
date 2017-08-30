@@ -187,7 +187,7 @@ void loop() {
         else {
             if (ignitor.resumeReignitionTime < currentTime) {
                 ignitor.allow = true;
-                ignitor.repeatRefireAttemts = 0;
+                ignitor.repeatRefireAttempts = 0;
             }
         } 
     }

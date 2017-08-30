@@ -7,8 +7,8 @@ bool PublishDataSD::publish(double HXCI, double HXCO, double HTR, double HXHI, d
     char data_str [79];
     int bitsWritten = -1;
     // bucket.tip_count will be ignored if not needed by sprintf
-    fmt_string_SD = "[%d] HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d";
-    fmt_string_no_bucket_SD = "[%d] HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d";
+    fmt_string_SD = "[%d]HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d,B:%d";
+    fmt_string_no_bucket_SD = "[%d]HXCI:%.1f,HXCO:%.1f,HTR:%.1f,HXHI:%.1f,HXHO:%.1f,V:%d";
 
     sprintf(data_str, (bucket_tip_count > 0) ? fmt_string_SD : fmt_string_no_bucket_SD,
             Time.now(), HXCI, HXCO, HTR, HXHI, HXHO, gasOn, bucket_tip_count);
@@ -63,7 +63,7 @@ bool PublishDataSD::logError(int errorCode) {
         return false;
     }
     char error_str [69];
-    sprintf(error_str, "[%d] %d", Time.now(), errorCode);
+    sprintf(error_str, "[%d]%d", Time.now(), errorCode);
     bitsWritten = errorFile.println(error_str);
 
     errorFile.close();

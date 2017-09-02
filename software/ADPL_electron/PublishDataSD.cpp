@@ -58,7 +58,7 @@ bool PublishDataSD::logError(int errorCode) {
     File errorFile;
     int bitsWritten = -1;
 
-    if(!errorFile.open("error_log.txt", O_APPEND | O_CREAT)){
+    if(!errorFile.open("error_log.txt", O_RDWR | O_CREAT | O_AT_END)){
         // if the file doesn't open
         return false;
     }

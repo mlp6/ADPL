@@ -1,6 +1,15 @@
-# ADPL Server 
+Anaerobic Digestion and Pasteurization Latrine (ADPL) 
+=====================================================
 
-This web application is responsible for listening to real-time streaming data from different ADPL stations, saving that data to a database, and making those data available for inspection and analysis via a RESTful API and dashboard-like front end. The web server performs several additional functions like integrating with Twilio to allow for text-based alerts and interaction (with many features yet to be implemented). 
+Project Overview: http://sanitation.pratt.duke.edu/onsite-treatment
+
+Particle Electron (MCU)
+-----------------------
+
+
+Web Server
+----------
+The web application is responsible for listening to real-time streaming data from different ADPL stations, saving that data to a database, and making those data available for inspection and analysis via a RESTful API and dashboard-like front end. The web server performs several additional functions like integrating with Twilio to allow for text-based alerts and interaction (with many features yet to be implemented). 
 
 ## Setup
 To install this web application on a vanilla debian-flavored linux server:
@@ -54,3 +63,12 @@ Finally, you can run the container as follows:
 ```
 docker run -p 80:9000 -d mlp6/adpl
 ```
+
+Contributors
+------------
+- Aaron Forbis Stokes (a.forbis.stokes@gmail.com)
+- Daniel Hull
+- Suyash Kumar (suyash.kumar@duke.edu)
+- Graham Miller
+- Cal Nightingale
+- Mark Palmeri (mlp6@duke.edu)

@@ -46,6 +46,12 @@ void TempProbe::read() {
     temp += 1.0 / (_TEMPERATURENOMINAL + 273.15);   // +1/To
     temp = 1.0/temp;                                // invert
     temp -= 273.15;                                 // convert to C
+
+    // check for a damaged / disconnected thermistor (negative temp), and set it HIGH (100 deg C)_
+    // to avoid triggering thermistor conditional statements
+    if (temp < 0) {
+        temp = 100.0;
+    }
 }
 
 void TempProbe::publish() {

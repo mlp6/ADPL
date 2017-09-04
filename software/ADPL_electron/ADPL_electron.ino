@@ -1,8 +1,8 @@
 /* ADPL_complete.ino
  *
- * LICENSE: Apache v2.0 (see LICENSE file)
+ * LICENSE: MIT (see LICENSE file)
  *
- * Copyright (c) 2015-2017 Duke University
+ * Copyright (c) 2015--2017 Duke University
  * Mark Palmeri
  * Aaron Forbis Stokes
  * Graham Miller

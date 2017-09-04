@@ -10,8 +10,10 @@
  * Cal Nightingale
  */
 
+SYSTEM_MODE(AUTOMATIC);  // AUTOMATIC cell connection (default mode)
+//SYSTEM_MODE(MANUAL);     // Use this mode to prevent connecting to the cellular network
 SYSTEM_THREAD(ENABLED);  // parallel user and system threads
-// to allow function w/o cell connectivity
+                         // to allow function w/o cell connectivity
 
 unsigned long SYS_VERSION;
 

@@ -14,3 +14,5 @@ v2.5.0
 ------
 * Ignitor thermistor reignition control
 * SD card writing (data and error log)
+* Handle damaged thermistors that report negative temperatures
+* Implement control over attempting cellular connection 

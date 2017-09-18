@@ -198,6 +198,13 @@ void loop() {
         if (tempHTR.temp >= INCINERATE_HIGH_TEMP) {
             valve.close();
         }
+        // if exhaust temp < 0, then thermistor probably broken
+        // default to firing ignitor every 15 min
+        else if(tempExhaust.temp < 0.0) {
+            if((currentTime - ignitor.timeLastFired) > ignitor.brokenTempDelay) {
+                ignitor.fire();
+            }
+        }
         else if((currentTime - ignitor.timeLastFired) > ignitor.refireDelay &&
                 tempExhaust.temp < EXHAUST_TEMP_THRESHOLD &&
 	            (tempExhaust.temp - prev_exhaust_temp) < IGNITOR_TEMP_INCREASE_FLOOR) {

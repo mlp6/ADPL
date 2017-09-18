@@ -293,7 +293,6 @@ void bucket_tipped() {
 
 void res_pushed() {
     pinchValve.position = 0.0;
-    pinchValve.movedown = true;
     pinchValve.wait_time = millis();
     pinchValve.isitup = false;
 }

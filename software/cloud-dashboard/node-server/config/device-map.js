@@ -11,8 +11,8 @@ module.exports={
 		"2e0062001451343334363036": "Kenya-Central",
         "47003c000251353337353037": "Kenya-North",
         "400057000a51343334363138": "Duke",
-		"310057000951343334363138": "Philippines-Sagay",
-		"170044000c51343334363138": "Philippines-Subayon",
+		"390037000451353431383736": "Philippines-Sagay",
+		"350055000551353431383736": "Philippines-Subayon",
         "520051000351353337353037": "India",
 	}, // Maps coreids to a location identifier
 	locMapRev : function(){ 

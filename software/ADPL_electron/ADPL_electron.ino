@@ -30,6 +30,7 @@ PublishDataCell cellPublisher;
 SdFatSoftSpi<SD_DO_PIN, SD_DI_PIN, SD_CLK_PIN> sd;
 File sdFile;
 PublishDataSD sdPublisher;
+char sdcard_datafile[] = "adpl_data.txt";
 
 #include "TempProbe.h"
 TempProbe tempHXCI("HXCI", HXCI);
@@ -82,7 +83,7 @@ int write_address = 0;
 bool SDCARD = (bool)digitalRead(SD_CD_PIN);
 
 void setup() {
-  
+
     Serial.begin(9600);
     pinchValve.position = EEPROM.get(write_address, pinchValve.position);
     Particle.variable("currentTime", currentTime);
@@ -102,11 +103,11 @@ void setup() {
     if(SDCARD){
         if (!sd.begin(SD_CS_PIN, SPI_HALF_SPEED)) {
             logError(SD_INIT_FAIL);
-        } 
+        }
         else {
             sdPublisher.inserted = true;
         }
-    } 
+    }
 }
 
 void loop() {
@@ -121,7 +122,7 @@ void loop() {
     if (SDCARD && !sdPublisher.inserted) {
         if (!sd.begin(SD_CS_PIN, SPI_HALF_SPEED)) {
             logError(SD_INIT_FAIL);
-        } 
+        }
         else {
             sdPublisher.inserted = true;
         }
@@ -142,20 +143,17 @@ void loop() {
                 publishedCell = false;
             }
 
-            if (SDCARD && sdFile.open("adpl_data.txt", O_READ) && sdFile.peek() != -1) {
-                // if an sd card is present AND the file is opened for reading successfully AND there is data in it
-                // close the file so as not to interfere with the pushToCell function
+            // if an sd card is present AND the file is opened for reading
+            // successfully AND there is data in it, THEN  close the file so
+            // as not to interfere with the pushToCell function
+            if (SDCARD && sdFile.open(sdcard_datafile, O_READ) && sdFile.peek() != -1) {
                 sdFile.close();
                 if (sdPublisher.pushToCell(sdFile)) {
-                    // if the data push was successful
-                    if (sd.remove("adpl_data.txt")) {
-                        // if the file was removed
+                    if (sd.remove(sdcard_datafile)) {
                     } else {
-                        // if the file failed to be removed
                         logError(SD_FILE_REMOVE_FAIL);
                     }
                 } else {
-                    // if the data push failed
                     logError(SD_DATA_PUSH_FAIL);
                 }
 
@@ -191,7 +189,7 @@ void loop() {
                 ignitor.allow = true;
                 ignitor.repeatRefireAttempts = 0;
             }
-        } 
+        }
     }
 
     if(valve.gasOn) {
@@ -216,7 +214,7 @@ void loop() {
                     }
                     else {
                         valve.close();
-                        ignitor.resumeReignitionTime = currentTime + ignitor.resumeReignitionDelay; 
+                        ignitor.resumeReignitionTime = currentTime + ignitor.resumeReignitionDelay;
                         ignitor.allow = false;
                         logError(IGNITOR_FAIL);
                     }

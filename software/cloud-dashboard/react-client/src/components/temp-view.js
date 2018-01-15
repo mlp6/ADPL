@@ -5,6 +5,7 @@ import TempPlot from './temp-view/temp-plot';
 import Notes from './temp-view/notes';
 import LoadingView from './util/loading-view';
 import './temp-view/temp-view.css';
+import Metadata from './temp-view/metadata';
 
 class TempView extends Component {
 
@@ -20,10 +21,21 @@ class TempView extends Component {
 		return ( 
 			<div>
 				<Card className="card" style={{minHeight: '100px'}}>
-					<CardTitle title="Metadata"/> 
 					{
 						this.props.temps.loading && 
-						<LoadingView />
+						<div style={{margin: '10px'}}>
+							<LoadingView />
+						</div>
+					}
+					{
+						!this.props.temps.loading &&
+						(
+							<div style={{margin: '10px'}}>
+								<Metadata 
+									temps={this.props.temps}
+									daysToFetch={this.props.daysToFetch}/>	
+							</div>
+						)
 					}
 				</Card>
 

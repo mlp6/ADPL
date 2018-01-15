@@ -5,7 +5,7 @@ import { Card, CardMedia, CardTitle, CardText, CardActions } from 'react-toolbox
 
 const getTotalBucketTips = (bucketData) => {
 	return bucketData.reduce( (acc, val) => {
-		return ((acc + val.data)*0.325);	
+		return ((acc + val.data));	
 	}, 0);
 }
 
@@ -17,7 +17,7 @@ const TotalBucketTips = props => {
 					!props.loading &&
 					<div>
 						<p> Flow Rate in L/day (avg over {props.daysToFetch} days): </p>
-						<h3>{(getTotalBucketTips((props.bucketData))/props.daysToFetch).toPrecision(1)}</h3>
+						<h3>{(.325*getTotalBucketTips((props.bucketData))/props.daysToFetch).toPrecision(2)}</h3>
 					</div>
 				}
 				{

@@ -9,7 +9,7 @@ The active MCU software is in `software/ADPL_electron` using the `v6.2.0` Electr
 
 Web Server
 ----------
-Live data streaming is avaialble to view at http://adpl.colab.duke.edu .
+Live data streaming is avaialble to view at http://adpl.suyash.io .
 
 The web application is responsible for listening to real-time streaming data from different ADPL stations, saving that data to a database, and making those data available for inspection and analysis via a RESTful API and dashboard-like front end. The web server performs several additional functions like integrating with Twilio to allow for text-based alerts and interaction (with many features yet to be implemented). 
 
@@ -73,4 +73,5 @@ Contributors
 - Suyash Kumar (suyash.kumar@duke.edu)
 - Graham Miller
 - Cal Nightingale
+- Jawad Hoballah
 - Mark Palmeri (mlp6@duke.edu)

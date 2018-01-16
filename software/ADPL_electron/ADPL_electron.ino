@@ -1,13 +1,15 @@
 /* ADPL_complete.ino
  *
- * LICENSE: MIT (see LICENSE file)
+ * LICENSE: Apache v2.0 (see LICENSE file)
  *
- * Copyright (c) 2015--2017 Duke University
+ * Copyright (c) 2015--2018 Duke University
  * Mark Palmeri
  * Aaron Forbis Stokes
  * Graham Miller
  * Daniel Hull
  * Cal Nightingale
+ * Suyash Kumar
+ * Jawad Hoballah
  */
 
 SYSTEM_MODE(AUTOMATIC);  // AUTOMATIC cell connection (default mode)
@@ -82,7 +84,7 @@ int write_address = 0;
 bool SDCARD = (bool)digitalRead(SD_CD_PIN);
 
 void setup() {
-  
+
     Serial.begin(9600);
     pinchValve.position = EEPROM.get(write_address, pinchValve.position);
     Particle.variable("currentTime", currentTime);
@@ -102,11 +104,11 @@ void setup() {
     if(SDCARD){
         if (!sd.begin(SD_CS_PIN, SPI_HALF_SPEED)) {
             logError(SD_INIT_FAIL);
-        } 
+        }
         else {
             sdPublisher.inserted = true;
         }
-    } 
+    }
 }
 
 void loop() {
@@ -121,7 +123,7 @@ void loop() {
     if (SDCARD && !sdPublisher.inserted) {
         if (!sd.begin(SD_CS_PIN, SPI_HALF_SPEED)) {
             logError(SD_INIT_FAIL);
-        } 
+        }
         else {
             sdPublisher.inserted = true;
         }
@@ -191,7 +193,7 @@ void loop() {
                 ignitor.allow = true;
                 ignitor.repeatRefireAttempts = 0;
             }
-        } 
+        }
     }
 
     if(valve.gasOn) {
@@ -216,7 +218,7 @@ void loop() {
                     }
                     else {
                         valve.close();
-                        ignitor.resumeReignitionTime = currentTime + ignitor.resumeReignitionDelay; 
+                        ignitor.resumeReignitionTime = currentTime + ignitor.resumeReignitionDelay;
                         ignitor.allow = false;
                         logError(IGNITOR_FAIL);
                     }

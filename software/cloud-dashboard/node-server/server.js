@@ -50,7 +50,7 @@ io.on('connection',function(socket){
 
 exports = module.exports = app;
 if (!module.parent) {
-  var port = process.env.PORT || 9000; // 9000 as default 
+  var port = 4000; // 4000 as default 
   server.listen(port, function() {
     console.log('Listening on port ' + port);
   });

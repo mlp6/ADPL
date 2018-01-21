@@ -5,7 +5,7 @@ import { Card, CardMedia, CardTitle, CardText, CardActions } from 'react-toolbox
 
 const getTotalBucketTips = (bucketData) => {
 	return bucketData.reduce( (acc, val) => {
-		return ((acc + val.data));	
+		return acc + val.data;
 	}, 0);
 }
 

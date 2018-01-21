@@ -5,12 +5,12 @@
  */
 
 const notesData = {
-	"Kenya-Central": "Temporary decrease in location's occupancy. Outages due to biogas being conserved.", 
+	"Kenya-Central": "", 
 	"Kenya-North": "",
 	"Duke": "Microcontroller for testing purposes only.",
-	"Philippines-Sagay": "No cellular connectivity in this region. Data transmission under development.",
-	"Philippines-Subayon": "No cellular connectivity in this region. Data transmission under development.", 
-	"India": "Heating system temporarily not in operation. Digester health being monitored.",
+	"Philippines-Sagay": "",
+	"Philippines-Subayon": "", 
+	"India": "",
 }
 
 export default notesData;

@@ -39,20 +39,21 @@ class BucketView extends Component {
 		let currentDate = initialDate;
 		let i = 0;
 		for (let bin=0; bin < binnedBucketTips.length; bin++) {
-			if (i == bucketTips.length){
-				console.log("fin")
-			    console.log(currentDate)
-				console.log(nextBinStarts)
-				return binnedBucketTips;
-			}
-			console.log("---bin iter---");
+			console.log("---bin iter---", bin);
 			console.log("Next Bin Starts: ", nextBinStarts);
 			console.log("current date: ", currentDate)
+
 			while(currentDate < nextBinStarts) {
-				currentDate = new Date(bucketTips[i].time);
-				currentBinCount += bucketTips[i].data;
+                currentBinCount += bucketTips[i].data;
                 console.log("Added to bin", currentDate);
-				i++;
+                i++;
+                if (i == bucketTips.length){
+                    console.log("finished")
+                    console.log("Current date:", currentDate);
+                    console.log("Next Bin Starts:", nextBinStarts);
+                    return binnedBucketTips;
+                }
+				currentDate = new Date(bucketTips[i].time);
 			}
 			binnedBucketTips[bin] = currentBinCount;
 			currentBinCount = 0;

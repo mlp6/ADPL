@@ -130,9 +130,12 @@ class Plot extends Component {
                         sideBarOpen={this.props.sideBarOpen}
                         downsampleFactor={this.state.downsampleFactor}
                         daysToFetch={this.state.daysToFetch}
+                        daysToShow={this.state.daysToShow}
                         onDownsampleChange={val => this.handleSliderChange('downsampleFactor', val)}
                         onDaysToFetchChange={val => this.handleSliderChange('daysToFetch', val)}
+                        onDaysToShowChange={val => this.handleSliderChange('daysToShow', val)}
                         handleDaysToFetchChange={this.handleDaysToFetchChange} />
+
 
                 </Layout>
             </div>

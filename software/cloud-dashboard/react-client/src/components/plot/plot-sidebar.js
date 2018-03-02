@@ -19,7 +19,10 @@ const PlotSidebar = props => {
                     editable
                     value={props.downsampleFactor}
                     onChange={props.onDownsampleChange}/>
-                <DaysToShowSlider />
+                <DaysToShowSlider
+                    daysToFetch={props.daysToFetch}
+                    daysToShow={props.daysToShow}
+                    onDaysToShowChange={props.onDaysToShowChange} />
                 <p> Days to fetch </p>
                 <div>
                     <Input

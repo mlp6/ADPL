@@ -1,4 +1,5 @@
 import React from 'react';
+import Slider from 'react-toolbox/lib/slider';
 
 const DaysToShowSlider = props => {
     return (
@@ -6,13 +7,13 @@ const DaysToShowSlider = props => {
             <p> Days to show </p>
             <Slider
                 min={1}
-                max={this.props.daysToFetch}
+                max={props.daysToFetch}
                 step={1}
                 pinned
                 snaps
                 editable
-                value={this.props.daysToShow}
-                onChange={this.props.onDaysToShowChange} />
+                value={props.daysToShow}
+                onChange={props.onDaysToShowChange} />
         </div>
     )
 };

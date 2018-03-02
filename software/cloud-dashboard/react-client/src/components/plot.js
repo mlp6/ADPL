@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import {Button, IconButton} from 'react-toolbox/lib/button';
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer} from 'recharts'
 import { Layout, NavDrawer, Panel, Sidebar } from 'react-toolbox';
-import Slider from 'react-toolbox/lib/slider';
-import constants from '../../constants';
+import constants from '../constants';
 import './plot/plot-sidebar';
 import DaysToShowSlider from './plot/days-to-show-slider';
-const LINE_COLORS = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33']
+import PlotSidebar from './plot/plot-sidebar';
+const LINE_COLORS = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33'];
 
 const defaultNumberOfPoints = 300;
 

@@ -6,16 +6,17 @@ import Notes from './temp-view/notes';
 import LoadingView from './util/loading-view';
 import './temp-view/temp-view.css';
 import Metadata from './temp-view/metadata';
+import Plot from './plot';
 
 class TempView extends Component {
 
 	state = {
 		tempPlotSidebarOpen: false
-	}
+	};
 
 	toggleTempPlotSidebar = () => {
 		return this.setState({tempPlotSidebarOpen: !this.state.tempPlotSidebarOpen});
-	}
+	};
 
 	render() {
 		return ( 
@@ -52,7 +53,7 @@ class TempView extends Component {
 						this.props.temps.loading && 
 						<LoadingView />
 					}
-					<TempPlot 
+					<Plot
 						temps={this.props.temps} 
 						fetchTemps={this.props.fetchTemps}
 						currentLocation={this.props.currentLocation}

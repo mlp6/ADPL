@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fetchBucketTips } from '../actions/index';
 
+const MILLISECONDS_PER_MINUTE = 60000;
+
 class BucketView extends Component {
 	constructor(props) {
 		super(props);
@@ -16,23 +18,75 @@ class BucketView extends Component {
 			nextProps.fetchBucketTips(nextProps.currentLocation, nextProps.meta.daysToFetch);		
 		}
 	}
+	// generateBinnedFlow rate calculates the number of bucketTips per binSize (which is specified in mins)
+	generateBinnedFlowRate = (bucketTips, binSize, daysToFetch) => {
+		bucketTips.sort( (a, b) => {
+			const aDate = new Date(a.time);
+			const bDate = new Date(b.time);
+			if (aDate < bDate) return -1;
+			if (aDate > bDate) return 1;
+			return 0;
+		});
+		console.log(bucketTips);
+		let binnedBucketTips = new Array(daysToFetch * 24 * 60 / binSize).fill(0);
+		const initialDate = new Date(bucketTips[0].time);
+		let nextBinStarts = new Date(initialDate.getTime() + (binSize * MILLISECONDS_PER_MINUTE));
+		let currentBinCount = 0;
+		let currentBinIndex = 0;
 
-	render() { 
-		console.log(this.props.bucket);
+		console.log(initialDate);
+		console.log(nextBinStarts);
+		let currentDate = initialDate;
+		let i = 0;
+		for (let bin=0; bin < binnedBucketTips.length; bin++) {
+			if (i == bucketTips.length){
+				console.log("fin")
+			    console.log(currentDate)
+				console.log(nextBinStarts)
+				return binnedBucketTips;
+			}
+			console.log("---bin iter---");
+			console.log("Next Bin Starts: ", nextBinStarts);
+			console.log("current date: ", currentDate)
+			while(currentDate < nextBinStarts) {
+				currentDate = new Date(bucketTips[i].time);
+				currentBinCount += bucketTips[i].data;
+                console.log("Added to bin", currentDate);
+				i++;
+			}
+			binnedBucketTips[bin] = currentBinCount;
+			currentBinCount = 0;
+			nextBinStarts = new Date(nextBinStarts.getTime() + (binSize * MILLISECONDS_PER_MINUTE));
+
+
+
+		}
+
+
+		return binnedBucketTips;
+
+	};
+
+	render() {
+		if (this.props.bucket.data.length > 0) {
+		    console.log(this.props.meta.daysToFetch);
+            var binnedFlowRate = this.generateBinnedFlowRate(this.props.bucket.data, 30, this.props.meta.daysToFetch);
+            console.log(binnedFlowRate);
+        }
+
 		return ( 
 			<div> 
 				<TotalBucketTips 
 					bucketData={this.props.bucket.data} 
 					daysToFetch={this.props.meta.daysToFetch}
-					loading={this.props.bucket.loading} />	
-
+					loading={this.props.bucket.loading} />
 			</div>
 		);
 	}
 }
 const mapDispatchToProps = dispatch => {
 	return bindActionCreators({ fetchBucketTips }, dispatch);
-}
+};
 
 const mapStateToProps = state => {
 	return {
@@ -41,6 +95,6 @@ const mapStateToProps = state => {
 		currentLocation: state.locationData.currentLocation,
 		meta: state.meta,
 	}
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(BucketView);

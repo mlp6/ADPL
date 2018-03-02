@@ -19,6 +19,12 @@ class TempView extends Component {
 	};
 
 	render() {
+		var tempData = [];
+		if (this.props.temps.data) {
+            tempData = this.props.temps.data.map(currentItem => {
+                return {...currentItem.temps, time: currentItem.time};
+            });
+        }
 		return ( 
 			<div>
 				<Card className="card" style={{minHeight: '100px'}}>
@@ -54,7 +60,8 @@ class TempView extends Component {
 						<LoadingView />
 					}
 					<Plot
-						temps={this.props.temps} 
+						data={tempData}
+                        isLoading={this.props.temps.loading}
 						fetchTemps={this.props.fetchTemps}
 						currentLocation={this.props.currentLocation}
 						toggleSidebar={this.toggleTempPlotSidebar}

@@ -8,7 +8,7 @@ import DaysToShowSlider from './plot/days-to-show-slider';
 import PlotSidebar from './plot/plot-sidebar';
 const LINE_COLORS = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33'];
 
-const defaultNumberOfPoints = 300;
+const defaultNumberOfPoints = 100;
 
 var styles = {
     sidebarInput: {
@@ -69,18 +69,16 @@ class Plot extends Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.temps.data.length > defaultNumberOfPoints &&
-            (this.props.temps.data && (nextProps.temps.data.length != this.props.temps.data.length))) {
-            this.setState({downsampleFactor: Math.floor(nextProps.temps.data.length/defaultNumberOfPoints)});
+        if (nextProps.data.length > defaultNumberOfPoints &&
+            (this.props.data && (nextProps.data.length != this.props.data.length))) {
+            this.setState({downsampleFactor: Math.floor(nextProps.data.length/defaultNumberOfPoints)});
         }
     }
 
     renderPlot = () => {
-        const data = this.props.temps.data.map( currentItem => {
-            return { ...currentItem.temps, time: currentItem.time };
-        });
+
         //TODO(suyashkumar): explore more efficient ways to do this (caching) instead of calculating on every render
-        const dataToShow = this.filterDatesToShow(this.downsampleArray(data, this.state.downsampleFactor)).reverse();
+        const dataToShow = this.filterDatesToShow(this.downsampleArray(this.props.data, this.state.downsampleFactor)).reverse();
         const tickInterval = Math.floor(dataToShow.length / 5);
         return (
             <ResponsiveContainer width="94%" height={300}>
@@ -89,7 +87,7 @@ class Plot extends Component {
                     <YAxis />
                     {
                         // Draw a line for each temperature probe:
-                        Object.keys(data[0]).map((currentItem, index) => {
+                        Object.keys(this.props.data[0]).map((currentItem, index) => {
                             if (currentItem === 'time') return null;
                             return (
                                 <Line
@@ -143,17 +141,17 @@ class Plot extends Component {
     };
 
     render() {
-        const dataExists = !this.props.temps.loading && this.props.temps.data.length > 0;
+        const dataExists = !this.props.isLoading && this.props.data.length > 0;
         return (
             <div>
                 {
                     dataExists &&
-                    !this.props.temps.loading &&
+                    !this.props.isLoading &&
                     this.renderView()
                 }
                 {
                     !dataExists &&
-                    !this.props.temps.loading &&
+                    !this.props.isLoading &&
                     <div style={{textAlign: 'center'}}>
                         No Data for the past {this.state.daysToFetch} days. Increase days to fetch in the plot menu (to the upper right).
                     </div>

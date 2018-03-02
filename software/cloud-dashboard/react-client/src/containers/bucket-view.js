@@ -27,12 +27,11 @@ class BucketView extends Component {
 			if (aDate > bDate) return 1;
 			return 0;
 		});
-		console.log(bucketTips);
+
 		let binnedBucketTips = new Array(daysToFetch * 24 * 60 / binSize).fill(0);
 		const initialDate = new Date(bucketTips[0].time);
 		let nextBinStarts = new Date(initialDate.getTime() + (binSize * MILLISECONDS_PER_MINUTE));
 		let currentBinCount = 0;
-		let currentBinIndex = 0;
 
 		console.log(initialDate);
 		console.log(nextBinStarts);

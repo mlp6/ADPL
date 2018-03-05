@@ -10,7 +10,7 @@ const LINE_COLORS = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ff
 
 const defaultNumberOfPoints = 100;
 
-var styles = {
+const styles = {
     sidebarInput: {
         maxWidth: '50%',
         display: 'inline-block',
@@ -23,7 +23,7 @@ var styles = {
 class Plot extends Component {
 
     state = {
-        downsampleFactor: 15,
+        downsampleFactor: 1,
         daysToFetch: constants.daysToFetch,
         daysToShow: constants.daysToFetch,
     };
@@ -62,7 +62,7 @@ class Plot extends Component {
     };
 
     handleDaysToFetchChange = () => {
-        this.props.fetchTemps(this.props.currentLocation, this.state.daysToFetch);
+        this.props.fetchNewData(this.props.currentLocation, this.state.daysToFetch);
         this.props.setDaysToFetch(this.state.daysToFetch);
         this.setState({daysToShow: this.state.daysToFetch});
         this.props.toggleSidebar();
@@ -75,10 +75,18 @@ class Plot extends Component {
         }
     }
 
+    componentWillMount() {
+        if (this.props.data.length > defaultNumberOfPoints) {
+            // Reset downsampling factor to show the default number of points on the graph
+            this.setState({downsampleFactor: Math.floor(this.props.data.length/defaultNumberOfPoints)})
+        }
+    }
+
+
     renderPlot = () => {
 
         //TODO(suyashkumar): explore more efficient ways to do this (caching) instead of calculating on every render
-        const dataToShow = this.filterDatesToShow(this.downsampleArray(this.props.data, this.state.downsampleFactor)).reverse();
+        const dataToShow = this.filterDatesToShow(this.downsampleArray(this.props.data, this.state.downsampleFactor));
         const tickInterval = Math.floor(dataToShow.length / 5);
         return (
             <ResponsiveContainer width="94%" height={300}>
@@ -86,7 +94,7 @@ class Plot extends Component {
                     <XAxis dataKey="time" label="Date" interval={tickInterval} tickFormatter={this.formatDate} />
                     <YAxis />
                     {
-                        // Draw a line for each temperature probe:
+                        // Draw a line for each key
                         Object.keys(this.props.data[0]).map((currentItem, index) => {
                             if (currentItem === 'time') return null;
                             return (
@@ -113,7 +121,7 @@ class Plot extends Component {
                 <Layout>
                     <Panel>
                         <div style={{textAlign: 'center'}}>
-                            Temperature (past {this.state.daysToShow} days, {this.props.currentLocation})
+                            {this.props.title}
                         </div>
                         {this.renderPlot()}
                         <div style={styles.sidebarContent}>
@@ -141,7 +149,7 @@ class Plot extends Component {
     };
 
     render() {
-        const dataExists = !this.props.isLoading && this.props.data.length > 0;
+        const dataExists = !this.props.isLoading && this.props.data && this.props.data.length > 0;
         return (
             <div>
                 {

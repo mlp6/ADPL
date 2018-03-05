@@ -1,6 +1,7 @@
 import React from 'react';
 import Slider from 'react-toolbox/lib/slider';
 
+
 const DaysToShowSlider = props => {
     return (
         <div>

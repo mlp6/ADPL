@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import TotalBucketTips from './bucket-view/total-bucket-tips';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { fetchBucketTips } from '../actions/index';
+import { fetchBucketTips, setDaysToFetch } from '../actions/index';
+import PlotCard from '../components/plot-card';
 
 const MILLISECONDS_PER_MINUTE = 60000;
+const BIN_SIZE_MINS = 90;
 
 class BucketView extends Component {
 	constructor(props) {
@@ -29,49 +31,45 @@ class BucketView extends Component {
 		});
 
 		let binnedBucketTips = new Array(daysToFetch * 24 * 60 / binSize).fill(0);
+		let binnedBucketTipsTimes = new Array(daysToFetch * 24 * 60 / binSize);
 		const initialDate = new Date(bucketTips[0].time);
+		binnedBucketTipsTimes[0] = initialDate;
 		let nextBinStarts = new Date(initialDate.getTime() + (binSize * MILLISECONDS_PER_MINUTE));
 		let currentBinCount = 0;
 
-		console.log(initialDate);
-		console.log(nextBinStarts);
 		let currentDate = initialDate;
 		let i = 0;
 		for (let bin=0; bin < binnedBucketTips.length; bin++) {
-			console.log("---bin iter---", bin);
-			console.log("Next Bin Starts: ", nextBinStarts);
-			console.log("current date: ", currentDate)
-
+		    if (i === bucketTips.length) break;
 			while(currentDate < nextBinStarts) {
                 currentBinCount += bucketTips[i].data;
-                console.log("Added to bin", currentDate);
                 i++;
-                if (i == bucketTips.length){
-                    console.log("finished")
-                    console.log("Current date:", currentDate);
-                    console.log("Next Bin Starts:", nextBinStarts);
-                    return binnedBucketTips;
-                }
+                if (i === bucketTips.length) break;
 				currentDate = new Date(bucketTips[i].time);
 			}
 			binnedBucketTips[bin] = currentBinCount;
+            binnedBucketTipsTimes[bin + 1] = nextBinStarts;
 			currentBinCount = 0;
 			nextBinStarts = new Date(nextBinStarts.getTime() + (binSize * MILLISECONDS_PER_MINUTE));
-
-
 
 		}
 
 
-		return binnedBucketTips;
+		return { binnedBucketTips, binnedBucketTipsTimes };
 
 	};
 
 	render() {
+	    var flowData = [];
 		if (this.props.bucket.data.length > 0) {
-		    console.log(this.props.meta.daysToFetch);
-            var binnedFlowRate = this.generateBinnedFlowRate(this.props.bucket.data, 30, this.props.meta.daysToFetch);
-            console.log(binnedFlowRate);
+            var {binnedBucketTips, binnedBucketTipsTimes} = this.generateBinnedFlowRate(this.props.bucket.data, BIN_SIZE_MINS, this.props.meta.daysToFetch);
+            for (let i = 0; i < binnedBucketTips.length; i++) {
+                if (binnedBucketTipsTimes[i] === undefined) {
+                    flowData[i] = {};
+                } else {
+                    flowData[i] = {flow: (binnedBucketTips[i] * 0.325), time: binnedBucketTipsTimes[i].toString()}
+                }
+            }
         }
 
 		return ( 
@@ -80,12 +78,22 @@ class BucketView extends Component {
 					bucketData={this.props.bucket.data} 
 					daysToFetch={this.props.meta.daysToFetch}
 					loading={this.props.bucket.loading} />
+                { this.props.bucket.data.length > 0 &&
+                    <PlotCard
+                        data={flowData}
+                        isLoading={this.props.bucket.loading}
+                        fetchNewData={this.props.fetchBucketTips}
+                        currentLocation={this.props.currentLocation}
+                        setDaysToFetch={this.props.setDaysToFetch}
+                        title={"Flow (L)"}
+                        plotTitle={`Flow (L) (${this.props.currentLocation}, ${this.props.meta.daysToFetch} days, ${BIN_SIZE_MINS} min bins)`}/>
+                }
 			</div>
 		);
 	}
 }
 const mapDispatchToProps = dispatch => {
-	return bindActionCreators({ fetchBucketTips }, dispatch);
+	return bindActionCreators({ fetchBucketTips, setDaysToFetch }, dispatch);
 };
 
 const mapStateToProps = state => {

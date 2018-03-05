@@ -3,11 +3,21 @@ import DaysToShowSlider from './days-to-show-slider';
 import {Slider, Sidebar, Input} from 'react-toolbox';
 import { Button } from 'react-toolbox/lib/button';
 
+const styles = {
+    sidebarInput: {
+        maxWidth: '50%',
+        display: 'inline-block',
+    },
+    sidebarContent: {
+        margin: '10px',
+    }
+};
+
 const PlotSidebar = props => {
     return (
         <div>
         <Sidebar pinned={props.sideBarOpen} width={6}>
-            <div className="sidebar-content">
+            <div style={styles.sidebarContent}>
                 <h4> Plot Options </h4>
                 <p> Downsample Sampling Scale Factor </p>
                 <Slider
@@ -27,7 +37,7 @@ const PlotSidebar = props => {
                 <div>
                     <Input
                         type='text'
-                        className="sidebar-input"
+                        style={styles.sidebarInput}
                         value={props.daysToFetch}
                         onChange={props.onDaysToFetchChange} />
                     <Button

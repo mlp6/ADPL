@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import {Button, IconButton} from 'react-toolbox/lib/button'; 
-import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer} from 'recharts' 
+import { Button } from 'react-toolbox/lib/button';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { Layout, NavDrawer, Panel, Sidebar } from 'react-toolbox'; 
 import Slider from 'react-toolbox/lib/slider'; 
 import constants from '../../constants';
 import Input from 'react-toolbox/lib/input';
-import './temp-plot/temp-plot.css';
 
 const LINE_COLORS = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33']
 
@@ -17,7 +16,7 @@ class TempPlot extends Component {
 		downsampleFactor: 15,
 		daysToFetch: constants.daysToFetch,
 		daysToShow: constants.daysToFetch,
-	}
+	};
 
 	downsampleArray = (array, factor) => {
 		const downsampledArray = [];
@@ -25,7 +24,7 @@ class TempPlot extends Component {
 			downsampledArray.push(array[i]);	
 		}
 		return downsampledArray;
-	}
+	};
 
 	filterDatesToShow = (array) => {
 		const cutoffDate = new Date();
@@ -37,27 +36,27 @@ class TempPlot extends Component {
 		});
 
 		return array;
-	}
+	};
 	
 	formatDate = date => { 
 		const dateObj = new Date(date);
 		const getMinutes = minuteString => (minuteString.length > 1) ? minuteString : "0" + minuteString;
 		
 		return `${dateObj.getMonth()+1}/${dateObj.getDate()} ${dateObj.getHours()}:${getMinutes(dateObj.getMinutes().toString())}`
-	}
+	};
 
 	handleSliderChange = (slider, value) => {
 		const newSliderState = {};
 		newSliderState[slider] = value;
 		this.setState(newSliderState);
-	} 
+	};
 
 	handleDaysToFetchChange = () => { 
 		this.props.fetchTemps(this.props.currentLocation, this.state.daysToFetch);
 		this.props.setDaysToFetch(this.state.daysToFetch);
 		this.setState({daysToShow: this.state.daysToFetch}); 
 		this.props.toggleSidebar(); 
-	} 
+	};
 
 	componentWillReceiveProps(nextProps) { 
 		if (nextProps.temps.data.length > defaultNumberOfPoints && 
@@ -98,7 +97,7 @@ class TempPlot extends Component {
 				</LineChart> 
 			</ResponsiveContainer>
 		); 
-	}
+	};
 
 	renderDaysToShow = () => {
 		return ( 
@@ -115,7 +114,7 @@ class TempPlot extends Component {
 				onChange={this.handleSliderChange.bind(this, 'daysToShow')}/> 
 			</div>
 		); 
-	}
+	};
 
 	renderView = () => {
 		return ( 
@@ -165,7 +164,7 @@ class TempPlot extends Component {
 			</Layout>
 			</div>
 		);
-	}
+	};
 
 	render() { 
 		const dataExists = !this.props.temps.loading && this.props.temps.data.length > 0;

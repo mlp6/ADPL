@@ -7,6 +7,6 @@ const LoadingView = props => {
 			<ProgressBar type="circular" mode="indeterminate"/>
 		</div>
 	)
-}
+};
 
 export default LoadingView;

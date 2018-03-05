@@ -1,7 +1,6 @@
 import React, { Component } from 'react'; 
 import AppBar from 'react-toolbox/lib/app_bar'; 
-import 'react-toolbox/lib/commons.scss'; 
-import Test from '../containers/Test';
+import 'react-toolbox/lib/commons.scss';
 import Dashboard from '../containers/dashboard'; 
 
 class App extends Component {

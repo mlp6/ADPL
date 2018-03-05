@@ -41,9 +41,8 @@ class Dashboard extends Component {
 								daysToFetch={this.props.meta.daysToFetch}
 								currentLocation={this.props.currentLocation}/>
 						</Tab>
-						<Tab label="Bucket Tips">
+						<Tab label="Flow">
 							<BucketView />
-								
 						</Tab>
 					</Tabs>
 				}

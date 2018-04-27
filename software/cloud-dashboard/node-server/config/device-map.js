@@ -9,7 +9,7 @@
 module.exports={
 	locMap : {
 		"46005b000b51343334363138": "Kenya-Central",
-        "47003c000251353337353037": "Kenya-North",
+        "4a003b000351353337353037": "Kenya-North",
         "400057000a51343334363138": "Duke",
 		"390037000451353431383736": "Philippines-Sagay",
 		"350055000551353431383736": "Philippines-Subayon",

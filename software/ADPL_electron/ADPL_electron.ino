@@ -135,7 +135,8 @@ void loop() {
 
         if (Particle.connected()) { //Returns true if the device is connected to the cellular network
             if (cellPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
-                                      tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count))) {
+                                      tempHXHO.temp, tempExhaust.temp, int(valve.gasOn),
+                                      int(bucket.tip_count))) {
                 publishedCell = true;
             } else {
                 logError(CELL_PUB_FAIL);

@@ -42,7 +42,7 @@ class TempPlot extends Component {
 	
   filterDataMinMax = (array) => {
     const newArray = [];
-    for (let i = 0; i < array.length, i=i+1) {
+    for (let i = 0; i < array.length; i=i+1) {
       value = array[i];
       if (value < 0) {
         value = 0;

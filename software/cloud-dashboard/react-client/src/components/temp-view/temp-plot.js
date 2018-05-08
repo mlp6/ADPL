@@ -44,11 +44,11 @@ class TempPlot extends Component {
     const newArray = [];
     for (let i = 0; i < array.length; i=i+1) {
       value = array[i];
-      if (value < 0) {
-        value = 0;
+      if (value < tempMin) {
+        value = tempMin;
       }
-      else if (value > 80) {
-        value = 80;
+      else if (value > tempMax) {
+        value = tempMax;
       }
       newArray.push(value);
     }

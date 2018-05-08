@@ -9,6 +9,8 @@ import Input from 'react-toolbox/lib/input';
 const LINE_COLORS = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33']
 
 const defaultNumberOfPoints = 300;
+const tempMin = 0;
+const tempMax = 80;
 
 class TempPlot extends Component { 
 
@@ -38,6 +40,22 @@ class TempPlot extends Component {
 		return array;
 	};
 	
+  filterDataMinMax = (array) => {
+    const newArray = [];
+    for (let i = 0; i < array.length, i=i+1) {
+      value = array[i];
+      if (value < 0) {
+        value = 0;
+      }
+      else if (value > 80) {
+        value = 80;
+      }
+      newArray.push(value);
+    }
+    return newArray;
+  };
+
+
 	formatDate = date => { 
 		const dateObj = new Date(date);
 		const getMinutes = minuteString => (minuteString.length > 1) ? minuteString : "0" + minuteString;
@@ -71,10 +89,11 @@ class TempPlot extends Component {
 		});
 		//TODO(suyashkumar): explore more efficient ways to do this (caching) instead of calculating on every render
 		const dataToShow = this.filterDatesToShow(this.downsampleArray(data, this.state.downsampleFactor)).reverse();
-		const tickInterval = Math.floor(dataToShow.length / 5);
+    const dataToShowMinMax = this.filterDataMinMax(dataToShow)
+		const tickInterval = Math.floor(dataToShowMinMax.length / 5);
 		return (
 			<ResponsiveContainer width="94%" height={300}>
-				<LineChart data={dataToShow}>
+				<LineChart data={dataToShowMinMax}>
 					<XAxis dataKey="time" label="Date" interval={tickInterval} tickFormatter={this.formatDate} />
 					<YAxis />
 					{

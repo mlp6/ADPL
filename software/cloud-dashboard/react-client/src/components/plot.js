@@ -9,6 +9,8 @@ import PlotSidebar from './plot/plot-sidebar';
 const LINE_COLORS = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33'];
 
 const defaultNumberOfPoints = 100;
+const tempMin = 0;
+const tempMax = 80;
 
 const styles = {
     sidebarInput: {
@@ -92,7 +94,7 @@ class Plot extends Component {
             <ResponsiveContainer width="94%" height={300}>
                 <LineChart data={dataToShow}>
                     <XAxis dataKey="time" label="Date" interval={tickInterval} tickFormatter={this.formatDate} />
-                    <YAxis />
+                    <YAxis domain={[this.props.dataMin, this.props.dataMax]}/>
                     {
                         // Draw a line for each key
                         Object.keys(this.props.data[0]).map((currentItem, index) => {

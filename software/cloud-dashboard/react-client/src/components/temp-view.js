@@ -17,6 +17,9 @@ class TempView extends Component {
 	};
 
 	render() {
+    var tempDataMin = 0;
+    var tempDataMax = 80;
+
 		var tempData = [];
 		if (this.props.temps.data) {
             tempData = this.props.temps.data.map(currentItem => {
@@ -24,6 +27,10 @@ class TempView extends Component {
             });
             tempData = tempData.reverse()
         }
+
+    this.props.dataMin = (tempData.min() < tempDataMin ? tempDataMin : tempData.min())
+    this.props.dataMax = (tempData.max() > tempDataMax ? tempDataMax : tempData.max())
+
 		return ( 
 			<div>
 				<Card className="card" style={{minHeight: '100px'}}>

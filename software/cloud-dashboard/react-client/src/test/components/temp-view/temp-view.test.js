@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import ReactTestUtils from 'react-addons-test-utils'
 import sinon from 'sinon';
-import TempPlot from '../../../components/temp-view/temp-plot.js';
+import Plot as TempPlot from '../../../components/plot.js';
 
 const props = {
 	temps: {

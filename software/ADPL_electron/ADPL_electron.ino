@@ -160,7 +160,7 @@ void loop() {
             }
         } else if (SDCARD){ //only publish to SD card if there is no cell connection
             if(sdPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
-                                   int(valve.gasOn), int(bucket.tip_count), sdFile)){
+                                   tempExhaust.temp, int(valve.gasOn), int(bucket.tip_count), sdFile)){
                 publishedSD = true;
             } else {
                 logError(SD_PUB_FAIL);
@@ -315,6 +315,6 @@ void down_pushed() {
 void logError(int errorCode) {
     sdPublisher.logError(errorCode);
     if(Particle.connected()){
-        Particle.publish("ERROR", errorCode);
+        Particle.publish("ERROR", (char*)errorCode);
     }
 }

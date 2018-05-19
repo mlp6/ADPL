@@ -16,6 +16,7 @@ var TemperatureEvent = new Schema({
 		HTR:	{type: Number, required: false},
 		HXHI:	{type: Number, required: false},
 		HXHO:	{type: Number, required: false},
+		E:      {type: Number, required: false},
 	},
 	valveStatus: {type: Boolean, required: false}, // Valve status at this event's time
 });

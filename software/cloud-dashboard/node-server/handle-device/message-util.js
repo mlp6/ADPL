@@ -49,7 +49,8 @@ function addTemperatureRecord(parsedData, io) {
 			HXCO:	parsedData.HXCO,
 			HTR:	parsedData.HTR,
 			HXHI:	parsedData.HXHI,
-			HXHO:	parsedData.HXHO
+			HXHO:	parsedData.HXHO,
+			E:      parsedData.E, 
 		},
 		valveStatus: parsedData.V // undefined if doesn't exist
 	}

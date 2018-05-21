@@ -1,19 +1,15 @@
 /*
  * device-map.js
  * Holds mapping to/from coreid to internal loc identifier
- * @author: Suyash Kumar <suyashkumar2003@gmail.com>
- *
- * Updated (2017-02-03) by Mark Palmeri (mlp6@duke.edu)
- * Updated (2017-02-15) by Mark Palmeri (mlp6@duke.edu)
  */
 module.exports={
 	locMap : {
 		"46005b000b51343334363138": "Kenya-Central",
-        "4a003b000351353337353037": "Kenya-North",
-        "400057000a51343334363138": "Duke",
+    "4a003b000351353337353037": "Kenya-North",
+    "230042001951353338363036": "Duke",
 		"390037000451353431383736": "Philippines-Sagay",
 		"350055000551353431383736": "Philippines-Subayon",
-        "520051000351353337353037": "India",
+    "520051000351353337353037": "India",
 	}, // Maps coreids to a location identifier
 	locMapRev : function(){ 
 		revMap = {};

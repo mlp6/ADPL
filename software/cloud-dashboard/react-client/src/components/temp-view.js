@@ -17,8 +17,6 @@ class TempView extends Component {
 	};
 
 	render() {
-    var tempDataMin = 0;
-    var tempDataMax = 80;
 
 		var tempData = [];
 		if (this.props.temps.data) {
@@ -28,8 +26,9 @@ class TempView extends Component {
             tempData = tempData.reverse()
         }
 
-    this.props.dataMin = (tempData.min() < tempDataMin ? tempDataMin : tempData.min());
-    this.props.dataMax = (tempData.max() > tempDataMax ? tempDataMax : tempData.max());
+    var tempDataMin = 0;
+    var tempDataMax = 100;
+    var yAxisMinMax = [(tempData.min() < tempDataMin ? tempDataMin : tempData.min()), (tempData.max() > tempDataMax ? tempDataMax : tempData.max())];
 
 		return ( 
 			<div>
@@ -54,6 +53,7 @@ class TempView extends Component {
 
 				<PlotCard
 					data={tempData}
+          yAxisMinMax={yAxisMinMax}
 					isLoading={this.props.temps.loading}
 					fetchNewData={this.props.fetchTemps}
 					currentLocation={this.props.currentLocation}

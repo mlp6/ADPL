@@ -28,7 +28,7 @@ class TempView extends Component {
 
     var tempDataMin = 0;
     var tempDataMax = 100;
-    var yAxisMinMax = [(tempData.min() < tempDataMin ? tempDataMin : tempData.min()), (tempData.max() > tempDataMax ? tempDataMax : tempData.max())];
+    var yAxisMinMax = [(Math.min(tempData) < tempDataMin ? tempDataMin : Math.min(tempData)), (Math.max(tempData) > tempDataMax ? tempDataMax : Math.max(tempData))];
 
 		return ( 
 			<div>

@@ -1,29 +1,24 @@
-Anaerobic Digestion and Pasteurization Latrine (ADPL) 
-=====================================================
-
+# Anaerobic Digestion and Pasteurization Latrine (ADPL) 
 Project Overview: http://sanitation.pratt.duke.edu/onsite-treatment
 
-Particle Electron (MCU)
------------------------
+## Particle Electron (MCU)
 The active MCU software is in `software/ADPL_electron` using the `v6.2.0` Electron firmware.
 
-Web Server
-----------
+## Web Server
+The web application is responsible for listening to real-time streaming data
+from different ADPL stations, saving that data to a database, and making those
+data available for inspection and analysis via a RESTful API and dashboard-like
+front end. The web server performs several additional functions like
+integrating with Twilio to allow for text-based alerts and interaction (with
+many features yet to be implemented). 
+
 Live data streaming is avaialble to view at http://adpl.suyash.io .
 
-The web application is responsible for listening to real-time streaming data from different ADPL stations, saving that data to a database, and making those data available for inspection and analysis via a RESTful API and dashboard-like front end. The web server performs several additional functions like integrating with Twilio to allow for text-based alerts and interaction (with many features yet to be implemented). 
-
 ## Setup
-To install this web application on a vanilla debian-flavored linux server:
-  1. Install git: ```sudo apt-get install git```
-  2. Clone & run Suyash's provision script (a subtree is also available in ``provision/``): 
-  
-  ```bash
-  git clone https://github.com/suyashkumar/provision.git
-  cd provision
-  ./provision.sh
-  ```
+The server is running on an instance of Google Cloud, which you can download
+the SDK tolls [here](https://cloud.google.com/sdk/downloads).
 
+**NEED TO UPDATE EVERYTHING ELSE BELOW HERE**
 ## Run the Application
 After provisioning a server as noted above:
   1. Clone this repository: `git clone https://github.com/mlp6/ADPL.git`

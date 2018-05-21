@@ -28,8 +28,8 @@ class TempView extends Component {
             tempData = tempData.reverse()
         }
 
-    this.props.dataMin = (tempData.min() < tempDataMin ? tempDataMin : tempData.min())
-    this.props.dataMax = (tempData.max() > tempDataMax ? tempDataMax : tempData.max())
+    this.props.dataMin = (tempData.min() < tempDataMin ? tempDataMin : tempData.min());
+    this.props.dataMax = (tempData.max() > tempDataMax ? tempDataMax : tempData.max());
 
 		return ( 
 			<div>

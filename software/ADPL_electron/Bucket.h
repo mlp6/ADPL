@@ -10,13 +10,10 @@ class Bucket {
         unsigned int tip_count;
         bool tip;
         void publish();
-        void updateFlow(); // Calculates time differential
         unsigned long baseFlow;
         unsigned long highFlow;
         unsigned long highestFlow;
         unsigned long lowFlow;
-        unsigned long timeRead;
-        unsigned long tipTime;
         unsigned long lastTime;
     private:
         static constexpr unsigned long _OPTIMALBOUND = 60000; // +/- 60 seconds

@@ -12,7 +12,7 @@
  * Jawad Hoballah
  */
 
-SYSTEM_MODE(AUTOMATIC);  // AUTOMATIC cell connection (default mode)
+SYSTEM_MODE(SEMI_AUTOMATIC);  // optimize cellular data usage with SEMI_AUTOMATIC mode
 //SYSTEM_MODE(MANUAL);     // Use this mode to prevent connecting to the cellular network
 SYSTEM_THREAD(ENABLED);  // parallel user and system threads
                          // to allow function w/o cell connectivity

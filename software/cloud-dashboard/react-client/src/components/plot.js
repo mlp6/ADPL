@@ -9,8 +9,6 @@ import PlotSidebar from './plot/plot-sidebar';
 const LINE_COLORS = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33'];
 
 const defaultNumberOfPoints = 100;
-const tempMin = 0;
-const tempMax = 80;
 
 const styles = {
     sidebarInput: {
@@ -72,7 +70,7 @@ class Plot extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.data.length > defaultNumberOfPoints &&
-            (this.props.data && (nextProps.data.length != this.props.data.length))) {
+            (this.props.data && (nextProps.data.length !== this.props.data.length))) {
             this.setState({downsampleFactor: Math.floor(nextProps.data.length/defaultNumberOfPoints)});
         }
     }

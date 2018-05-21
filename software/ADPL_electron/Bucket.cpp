@@ -22,13 +22,6 @@ void Bucket::tipped() {
     tip_count++;
 }
 
-void Bucket::updateFlow(){
-    timeRead = millis(); // make private
-    tipTime = timeRead-lastTime;
-    lastTime = timeRead;
-    tip = false;
-}
-
 void Bucket::publish() {
     Particle.publish(String("BUCKET"), String(tip_count));
 }

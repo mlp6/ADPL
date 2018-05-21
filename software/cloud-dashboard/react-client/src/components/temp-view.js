@@ -24,6 +24,9 @@ class TempView extends Component {
             });
             tempData = tempData.reverse()
         }
+
+    var yAxisMinMax = [0, 100];
+
 		return ( 
 			<div>
 				<Card className="card" style={{minHeight: '100px'}}>
@@ -47,6 +50,7 @@ class TempView extends Component {
 
 				<PlotCard
 					data={tempData}
+          yAxisMinMax={yAxisMinMax}
 					isLoading={this.props.temps.loading}
 					fetchNewData={this.props.fetchTemps}
 					currentLocation={this.props.currentLocation}

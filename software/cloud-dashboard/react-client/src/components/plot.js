@@ -92,7 +92,7 @@ class Plot extends Component {
             <ResponsiveContainer width="94%" height={300}>
                 <LineChart data={dataToShow}>
                     <XAxis dataKey="time" label="Date" interval={tickInterval} tickFormatter={this.formatDate} />
-                    <YAxis />
+                    <YAxis type="number" domain={[this.props.yAxisMinMax[0], this.props.yAxisMinMax[1]]}/>
                     {
                         // Draw a line for each key
                         Object.keys(this.props.data[0]).map((currentItem, index) => {

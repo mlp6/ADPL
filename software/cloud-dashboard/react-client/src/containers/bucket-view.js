@@ -60,7 +60,7 @@ class BucketView extends Component {
 	};
 
 	render() {
-	    var flowData = [];
+    var flowData = [];
 		if (this.props.bucket.data.length > 0) {
             var {binnedBucketTips, binnedBucketTipsTimes} = this.generateBinnedFlowRate(this.props.bucket.data, BIN_SIZE_MINS, this.props.meta.daysToFetch);
             for (let i = 0; i < binnedBucketTips.length; i++) {
@@ -72,6 +72,8 @@ class BucketView extends Component {
             }
         }
 
+    var yAxisMinMax = [flowData.min(), flowData.max()];
+
 		return ( 
 			<div> 
 				<TotalBucketTips 
@@ -81,6 +83,7 @@ class BucketView extends Component {
                 { this.props.bucket.data.length > 0 &&
                     <PlotCard
                         data={flowData}
+                        yAxisMinMax={yAxisMinMax}
                         isLoading={this.props.bucket.loading}
                         fetchNewData={this.props.fetchBucketTips}
                         currentLocation={this.props.currentLocation}

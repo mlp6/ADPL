@@ -74,7 +74,9 @@ class BucketView extends Component {
 
     var flowDataValues = [];
     for (var i in flowData) {
-      flowDataValues[i] = flowData[i].flow;
+      if ({}.hasOwnProperty.call(flowData, i)) {
+        flowDataValues[i] = flowData[i].flow;
+      }
     }
     var yAxisMinMax = [Math.min.apply(Math, flowDataValues), Math.max.apply(Math, flowDataValues)];
 

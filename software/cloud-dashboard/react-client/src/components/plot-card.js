@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Card, CardTitle, CardText } from 'react-toolbox/lib/card';
+import Card from 'react-toolbox/lib/card';
 import {IconButton} from 'react-toolbox/lib/button';
 import LoadingView from './util/loading-view';
 import Plot from './plot';

@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import LoadingView from '../../components/util/loading-view';
 import './total-bucket-tips/total-bucket-tips.css'; 
-import { Card, CardMedia, CardTitle, CardText, CardActions } from 'react-toolbox/lib/card';
+import Card  from 'react-toolbox/lib/card';
 
 const getTotalBucketTips = (bucketData) => {
 	return bucketData.reduce( (acc, val) => {

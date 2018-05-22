@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import {Button, IconButton} from 'react-toolbox/lib/button';
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer} from 'recharts'
-import { Layout, NavDrawer, Panel, Sidebar } from 'react-toolbox';
+import { Layout, Panel } from 'react-toolbox';
 import constants from '../constants';
 import './plot/plot-sidebar';
 import DaysToShowSlider from './plot/days-to-show-slider';
@@ -30,7 +29,7 @@ class Plot extends Component {
 
     downsampleArray = (array, factor) => {
         const downsampledArray = [];
-        for (let i = 0; i < array.length; i=i+factor) {
+        for (let i = 0; i < array.length; i+=factor) {
             downsampledArray.push(array[i]);
         }
         return downsampledArray;

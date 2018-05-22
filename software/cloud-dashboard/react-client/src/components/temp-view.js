@@ -31,7 +31,9 @@ class TempView extends Component {
 
     var allTempData = [];
     for (var i in tempData) {
-      allTempData.push(tempData[i].HXCI, tempData[i].HXCO, tempData[i].HTR, tempData[i].HXHI, tempData[i].HXHO);
+      if ({}.hasOwnProperty.call(tempData, i)) {
+        allTempData.push(tempData[i].HXCI, tempData[i].HXCO, tempData[i].HTR, tempData[i].HXHI, tempData[i].HXHO);
+      }
     }
       
     var yAxisMinMax = [(Math.min.apply(Math, allTempData) < tempDataMin ? tempDataMin : Math.min.apply(Math, allTempData)),

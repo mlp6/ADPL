@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fetchTemps, fetchLocations, selectLocation, setDaysToFetch} from '../actions/index';
-import { Button } from 'react-toolbox/lib/button';
 import BucketView from './bucket-view';
 import {Tab, Tabs} from 'react-toolbox';
 import LocationSelector from '../components/location-selector';

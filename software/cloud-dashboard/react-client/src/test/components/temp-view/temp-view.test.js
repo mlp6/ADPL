@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import ReactTestUtils from 'react-addons-test-utils'
-import sinon from 'sinon';
 import Plot from '../../../components/plot.js';
 
 const props = {
@@ -29,6 +28,7 @@ describe('Date formatting', () => {
 
 	it('should format typical dates correctly', () => { 
 		const expectedDateString = '1/23 23:58';
+    process.stdout.write(expectedDateString);
 		const formattedDate = component.formatDate(testDate);
 		expect(formattedDate).toEqual(expectedDateString);
 	})

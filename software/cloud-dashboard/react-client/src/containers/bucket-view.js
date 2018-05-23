@@ -73,8 +73,10 @@ class BucketView extends Component {
         }
 
     const flowReducer = (accumulatedFlow, currentFlow) => accumulatedFlow.concat(currentFlow['flow']);
-    var flowDataValues = flowData.reduce(flowReducer, []);
-    var yAxisMinMax = [Math.min.apply(Math, flowDataValues), Math.max.apply(Math, flowDataValues)];
+    let flowDataValues = flowData.reduce(flowReducer, []);
+    console.log('flowDataValues: ' + flowDataValues);
+    let yAxisMinMax = [Math.min.apply(Math, flowDataValues), Math.max.apply(Math, flowDataValues)];
+    console.log('yAxisMinMax: ' + yAxisMinMax);
 
 		return ( 
 			<div> 

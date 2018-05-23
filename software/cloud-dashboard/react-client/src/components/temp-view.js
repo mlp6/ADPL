@@ -31,9 +31,11 @@ class TempView extends Component {
 
     const tempReducer = (allTemps, currentTemps) => allTemps.concat(currentTemps['HXCI'], currentTemps['HXCO'], currentTemps['HTR'], currentTemps['HXHI'], currentTemps['HXHO']);
     var allTempData = tempData.reduce(tempReducer, []);
+    console.log('allTempData: ' + allTempData);
 
     var yAxisMinMax = [(Math.min.apply(Math, allTempData) < tempDataMin ? tempDataMin : Math.min.apply(Math, allTempData)),
                        (Math.max.apply(Math, allTempData) > tempDataMax ? tempDataMax : Math.max.apply(Math, allTempData))];
+    console.log('yAxisMinMax: ' + yAxisMinMax);
 
 		return ( 
 			<div>

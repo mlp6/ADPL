@@ -10,7 +10,7 @@ let MessageUtil = require('./handle-device/message-util');
 
 let EventSourceRestartTime = 10000; // in ms
 
-let es = {close: () => {}}; // Global instance of EventSource
+let es; // Global instance of EventSource
 
 let receivedSinceLastHeartbeat = 0;
 const heartbeatInterval = 300000; // in ms

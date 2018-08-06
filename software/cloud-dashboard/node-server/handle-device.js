@@ -10,7 +10,7 @@ let MessageUtil = require('./handle-device/message-util');
 
 let EventSourceRestartTime = 10000; // in ms
 
-let es; // Instance of EventSource
+let es = {close: () => {}}; // Global instance of EventSource
 
 let receivedSinceLastHeartbeat = 0;
 const heartbeatInterval = 300000; // in ms
@@ -31,6 +31,7 @@ function checkReceivedMessagesHeartbeat(deviceUrl, io) {
 		es.close();
 		setTimeout(handleStream, EventSourceRestartTime, deviceUrl, io);
 		console.log("ERROR: Received messages since last heartbeat below threshold, restarting EventSource.");
+		return;
 	}
 
 	// Reset receivedSinceLastHearbeat and schedule another call to checkReceivedMessagesHeartbeat
@@ -42,16 +43,16 @@ function handleStream(deviceUrl, io) {
 	es = new EventSource(deviceUrl); // Listen to the stream
 
 	// Add temperature event listener (DATA event on devices with latest firmware)
-	es.addEventListener("TEMPS", (message) => {
+	es.addEventListener("TEMPS", message => {
 		handleDataMessage(message, io);
 	});
 	
 	// Add new DATA event listener
-	es.addEventListener("DATA", (message) => {
+	es.addEventListener("DATA", message => {
 		handleDataMessage(message, io);
 	});
 
-  es.onerror = function (err) {
+  es.onerror = err => {
   	console.log("ERROR (Likely Event Source)");
   	console.log(err);
   	es.close();
@@ -66,4 +67,6 @@ function handleStream(deviceUrl, io) {
 module.exports =  {
 	handleStream, // Export handleDevice function
 	handleDataMessage,
+	checkReceivedMessagesHeartbeat,
+	es,
 };

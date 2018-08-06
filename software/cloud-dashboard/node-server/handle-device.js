@@ -67,6 +67,4 @@ function handleStream(deviceUrl, io) {
 module.exports =  {
 	handleStream, // Export handleDevice function
 	handleDataMessage,
-	checkReceivedMessagesHeartbeat,
-	es,
 };

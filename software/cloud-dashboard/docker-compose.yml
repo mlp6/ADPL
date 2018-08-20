@@ -7,6 +7,7 @@ services:
       - MONGO_URI="mongodb://db/adpl"
     ports:
         - 80:4000
+    restart: always
     command: ["./wait-for-it.sh", "db:27017", "--", "node", "server.js"]
   db:
     image: mongo:latest
@@ -14,3 +15,4 @@ services:
         - 27017:27017
     volumes:
       - $DB_DATA:/data/db
+    restart: always

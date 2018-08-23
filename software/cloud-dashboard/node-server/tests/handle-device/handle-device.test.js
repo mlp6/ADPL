@@ -1,10 +1,11 @@
-var MessageUtil = require('../../handle-device/message-util');
+let testData = require('./test-data');
+let sinon = require('sinon');
 
-var handleDevice = require('../../handle-device');
-var testData = require('./test-data');
-var sinon = require('sinon'); 
 
-describe('Temperature Event Publish', () => { 
+describe('Temperature Event Publish', () => {
+  let MessageUtil = require('../../handle-device/message-util');
+  let handleDevice = require('../../handle-device');
+
 	const parseMessageStub = sinon.stub(MessageUtil, 'parseMessage');
 	const addRecordsStub = sinon.stub(MessageUtil, 'addRecords'); 
 	handleDevice.handleDataMessage(testData.sampleTempEvent, {}); 
@@ -15,5 +16,7 @@ describe('Temperature Event Publish', () => {
 	it('called addRecords', () => {
 		expect(addRecordsStub.called).toBe(true);
 	});
+	sinon.restore();
 });
+
 

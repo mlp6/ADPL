@@ -1,5 +1,4 @@
 var testData = require('./test-data');
-var sinon = require('sinon'); 
 
 var MessageUtil = require('../../handle-device/message-util');
 

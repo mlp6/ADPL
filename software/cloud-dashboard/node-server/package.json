@@ -22,7 +22,7 @@
     "twilio": "^2.9.1"
   },
   "devDependencies": {
-    "jest": "^18.1.0",
-    "sinon": "^1.17.7"
+    "jest": "^18.1.0", 
+    "sinon": "^6.1.4"
   }
 }

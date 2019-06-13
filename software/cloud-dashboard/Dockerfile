@@ -15,4 +15,4 @@ RUN cd /app/react-client && npm run build
 # Install server dependencies
 RUN cd /app/node-server && npm install
 
-CMD node server.js
+CMD node ./node-server/server.js

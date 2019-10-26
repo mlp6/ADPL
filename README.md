@@ -6,7 +6,7 @@ Project Overview: http://sanitation.pratt.duke.edu/onsite-treatment
 The active MCU software is in `software/ADPL_electron` using the `v6.2.0` Electron firmware.
 
 ## Web Server
-Live data streaming is available to view at http://dupont.egr.duke.edu .
+Live data streaming is available to view at http://adpl.palmeri.io.
 
 The web application is responsible for listening to real-time streaming data from different ADPL stations, saving that data to a database, and making those data available for inspection and analysis via a RESTful API and dashboard-like front end. The web server performs several additional functions like integrating with Twilio to allow for text-based alerts and interaction (with many features yet to be implemented). 
 
@@ -23,7 +23,7 @@ The frontend is manually built, and its assets captured by the Docker backend.  
 4. Repeat the Docker setup above, adding the `--build` option to `docker-compose up --build` to rebuild the image.
 
 ## Data Download
-As simple as: http://dupont.egr.duke.edu/api/data/temp/1
+As simple as: http://adpl.palmeri.io/api/data/temp/1
 
 ## Contributors
 - Aaron Forbis Stokes (a.forbis.stokes@gmail.com)

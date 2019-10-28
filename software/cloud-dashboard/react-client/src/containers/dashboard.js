@@ -50,7 +50,7 @@ class Dashboard extends Component {
 				<div className="links"> 
 					<a href="http://sanitation.pratt.duke.edu/onsite-treatment/about-onsite-treatment-project" target="_blank"> ADPL Project </a> | 
 					<a href="https://github.com/mlp6/ADPL" target="_blank"> Github </a> |
-					Web by <a href="http://suyashkumar.com" target="_blank"> Suyash Kumar </a>
+					Web by <a href="http://suyashkumar.com" target="_blank"> Suyash Kumar </a> (Maintained by <a href="http://palmeri.io" target="_blank"> Mark Palmeri </a>)
 				</div>
 			</div>
 		)

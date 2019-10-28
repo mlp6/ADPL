@@ -6,7 +6,7 @@ export const SELECT_LOCATION = 'SELECT_LOCATION';
 export const SET_DAYS_TO_FETCH = 'SET_DAYS_TO_FETCH';
 export const FETCH_BUCKET_TIPS = 'FETCH_BUCKET_TIPS';
 
-const serverUrl = 'http://dupont.egr.duke.edu';
+const serverUrl = 'http://adpl.palmeri.io';
 //const serverUrl = 'http://localhost:9000';
 
 export function fetchTemps(location, numDays) {

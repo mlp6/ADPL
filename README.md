@@ -2,11 +2,13 @@
 
 Project Overview: http://sanitation.pratt.duke.edu/onsite-treatment
 
+**This project is dormant, and the web server has been taken offline.**
+
 ## Particle Electron (MCU)
 The active MCU software is in `software/ADPL_electron` using the `v6.2.0` Electron firmware.
 
 ## Web Server
-Live data streaming is available to view at http://adpl.palmeri.io.
+~~Live data streaming is available to view at http://adpl.palmeri.io.~~
 
 The web application is responsible for listening to real-time streaming data from different ADPL stations, saving that data to a database, and making those data available for inspection and analysis via a RESTful API and dashboard-like front end. The web server performs several additional functions like integrating with Twilio to allow for text-based alerts and interaction (with many features yet to be implemented). 
 

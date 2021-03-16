@@ -9,6 +9,7 @@
   "author": "Suyash Kumar",
   "license": "ISC",
   "dependencies": {
+    "@hapi/hawk": "^8.0.0",
     "body-parser": "^1.15.0",
     "cors": "^2.8.1",
     "eventsource": "^0.2.1",
@@ -19,10 +20,10 @@
     "request": "^2.72.0",
     "socket.io": ">=2.4.0",
     "socketio": "^1.0.0",
-    "twilio": "^2.9.1"
+    "twilio": "^2.11.1"
   },
   "devDependencies": {
-    "jest": "^18.1.0", 
+    "jest": "^18.1.0",
     "sinon": "^6.1.4"
   }
 }

@@ -9,20 +9,20 @@
   "author": "Suyash Kumar",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.15.0",
-    "cors": "^2.8.1",
-    "eventsource": "^0.2.1",
-    "express": "^4.13.4",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "eventsource": "^1.0.7",
+    "express": "^4.17.1",
     "express-csv": "^0.6.0",
-    "mongoose": "^5.7.6",
-    "morgan": "^1.7.0",
+    "mongoose": "^5.12.0",
+    "morgan": "^1.10.0",
     "request": "^2.72.0",
-    "socket.io": ">=2.4.0",
+    "socket.io": ">=4.0.0",
     "socketio": "^1.0.0",
-    "twilio": "^2.9.1"
+    "twilio": "^3.58.0"
   },
   "devDependencies": {
-    "jest": "^18.1.0", 
-    "sinon": "^6.1.4"
+    "jest": "^26.6.3",
+    "sinon": "^9.2.4"
   }
 }

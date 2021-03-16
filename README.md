@@ -1,3 +1,5 @@
+![NodeJSbadge](https://github.com/mlp6/adpl/actions/workflows/node.js.yml/badge.svg)
+
 # Anaerobic Digestion and Pasteurization Latrine (ADPL) 
 
 Project Overview: http://sanitation.pratt.duke.edu/onsite-treatment

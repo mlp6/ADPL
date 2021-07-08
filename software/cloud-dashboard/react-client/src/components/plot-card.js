@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Card, CardTitle, CardText } from 'react-toolbox/lib/card';
+import Card from 'react-toolbox/lib/card';
 import {IconButton} from 'react-toolbox/lib/button';
 import LoadingView from './util/loading-view';
 import Plot from './plot';
@@ -33,6 +33,7 @@ class PlotCard extends Component {
 
                <Plot
                    data={this.props.data}
+                   yAxisMinMax={this.props.yAxisMinMax}
                    isLoading={this.props.isLoading}
                    fetchNewData={this.props.fetchNewData}
                    currentLocation={this.props.currentLocation}
@@ -47,6 +48,7 @@ class PlotCard extends Component {
 
 PlotCard.propTypes = {
     data: PropTypes.array.isRequired,
+    yAxisMinMax: PropTypes.array.isRequired,
     isLoading: PropTypes.bool.isRequired,
     fetchNewData: PropTypes.func.isRequired,
     currentLocation: PropTypes.string.isRequired,

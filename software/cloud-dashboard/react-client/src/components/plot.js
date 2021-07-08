@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import {Button, IconButton} from 'react-toolbox/lib/button';
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer} from 'recharts'
-import { Layout, NavDrawer, Panel, Sidebar } from 'react-toolbox';
+import { Layout, Panel } from 'react-toolbox';
 import constants from '../constants';
 import './plot/plot-sidebar';
 import DaysToShowSlider from './plot/days-to-show-slider';
@@ -30,7 +29,7 @@ class Plot extends Component {
 
     downsampleArray = (array, factor) => {
         const downsampledArray = [];
-        for (let i = 0; i < array.length; i=i+factor) {
+        for (let i = 0; i < array.length; i+=factor) {
             downsampledArray.push(array[i]);
         }
         return downsampledArray;
@@ -70,7 +69,7 @@ class Plot extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.data.length > defaultNumberOfPoints &&
-            (this.props.data && (nextProps.data.length != this.props.data.length))) {
+            (this.props.data && (nextProps.data.length !== this.props.data.length))) {
             this.setState({downsampleFactor: Math.floor(nextProps.data.length/defaultNumberOfPoints)});
         }
     }
@@ -92,7 +91,7 @@ class Plot extends Component {
             <ResponsiveContainer width="94%" height={300}>
                 <LineChart data={dataToShow}>
                     <XAxis dataKey="time" label="Date" interval={tickInterval} tickFormatter={this.formatDate} />
-                    <YAxis />
+                    <YAxis type="number" domain={[this.props.yAxisMinMax[0], this.props.yAxisMinMax[1]]} allowDataOverflow={true} />
                     {
                         // Draw a line for each key
                         Object.keys(this.props.data[0]).map((currentItem, index) => {

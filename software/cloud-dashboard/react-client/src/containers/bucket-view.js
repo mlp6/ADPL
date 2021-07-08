@@ -15,7 +15,7 @@ class BucketView extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		if (this.props.currentLocation != nextProps.currentLocation) {
+		if (this.props.currentLocation !== nextProps.currentLocation) {
 			// Refresh bucket tips for new location
 			nextProps.fetchBucketTips(nextProps.currentLocation, nextProps.meta.daysToFetch);		
 		}
@@ -60,7 +60,7 @@ class BucketView extends Component {
 	};
 
 	render() {
-	    var flowData = [];
+    var flowData = [];
 		if (this.props.bucket.data.length > 0) {
             var {binnedBucketTips, binnedBucketTipsTimes} = this.generateBinnedFlowRate(this.props.bucket.data, BIN_SIZE_MINS, this.props.meta.daysToFetch);
             for (let i = 0; i < binnedBucketTips.length; i++) {
@@ -72,6 +72,12 @@ class BucketView extends Component {
             }
         }
 
+    const flowReducer = (accumulatedFlow, currentFlow) => accumulatedFlow.concat(currentFlow['flow']);
+    let flowDataValues = flowData.reduce(flowReducer, []);
+    console.log('flowDataValues: ' + flowDataValues);
+    let yAxisMinMax = [Math.min.apply(Math, flowDataValues), Math.max.apply(Math, flowDataValues)];
+    console.log('yAxisMinMax: ' + yAxisMinMax);
+
 		return ( 
 			<div> 
 				<TotalBucketTips 
@@ -81,6 +87,7 @@ class BucketView extends Component {
                 { this.props.bucket.data.length > 0 &&
                     <PlotCard
                         data={flowData}
+                        yAxisMinMax={yAxisMinMax}
                         isLoading={this.props.bucket.loading}
                         fetchNewData={this.props.fetchBucketTips}
                         currentLocation={this.props.currentLocation}

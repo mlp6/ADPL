@@ -4,6 +4,8 @@ export default function(state = {data: []}, action) {
 	switch(action.type) {
 		case FETCH_BUCKET_TIPS:
 			return handlePromiseWithData(action, state);
+
+    // no default
 	}
 	return state;
 }

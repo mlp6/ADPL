@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import ReactTestUtils from 'react-addons-test-utils'
-import sinon from 'sinon';
-import TempPlot from '../../../components/temp-view/temp-plot.js';
+import Plot from '../../../components/plot.js';
 
 const props = {
 	temps: {
@@ -11,13 +10,13 @@ const props = {
 	}
 }
 
-it('TempPlot renders', () => {
+it('Plot renders', () => {
 	const div = document.createElement('div');
-	ReactDOM.render(React.createElement(TempPlot, props), div);
+	ReactDOM.render(React.createElement(Plot, props), div);
 });
 
 describe('Date formatting', () => {
-	const component = ReactTestUtils.renderIntoDocument(React.createElement(TempPlot, props)); 
+	const component = ReactTestUtils.renderIntoDocument(React.createElement(Plot, props)); 
 	// Date is set in this day to be timezone agnostic
  	// relative to server running this.
 	// TODO(suyashkumar): revisit this test to determine if there's a better way to set up
@@ -29,6 +28,7 @@ describe('Date formatting', () => {
 
 	it('should format typical dates correctly', () => { 
 		const expectedDateString = '1/23 23:58';
+    process.stdout.write(expectedDateString);
 		const formattedDate = component.formatDate(testDate);
 		expect(formattedDate).toEqual(expectedDateString);
 	})

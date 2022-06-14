@@ -11,7 +11,7 @@
   "dependencies": {
     "body-parser": "^1.15.0",
     "cors": "^2.8.1",
-    "eventsource": "^0.2.1",
+    "eventsource": ">=1.1.1",
     "express": "^4.13.4",
     "express-csv": "^0.6.0",
     "mongoose": "^5.7.6",

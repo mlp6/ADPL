@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
 import notesData from './notes/notes-data';
 import './notes/notes.css';
 

@@ -6,6 +6,8 @@ export default (state={}, action) => {
 			return Object.assign({}, state, {locations: action.payload.data});
 		case SELECT_LOCATION:
 			return Object.assign({}, state, {currentLocation: action.currentLocation});
+
+    // no default
 	}
 	return state;
 }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import DaysToShowSlider from './days-to-show-slider';
 import {Slider, Sidebar, Input} from 'react-toolbox';
 import { Button } from 'react-toolbox/lib/button';

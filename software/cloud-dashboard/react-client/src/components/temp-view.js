@@ -17,6 +17,7 @@ class TempView extends Component {
 	};
 
 	render() {
+
 		var tempData = [];
 		if (this.props.temps.data) {
             tempData = this.props.temps.data.map(currentItem => {
@@ -24,6 +25,18 @@ class TempView extends Component {
             });
             tempData = tempData.reverse()
         }
+
+    var tempDataMin = 0;
+    var tempDataMax = 80;
+
+    const tempReducer = (allTemps, currentTemps) => allTemps.concat(currentTemps['HXCI'], currentTemps['HXCO'], currentTemps['HTR'], currentTemps['HXHI'], currentTemps['HXHO']);
+    var allTempData = tempData.reduce(tempReducer, []);
+    console.log('allTempData: ' + allTempData);
+
+    var yAxisMinMax = [(Math.min.apply(Math, allTempData) < tempDataMin ? tempDataMin : Math.min.apply(Math, allTempData)),
+                       (Math.max.apply(Math, allTempData) > tempDataMax ? tempDataMax : Math.max.apply(Math, allTempData))];
+    console.log('yAxisMinMax: ' + yAxisMinMax);
+
 		return ( 
 			<div>
 				<Card className="card" style={{minHeight: '100px'}}>
@@ -47,6 +60,7 @@ class TempView extends Component {
 
 				<PlotCard
 					data={tempData}
+          yAxisMinMax={yAxisMinMax}
 					isLoading={this.props.temps.loading}
 					fetchNewData={this.props.fetchTemps}
 					currentLocation={this.props.currentLocation}
